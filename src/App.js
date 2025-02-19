@@ -1,14 +1,15 @@
 
 import './App.css';
+import { LoginSignup } from './Components/Loginsignup/loginsignup'; // Correct import
 
+import React from 'react';
 
-
-function App() {
+const App = () => {
   return (
     <div>
-      <loginsignup/>
+      <LoginSignup />
     </div>
   );
 }
 
-export default App;
+export default App; 
