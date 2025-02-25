@@ -9,7 +9,7 @@ class DepartmentSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['userid', 'username', 'role', 'department']
+        fields = '__all__'
 
 class IssueSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
