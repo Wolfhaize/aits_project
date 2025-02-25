@@ -42,14 +42,14 @@ class Issue(models.Model):
     )    
     
     CATEGORY_CHOICES=(
-        ('missing_marks', 'Missing_marks'),
+        ('missing_marks', 'Missing marks'),
         ('other', 'Other'),
     
     )  
     
     title = models.CharField(max_length=200)
     category = models.CharField(max_length=30, choices=CATEGORY_CHOICES)
-    status = models.CharField(max_length=30, choices=CATEGORY_CHOICES, default='open')
+    status = models.CharField(max_length=30, choices=STATUS_CHOICES, default='open')
     descriptions = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='assigned_issues')
