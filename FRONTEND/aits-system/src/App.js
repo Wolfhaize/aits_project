@@ -6,11 +6,13 @@ import React from 'react';
 
 const App = () => {
   return (
-    
     <div>
       <LoginSignup />
+      
     </div>
   );
 }
+
+
 
 export default App; 
