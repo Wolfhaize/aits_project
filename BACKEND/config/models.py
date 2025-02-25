@@ -12,13 +12,13 @@ class User(AbstractUser):
     department = models.ForeignKey('Department', on_delete=models.CASCADE, null=True, blank=True)
     groups = models.ManyToManyField(
         Group,
-        related_name='user_set',  # This is to be a unique name
+        related_name='user_set', 
         blank=True,
     )
     
     user_permissions = models.ManyToManyField(
         Permission,
-        related_name='user_set',  # This is to be a unique name
+        related_name='user_set',  
         blank=True,
     )
     
@@ -43,7 +43,8 @@ class Issue(models.Model):
     
     CATEGORY_CHOICES=(
         ('missing_marks', 'Missing marks'),
-        ('other', 'Other'),
+        ('Appeal', 'Appeal'),
+        ('Resolved', 'Resolved'),
     
     )  
     
