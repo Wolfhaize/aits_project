@@ -23,24 +23,29 @@ class User(AbstractUser):
     )
     
     def __str__(self):
-        return self.username + ' (' + self.role + ')'
+        return f"{self.username} ({self.role})"
     
 class Department(models.Model):
     name = models.CharField(max_length=100)
+    description = models.TextField(blank=True, null=True)
     
     def __str__(self):
         return self.name
         
 class Issue(models.Model):
-    CATEGORY_CHOICES=(
+    STATUS_CHOICES=(
         ('open', 'Open'),
-        ('missing_marks', 'Missing_marks'),
         ('pending', 'Pending'),
         ('resolved', 'Resolved'),
         ('closed', 'Closed'),
         
     )    
     
+    CATEGORY_CHOICES=(
+        ('missing_marks', 'Missing_marks'),
+        ('other', 'Other'),
+    
+    )  
     
     title = models.CharField(max_length=200)
     category = models.CharField(max_length=30, choices=CATEGORY_CHOICES)
