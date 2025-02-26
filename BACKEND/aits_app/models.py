@@ -1,30 +1,36 @@
-from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db import models
+from django.contrib.auth.models import AbstractUser, Group, Permission
 
-class User(AbstractUser):
+
+# Create your models here.
+class CustomUser (AbstractUser ):
     ROLE_FOR_USERS = [
         ('student', 'Student'),
         ('lecturer', 'Lecturer'),
         ('registrar', 'Registrar'),
     ]
     
-    role = models.CharField(max_length=10, choices=ROLE_FOR_USERS)
-    department = models.ForeignKey('Department', on_delete=models.CASCADE, null=True, blank=True)
+    role = models.CharField(max_length=20, choices=ROLE_FOR_USERS)
+    department = models.CharField(max_length=100, null=True, blank=True)
+    
     groups = models.ManyToManyField(
-        Group,
-        related_name='user_set', 
+        'auth.Group',
+        related_name='customuser_groups', 
         blank=True,
+        help_text='The groups this user belongs to.',
+        verbose_name='groups',
     )
-    
     user_permissions = models.ManyToManyField(
-        Permission,
-        related_name='user_set',  
+        'auth.Permission',
+        related_name='customuser_permissions',  
         blank=True,
+        help_text='Specific permissions for this user.',
+        verbose_name='user permissions',
     )
-    
+
     def __str__(self):
-        return f"{self.username} ({self.role})"
-    
+        return f"{self.username} ({self.get_role_display()})"
+
 class Department(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
@@ -33,27 +39,28 @@ class Department(models.Model):
         return self.name
         
 class Issue(models.Model):
-    STATUS_CHOICES=(
+    STATUS_CHOICES = (
         ('open', 'Open'),
         ('pending', 'Pending'),
-        ('closed', 'Closed'),
+        ('in_progress', 'In Progress'),
     )    
 
-    CATEGORY_CHOICES=(
-        ('missing_marks', 'Missing marks'),
-        ('Appeal', 'Appeal'),
-        ('Resolved', 'Resolved'),
-
+    CATEGORY_CHOICES = (
+        ('missing_marks', 'Missing Marks'),
+        ('appeal', 'Appeal'),
+        ('resolved', 'Resolved'),
+        ('other', 'Other'),
     )  
     
     title = models.CharField(max_length=200)
     category = models.CharField(max_length=30, choices=CATEGORY_CHOICES)
     status = models.CharField(max_length=30, choices=STATUS_CHOICES, default='open')
-    descriptions = models.TextField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='assigned_issues')
+    description = models.TextField()  
+    user = models.ForeignKey(CustomUser , on_delete=models.CASCADE)  
+    reported_by = models.ForeignKey(CustomUser , on_delete=models.CASCADE, related_name='issues_reported')  # Clarified related_name
+    assigned_to = models.ForeignKey(CustomUser , on_delete=models.SET_NULL, null=True, related_name='assigned_issues')  # Use CustomUser 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
     def __str__(self):
-        return self.title
+        return f"{self.title} - {self.get_status_display()}"
