@@ -64,3 +64,23 @@ class Issue(models.Model):
 
     def __str__(self):
         return self.name
+
+class Notification(models.Model):
+    Customuser = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    message = models.TextField()
+    status = models.CharField(max_length=50)  # You can define choices if needed
+    timestamp = models.DateTimeField(auto_now_add=True)
+    read_status = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Notification for {self.user.username}: {self.message}"
+
+
+class AuditLog(models.Model):
+    action = models.CharField(max_length=255)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='audit_logs')
+    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, related_name='audit_logs')
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.action} by {self.user.username} on {self.issue.title} at {self.timestamp}"        

@@ -6,6 +6,10 @@ from .views import (
     DepartmentDetailView,
     IssueListCreateView,
     IssueDetailView,
+    NotificationListCreateView,
+    NotificationDetailView,
+    AuditLogListCreateView,
+    AuditLogDetailView,
 )
 
 urlpatterns = [
@@ -15,4 +19,8 @@ urlpatterns = [
     path('departments/<int:pk>/', DepartmentDetailView.as_view(), name='department-detail'),
     path('issue/', IssueListCreateView.as_view(), name='issue-list-create'),
     path('issue/<int:pk>/', IssueDetailView.as_view(), name='issue-detail'),
+    path('notifications/', NotificationListCreateView.as_view(), name='notification-list-create'),
+    path('notifications/<int:pk>/', NotificationDetailView.as_view(), name='notification-detail'),
+    path('auditlogs/', AuditLogListCreateView.as_view(), name='auditlog-list-create'),
+    path('auditlogs/<int:pk>/', AuditLogDetailView.as_view(), name='auditlog-detail'),
 ]
