@@ -63,10 +63,10 @@ class Issue(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.name
+        return self.title
 
 class Notification(models.Model):
-    Customuser = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    User = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='notifications')
     message = models.TextField()
     status = models.CharField(max_length=50)  # You can define choices if needed
     timestamp = models.DateTimeField(auto_now_add=True)
@@ -78,7 +78,7 @@ class Notification(models.Model):
 
 class AuditLog(models.Model):
     action = models.CharField(max_length=255)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='audit_logs')
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='audit_logs')
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, related_name='audit_logs')
     timestamp = models.DateTimeField(auto_now_add=True)
 

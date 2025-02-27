@@ -2,7 +2,7 @@
 from rest_framework import generics
 from .models import CustomUser , Department, Issue
 from .serializers import CustomUserSerializer, DepartmentSerializer, IssueSerializer, NotificationSerializer, AuditLogSerializer
-
+from rest_framework.permissions import IsAuthenticated
 # CustomUser  Views
 class CustomUserListCreateView(generics.ListCreateAPIView):
     queryset = CustomUser .objects.all()
