@@ -48,17 +48,10 @@ function SignupPage(){
         <div className= 'signUp Page'  >
             <h2>Welcome to the SignUp Page for AITS</h2>
 
-            <div className='select your role'></div>
-            <div className='selection of a role'>
-                <label htmlFor="role">Please select your role</label>
-                <select> 
-                    id = 'role';
-                    value = {role}
-                    onChange = {setUserRole}
-                    required
+            
                     
-                </select>
-            </div>
+
+
 
             
             
