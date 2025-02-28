@@ -1,14 +1,15 @@
-import './App.css';
-import { LoginSignup } from './Components/Loginsignup/loginsignup'; // Correct import
-
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { LoginSignup } from './Components/Loginsignup/loginsignup'; 
 
-const App = () => {
+function App() {
   return (
-    <div>
-      <LoginSignup />
-      
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<LoginSignup />} />
+      </Routes>
+    </Router>
   );
 }
+
 export default App;
