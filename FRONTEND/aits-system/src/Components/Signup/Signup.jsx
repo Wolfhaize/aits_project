@@ -1,4 +1,5 @@
 import React from 'react'
+import React, {useState} from 'react';
 
 function SignupPage(){
     /*manage role selection in dropdown box*/
@@ -9,38 +10,62 @@ function SignupPage(){
     /* when the component loads at first, no role is selected */
     const[ role, setRole] = useState('');
     const[username, setUsername] = useState('');
+    const[email, setEmail] = useState('');
     const[password, setPassword] = useState('');
     const[studentId, setStudentId] = useState('');
     const[lecturerId, setLecturerId] = useState('');
     const[registrarId, setRegistrarId] = useState('');
-    const[email, setEmail] = useState('');
+    
 
     /* handling changes when a user selects a role, what happens when a user selects a certain role*/
      const setUserRole = (evt) => {
         setRole( evt.target.value);
-     }
+     
+
+     /* here, when maybe a student enters in as a lecturer by mistake, then goes back to select student, the information entered in for lecturer erases or becomes empty*/
+
+     setStudentId('');
+     setLecturerId('');
+     setRegistrarId('');
+     };
 
      /* submission of the login form*/
      const submitLoginForm = (evt) => {
         evt.preventDefault();
-        console.log('Form submitted successfully!: '{
+        console.log('Form submitted successfully!: ' {
+            
             role,
             username,
+            email,
             password,
             studentId,
             lecturerId,
             registrarId,
-
-        });
+            })
+        };
 
       return (
         <div className= 'signUp Page'  >
-            <h2>SignUp Page for AITS</h2>
+            <h2>Welcome to the SignUp Page for AITS</h2>
 
             <div className='select your role'></div>
             <div className='selection of a role'>
-                <label> Please select your role</label>
+                <label htmlFor="role">Please select your role</label>
+                <select> 
+                    id = 'role';
+                    value = {role}
+                    onChange = {setUserRole}
+                    required
+                    
+                </select>
             </div>
+
+            
+            
+
+
+
+
  
 
 
