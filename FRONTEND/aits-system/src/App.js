@@ -1,24 +1,15 @@
-import React, { useState } from 'react';
-import { LoginSignup } from './Components/Loginsignup/loginsignup'; // Ensure the correct import path
-import { SignUp } from './Components/Loginsignup/signup'; // Import the SignUp component
-import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { LoginSignup } from './Components/Loginsignup/loginsignup'; 
 
-const App = () => {
-  // State to toggle between Login and SignUp
-  const [isSignUp, setIsSignUp] = useState(false);
-
+function App() {
   return (
-    <div>
-      {isSignUp ? <SignUp /> : <LoginSignup />}
-      
-      {/* Toggle Button */}
-      <button onClick={() => setIsSignUp(!isSignUp)}>
-        {isSignUp ? 'Go to Login' : 'Go to Sign Up'}
-      </button>
-        
-
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<LoginSignup />} />
+      </Routes>
+    </Router>
   );
-};
+}
 
 export default App;
