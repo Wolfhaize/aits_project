@@ -1,7 +1,7 @@
 
 from rest_framework import generics
 from .models import CustomUser , Department, Issue
-from .serializers import CustomUserSerializer, DepartmentSerializer, IssueSerializer, NotificationSerializer, AuditLogSerializer
+from .serializers import CustomUserSerializer, DepartmentSerializer, IssueSerializer
 from rest_framework.permissions import IsAuthenticated
 # CustomUser  Views
 class CustomUserListCreateView(generics.ListCreateAPIView):
@@ -35,23 +35,3 @@ class IssueDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = IssueSerializer
     permission_classes = [IsAuthenticated]  
 
-class NotificationListCreateView(generics.ListCreateAPIView):
-    queryset = Notification.objects.all()
-    serializer_class = NotificationSerializer
-    permission_classes = [IsAuthenticated]  
-
-class NotificationDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Notification.objects.all()
-    serializer_class = NotificationSerializer
-    permission_classes = [IsAuthenticated] 
-
-# AuditLog Views
-class AuditLogListCreateView(generics.ListCreateAPIView):
-    queryset = AuditLog.objects.all()
-    serializer_class = AuditLogSerializer
-    permission_classes = [IsAuthenticated]  
-
-class AuditLogDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = AuditLog.objects.all()
-    serializer_class = AuditLogSerializer
-    permission_classes = [IsAuthenticated]    
