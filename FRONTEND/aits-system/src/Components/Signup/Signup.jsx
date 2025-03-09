@@ -1,4 +1,4 @@
-import React from 'react'
+
 import React, {useState} from 'react';
 import './Signup.css';
 
@@ -23,43 +23,44 @@ function SignupPage(){
     /* handling changes when a user selects a role, what happens when a user selects a certain role*/
      const setUserRole = (evt) => {
         setRole( evt.target.value);
-     
+     };
 
      /* submission of the login form*/
      const handleSubmit = (evt) => {
         evt.preventDefault();
-       
+
+
+        
 
         /*This requires all fields to be filled before procedding with the form submission*/
-        if (!email || !role || !username || !password ){
+        if (!role || !username|| !email || !password ){
           alert('Please fill in the required fields!');
           return;
         }
-
-        if ((role == 'student' &&!studentId)||
-            (role == 'lecturer' &&!lecturerId)||
-            (role == 'registrar' &&!registrarId)){
+        /*check if the role specific ID is provided*/
+        if ((role === 'student' &&!studentId)||
+            (role === 'lecturer' &&!lecturerId)||
+            (role === 'registrar' &&!registrarId)){
               alert('Please provide a valid &{role} Id.');
               return;
             }
-          }
+          
 
         /*Handling the submission of data, sending it to the server*/
         const userData = {
           role,
-          email,
           username,
+          email,
           password,
-          
-          }
+          };
 
           /* where the server will send the input data*/
           if (role === 'student') {
-            requestData.id = studentId;
+            userData.id = studentId;
           } else if (role === 'lecturer') {
-            requestData.id = lecturerId;
+            userData.id = lecturerId;
           } else {
-            requestData.id = registrarId;
+            userData.id = registrarId;
           };
 
           console.log('Form Submitted: ',userData );
@@ -73,28 +74,56 @@ function SignupPage(){
         <div className= 'signUp Page'  >
             <h2>Welcome to the SignUp Page for AITS</h2>
             {/* <form  onSubmit = {handleSignUp}></form>*/}
-            <form className='signUp form'>
+            <form className='signUp form' onSubmit = {handleSubmit}>
               <div className='inputArea'>
                 {/* area for the username*/}
-                <label htmlFor="userName">userName:</label>
+                <label htmlFor="username">userName:</label>
                 <input 
                 type="text"
-                id='name'
-                placeholder='Enter your username' />
+                id='username'
+                placeholder='Enter your username' 
+                value = {username}
+                onChange = {(evt) => setUsername(evt.target.value)}
+                required
+                />
+                
+
 
                 {/* area for the email*/}
                 <label htmlFor="email">Email: </label>
                 <input 
                 type="email"
                 id='email'
-                placeholder='Enter your email' />
+                placeholder='Enter your email' 
+                value={email}
+                onChange={(evt) => setEmail(evt.target.value)}
+                required/>
 
                 {/* area for the password*/}
                 <label htmlFor="password">Password: </label>
                 <input 
                 type="password"
                 id='password'
-                placeholder='Enter your password' />
+                placeholder='Enter your password' 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                />
+
+
+
+                {/* Role Selection */}
+                <label htmlFor="role">Select Role:</label>
+                <select
+                  value={role}
+                  onChange={setUserRole}
+                  required
+                >
+                  <option value="">Select Role</option>
+                  <option value="student">Student</option>
+                  <option value="lecturer">Lecturer</option>
+                  <option value="registrar">Registrar</option>
+                </select>
 
 
                 {/* conditional or user role fields*/}
@@ -106,7 +135,7 @@ function SignupPage(){
                       <input 
                         type="text" 
                         value = {studentId}
-                        onchange = {(evt) => setstudentId(evt.target.value)}
+                        onChange = {(evt) => setStudentId(evt.target.value)}
                         placeholder = 'Enter your Student ID'
                         required 
                         />
@@ -119,7 +148,7 @@ function SignupPage(){
                       <input 
                         type="text" 
                         value = {lecturerId}
-                        onchange = {(evt) => setlecturerId(evt.target.value)}
+                        onChange = {(evt) => setLecturerId(evt.target.value)}
                         placeholder = 'Enter your lecturer ID'
                         required 
                         />
@@ -132,7 +161,7 @@ function SignupPage(){
                       <input 
                         type="text" 
                         value = {registrarId}
-                        onchange = {(evt) => setregistrarId(evt.target.value)}
+                        onChange = {(evt) => setRegistrarId(evt.target.value)}
                         placeholder = 'Enter your Registrar ID'
                         required 
                         />
