@@ -7,17 +7,14 @@ import Signup from './Components/Signup/Signup';
 
 function App() {
   return (
-    <div className = 'App'>
-      <Signup />
-    </div>
-
-    /*
+    
     <Router>
       <Routes>
+        <Route path='/signup' element={<Signup/>} />
         <Route path="/" element={<LoginSignup />} />
       </Routes>
     </Router>
-    */
+    
 
   
   );

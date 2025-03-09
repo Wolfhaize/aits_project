@@ -77,7 +77,7 @@ function SignupPage(){
             <form className='signUp form' onSubmit = {handleSubmit}>
               <div className='inputArea'>
                 {/* area for the username*/}
-                <label htmlFor="username">userName:</label>
+                <label htmlFor="username">UserName:</label>
                 <input 
                 type="text"
                 id='username'

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate  } from 'react-router-dom';
+import { Link } from "react-router-dom";
+
 import apiService from '../../API/apiService';
 import './loginsignup.css';
 
@@ -11,6 +13,7 @@ export const LoginSignup = () => {
 
   
   const handleLogin = async () => {
+    
     try {
       const response = await apiService.login({ username, password }); 
       console.log('Login successful:', response);
@@ -55,7 +58,7 @@ export const LoginSignup = () => {
           <button onClick={handleLogin}>Login</button> {/* Call handleLogin on click */}
         </div>
         <div className="signup-text">
-          Don't have an account? <a href="/signup">Sign Up</a>
+          Don't have an account? <Link to="/signup">Sign Up</Link>
         </div>
       </div>
     </div>
