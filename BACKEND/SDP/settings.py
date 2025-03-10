@@ -42,9 +42,10 @@ INSTALLED_APPS = [
 
     # Third parties
     "rest_framework",
+    "accounts",
     "rest_framework.authtoken",
     "corsheaders",
-    "accounts",
+   
 ]
 
 MIDDLEWARE = [
