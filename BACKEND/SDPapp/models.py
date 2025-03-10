@@ -7,11 +7,9 @@ class CustomUser(AbstractUser):
         ('STUDENT', 'Student'),  # Role for students
         ('LECTURER', 'Lecturer'),  # Role for lecturers
         ('ADMIN', 'Administrator'),  # Role for administrators
-        ('ACADEMIC REGISTRAR','Academic Registrar'), # Role for Academic Registrar
     ]
     role = models.CharField(max_length=100, choices= USER_ROLES,)
-    username =models.CharField(max_length=100,unique = True)   
-
+    username =models.CharField(max_length=100,unique = True)    
    
     groups = models.ManyToManyField(
         'auth.Group',
@@ -29,7 +27,7 @@ class CustomUser(AbstractUser):
     )
 
     def __str__(self):
-        return self.username 
+        return self.username + '' + decription
         
 
 # Define the Department model
