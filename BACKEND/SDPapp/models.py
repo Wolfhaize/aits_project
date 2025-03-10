@@ -6,6 +6,7 @@ class CustomUser(AbstractUser):
     USER_ROLES = [
         ('STUDENT', 'Student'),  # Role for students
         ('LECTURER', 'Lecturer'),  # Role for lecturers
+        ('ACADEMIC_REGISTRAR', 'Academic Registrar'),  # Role for Academic Registrar
         ('ADMIN', 'Administrator'),  # Role for administrators
     ]
     role = models.CharField(max_length=100, choices= USER_ROLES,)
