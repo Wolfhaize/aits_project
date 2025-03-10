@@ -1,4 +1,5 @@
 from django.urls import path
+from rest_framework.authtoken.views import obtain_auth_token
 from .views import (
     CustomUserListCreateView,
     CustomUserDetailView,
@@ -16,5 +17,7 @@ urlpatterns = [
     path('departments/<int:pk>/', DepartmentDetailView.as_view(), name='department-detail'),
     path('issue/', IssueListCreateView.as_view(), name='issue-list-create'),
     path('issue/<int:pk>/Notificati', IssueDetailView.as_view(), name='issue-detail'),
+
+    path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
    
 ]
