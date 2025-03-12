@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     "SDPapp",
 
     # Third parties
-    "rest_framework",
+    "rest_framework",  
     "accounts",
     "rest_framework.authtoken",
     "corsheaders",
@@ -147,5 +147,5 @@ REST_FRAMEWORK = {
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
-LOGIN_REDIRECT_URL = 'profile'
-LOGOUT_REDIRECT_URL = 'login'
+LOGIN_REDIRECT_URL = 'accounts:home'
+LOGOUT_REDIRECT_URL = 'accounts:login'
