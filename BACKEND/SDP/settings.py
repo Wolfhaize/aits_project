@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "accounts",
     "rest_framework.authtoken",
     "corsheaders",
+    "notifications"
    
 ]
 
@@ -64,7 +65,7 @@ ROOT_URLCONF = "SDP.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "templates"],
+        "DIRS": [],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -133,6 +134,7 @@ STATIC_URL = "static/"
 AUTH_USER_MODEL = 'SDPapp.CustomUser'
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
