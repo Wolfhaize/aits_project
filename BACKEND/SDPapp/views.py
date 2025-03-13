@@ -1,37 +1,23 @@
 
-from rest_framework import generics
+from rest_framework import viewsets
 from .models import CustomUser , Department, Issue
 from .serializers import CustomUserSerializer, DepartmentSerializer, IssueSerializer
 from rest_framework.permissions import IsAuthenticated
-# CustomUser  Views
-class CustomUserListCreateView(generics.ListCreateAPIView):
-    queryset = CustomUser .objects.all()
+
+class CustomUserViewSet(viewsets.ModelViewSet):
+    queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
     permission_classes = [IsAuthenticated]
 
-class CustomUserDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = CustomUser .objects.all()
-    serializer_class = CustomUserSerializer
-    permission_classes = [IsAuthenticated] 
-
-# Department Views
-class DepartmentListCreateView(generics.ListCreateAPIView):
+class DepartmentViewSet(viewsets.ModelViewSet):
     queryset = Department.objects.all()
     serializer_class = DepartmentSerializer
-    permission_classes = [IsAuthenticated]  
-class DepartmentDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Department.objects.all()
-    serializer_class = DepartmentSerializer
-    permission_classes = [IsAuthenticated] 
+    permission_classes = [IsAuthenticated]
 
-# Issue Views
-class IssueListCreateView(generics.ListCreateAPIView):
+class IssueViewSet(viewsets.ModelViewSet):
     queryset = Issue.objects.all()
     serializer_class = IssueSerializer
-    permission_classes = [IsAuthenticated]  
+    permission_classes = [IsAuthenticated]
 
-class IssueDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Issue.objects.all()
-    serializer_class = IssueSerializer
-    permission_classes = [IsAuthenticated]  
+ 
 
