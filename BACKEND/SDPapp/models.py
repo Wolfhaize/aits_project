@@ -53,13 +53,12 @@ class Issue(models.Model):
         ('resolved', 'Resolved'),
         ('other', 'Other'),
     ]
-    
+
     title = models.CharField(max_length=200)
     category = models.CharField(max_length=30, choices=CATEGORY_CHOICES)
     status = models.CharField(max_length=30, choices=STATUS_CHOICES, default='open')
     description = models.TextField()  
     user = models.ForeignKey(CustomUser , on_delete=models.CASCADE)  
-    reported_by = models.ForeignKey(CustomUser , on_delete=models.CASCADE, related_name='issues_reported')  
     assigned_to = models.ForeignKey(CustomUser , on_delete=models.SET_NULL, null=True, related_name='assigned_issues')  
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
