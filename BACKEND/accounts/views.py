@@ -1,32 +1,55 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth.forms import UserCreationForm
+from rest_framework import generics
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.authtoken.models import Token
+from .serializers import RegisterSerializer, LoginSerializer
+from django.contrib.auth import authenticate, logout
 
- # Registration View
+# Registration View
+class RegisterView(generics.CreateAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = RegisterSerializer
 
-def register(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('login')
-    else:
-        form = UserCreationForm()
-    return render(request, 'accounts/register.html', {'form': form})
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        user = serializer.save()
 
+        token, created = Token.objects.get_or_create(user=user)
+        
+        response_data = serializer.data
+        response_data['token'] = token.key 
+        
+        return Response(response_data, status=201)
+    
 # Login View
-def login_view(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect('profile')
-        else:
-            messages.error(request, 'Invalid credentials')
-    return render(request, 'accounts/login.html')
+class LoginView(generics.GenericAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = LoginSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        user = authenticate(username=serializer.validated_data['username'], password=serializer.validated_data['password'])
+        
+        if user is None:
+            return Response({"error": "Invalid credentials"}, status=400)  # Handle invalid credentials
+        
+        token, created = Token.objects.get_or_create(user=user)
+        
+        return Response({
+            "message": "Logged in successfully",
+            "user": user.username,
+            "token": token.key
+        })
 
 # Logout View
-def logout_view(request):
-    logout(request)
-    return redirect('login')
+class LogoutView(generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        request.user.auth_token.delete() 
+        logout(request)  
+        return Response({"message": "Logged out successfully"})
