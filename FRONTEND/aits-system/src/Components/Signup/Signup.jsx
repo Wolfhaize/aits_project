@@ -15,9 +15,9 @@ function SignupPage(){
     const[username, setUsername] = useState('');
     const[email, setEmail] = useState('');
     const[password, setPassword] = useState('');
-    const[studentId, setStudentId] = useState('');
-    const[lecturerId, setLecturerId] = useState('');
-    const[registrarId, setRegistrarId] = useState('');
+    const[studentNumber, setStudentNumber] = useState('');
+    const[lecturerNumber, setLecturerNumber] = useState('');
+    const[registrarNumber, setRegistrarNumber] = useState('');
     
 
     /* handling changes when a user selects a role, what happens when a user selects a certain role*/
@@ -37,10 +37,10 @@ function SignupPage(){
           alert('Please fill in the required fields!');
           return;
         }
-        /*check if the role specific ID is provided*/
-        if ((role === 'student' &&!studentId)||
-            (role === 'lecturer' &&!lecturerId)||
-            (role === 'registrar' &&!registrarId)){
+        /*check if the role specific Number is provided*/
+        if ((role === 'student' &&!studentNumber)||
+            (role === 'lecturer' &&!lecturerNumber)||
+            (role === 'registrar' &&!registrarNumber)){
               alert('Please provide a valid &{role} Id.');
               return;
             }
@@ -56,11 +56,11 @@ function SignupPage(){
 
           /* where the server will send the input data*/
           if (role === 'student') {
-            userData.id = studentId;
+            userData.id = studentNumber;
           } else if (role === 'lecturer') {
-            userData.id = lecturerId;
+            userData.id = lecturerNumber;
           } else {
-            userData.id = registrarId;
+            userData.id = registrarNumber;
           };
 
           console.log('Form Submitted: ',userData );
@@ -128,15 +128,15 @@ function SignupPage(){
 
                 {/* conditional or user role fields*/}
                 {/*if role is true, then what is in the brackets will be rendered*/}
-                {/*onChange, when the user types in it, it updates the studentId or lecturerId or registrarId state*/}
+                {/*onChange, when the user types in it, it updates the studentINumber or lecturerNumber or registrarNumber state*/}
                   {role === 'student' &&(
                     <div>
-                      <label> Student ID</label>
+                      <label> Student Number</label>
                       <input 
                         type="text" 
-                        value = {studentId}
-                        onChange = {(evt) => setStudentId(evt.target.value)}
-                        placeholder = 'Enter your Student ID'
+                        value = {studentNumber}
+                        onChange = {(evt) => setStudentNumber(evt.target.value)}
+                        placeholder = 'Enter your Student Number'
                         required 
                         />
                     </div>
@@ -144,12 +144,12 @@ function SignupPage(){
 
                   {role === 'lecturer' &&(
                     <div>
-                      <label> lecturer ID</label>
+                      <label> lecturer Number</label>
                       <input 
                         type="text" 
-                        value = {lecturerId}
-                        onChange = {(evt) => setLecturerId(evt.target.value)}
-                        placeholder = 'Enter your lecturer ID'
+                        value = {lecturerNumber}
+                        onChange = {(evt) => setLecturerNumber(evt.target.value)}
+                        placeholder = 'Enter your lecturer Number'
                         required 
                         />
                     </div>
@@ -157,12 +157,12 @@ function SignupPage(){
 
                   {role === 'registrar' &&(
                     <div>
-                      <label> Registrar ID</label>
+                      <label> Registrar Number</label>
                       <input 
                         type="text" 
-                        value = {registrarId}
-                        onChange = {(evt) => setRegistrarId(evt.target.value)}
-                        placeholder = 'Enter your Registrar ID'
+                        value = {registrarNumber}
+                        onChange = {(evt) => setRegistrarNumber(evt.target.value)}
+                        placeholder = 'Enter your Registrar Number'
                         required 
                         />
                     </div>
