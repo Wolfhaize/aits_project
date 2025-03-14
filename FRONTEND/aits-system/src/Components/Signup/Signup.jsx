@@ -12,10 +12,13 @@ function SignupPage(){
     /* managing the input values*/
     /* when the component loads at first, no role is selected */
     const[ role, setRole] = useState('');
+    const[firstname,setfirstname] = useState('')
+    const[lastname,setlastname] = useState('')
     const[username, setUsername] = useState('');
     const[email, setEmail] = useState('');
     const[password, setPassword] = useState('');
     const[studentId, setStudentId] = useState('');
+    const[RegisterationId, setRegisterationId] = useState('')
     const[lecturerId, setLecturerId] = useState('');
     const[registrarId, setRegistrarId] = useState('');
     
@@ -33,12 +36,12 @@ function SignupPage(){
         
 
         /*This requires all fields to be filled before procedding with the form submission*/
-        if (!role || !username|| !email || !password ){
+        if (!role || !username|| !email || !password ||!firstname ||!lastname){
           alert('Please fill in the required fields!');
           return;
         }
         /*check if the role specific ID is provided*/
-        if ((role === 'student' &&!studentId)||
+        if ((role === 'student' &&!studentId &&!RegisterationId)||
             (role === 'lecturer' &&!lecturerId)||
             (role === 'registrar' &&!registrarId)){
               alert('Please provide a valid &{role} Id.');
@@ -52,6 +55,7 @@ function SignupPage(){
           username,
           email,
           password,
+          
           };
 
           /* where the server will send the input data*/
@@ -76,8 +80,28 @@ function SignupPage(){
             {/* <form  onSubmit = {handleSignUp}></form>*/}
             <form className='signUp form' onSubmit = {handleSubmit}>
               <div className='inputArea'>
-                {/* area for the username*/}
-                <label htmlFor="username">UserName:</label>
+                
+                <label htmlFor="firstname">FirstName: </label>
+                <input 
+                type="text"
+                id='firstname'
+                placeholder='Enter your first name' 
+                value={firstname}
+                onChange={(e) => setfirstname(e.target.value)}
+                required
+                />
+                <label htmlFor="lastname">LastName: </label>
+                <input 
+                type="text"
+                id='lastname'
+                placeholder='Enter your last name' 
+                value={lastname}
+                onChange={(e) => setlastname(e.target.value)}
+                required
+                />
+
+
+                <label htmlFor="username">Username:</label>
                 <input 
                 type="text"
                 id='username'
@@ -110,6 +134,7 @@ function SignupPage(){
                 required
                 />
 
+                
 
 
                 {/* Role Selection */}
@@ -131,14 +156,23 @@ function SignupPage(){
                 {/*onChange, when the user types in it, it updates the studentId or lecturerId or registrarId state*/}
                   {role === 'student' &&(
                     <div>
-                      <label> Student ID</label>
+                      <label> Student number</label>
                       <input 
                         type="text" 
                         value = {studentId}
                         onChange = {(evt) => setStudentId(evt.target.value)}
-                        placeholder = 'Enter your Student ID'
+                        placeholder = 'Enter your Student number'
                         required 
                         />
+                      <label> Registeration number</label>
+                      <input 
+                        type="text" 
+                        value = {studentId}
+                        onChange = {(evt) => setRegisterationId(evt.target.value)}
+                        placeholder = 'Enter your Registeration number'
+                        required 
+                        />
+                      
                     </div>
                   )}
 
