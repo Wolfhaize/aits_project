@@ -41,8 +41,12 @@ INSTALLED_APPS = [
     "SDPapp",
 
     # Third parties
-    "rest_framework",
+    "rest_framework",  
+    "accounts",
+    "rest_framework.authtoken",
     "corsheaders",
+    "notifications"
+   
 ]
 
 MIDDLEWARE = [
@@ -132,15 +136,18 @@ AUTH_USER_MODEL = 'SDPapp.CustomUser'
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
-    ],
-    
 }
+
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
+
+LOGIN_REDIRECT_URL = 'accounts:home'
+LOGOUT_REDIRECT_URL = 'accounts:login'
