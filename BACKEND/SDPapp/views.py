@@ -45,7 +45,7 @@ class IssueViewSet(viewsets.ModelViewSet):
                 issue.save()
                 
                 Notification.objects.create(user=lecturer, message=f"Issue '{issue.title}' has been assigned to you.")
-                return Response(IssueSerializer(issue).data,, status=status.HTTP_200_OK)
+                return Response(IssueSerializer(issue).data, status=status.HTTP_200_OK)
             except CustomUser.DoesNotExist():
                 return Response({'detail': 'Lecturer not found!'}, status=status.HTTP_404_NOT_FOUND)
         
