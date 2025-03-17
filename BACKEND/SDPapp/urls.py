@@ -5,7 +5,7 @@ from .views import CustomUserViewSet, DepartmentViewSet, IssueViewSet
 router = DefaultRouter()
 router.register(r'users', CustomUserViewSet)
 router.register(r'departments', DepartmentViewSet)
-router.register(r'issues', IssueViewSet)
+router.register(r'issues', IssueViewSet, basename='issue')
 
 urlpatterns = [
     path('', include(router.urls)),

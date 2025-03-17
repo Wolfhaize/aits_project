@@ -9,7 +9,7 @@ class CustomUser(AbstractUser):
         ('ACADEMIC_REGISTRAR', 'Academic Registrar'),  # Role for Academic Registrar
         ('ADMIN', 'Administrator'),  # Role for administrators
     ]
-    role = models.CharField(max_length=100, choices= USER_ROLES,)
+    role = models.CharField(max_length=100, choices= USER_ROLES, default= 'Student')
     username =models.CharField(max_length=100,unique = True)    
     
    
@@ -45,21 +45,21 @@ class Issue(models.Model):
         ('open', 'Open'),
         ('pending', 'Pending'),
         ('in_progress', 'In Progress'),
+        ('resolved', 'Resolved'),
     ] 
 
     CATEGORY_CHOICES = [
         ('missing_marks', 'Missing Marks'),
         ('appeal', 'Appeal'),
-        ('resolved', 'Resolved'),
         ('other', 'Other'),
     ]
 
     title = models.CharField(max_length=200)
     category = models.CharField(max_length=30, choices=CATEGORY_CHOICES)
-    status = models.CharField(max_length=30, choices=STATUS_CHOICES, default='open')
+    status = models.CharField(max_length=30, choices=STATUS_CHOICES, default='Open')
     description = models.TextField()  
-    user = models.ForeignKey(CustomUser , on_delete=models.CASCADE)  
-    assigned_to = models.ForeignKey(CustomUser , on_delete=models.SET_NULL, null=True, related_name='assigned_issues')  
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)  
+    assigned_to = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, related_name='assigned_issues')  
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
