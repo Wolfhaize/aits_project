@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate  } from 'react-router-dom';
 import { Link } from "react-router-dom";
 
-import apiService from '../API/apiService';
+
 import './login.css';
 
 export const Login = () => {
@@ -13,15 +13,22 @@ export const Login = () => {
 
   
   const handleLogin = async () => {
+      try {
+      
+        const isValidLogin = username === 'correctUser' && password === 'correctPass'; 
     
-    try {
-      const response = await apiService.login({ username, password }); 
-      console.log('Login successful:', response);
-      navigate('/dashboard'); 
-    } catch (error) {
-      setError('Invalid username or password'); 
-    }
-  };
+        if (isValidLogin) {
+          console.log('Login successful'); 
+          navigate('/dashboard'); 
+        } else {
+          throw new Error('Invalid username or password');
+        }
+      } catch (error) {
+        setError('Invalid username or password');
+      }
+    };
+    
+    
 
   return (
     <div className='container'>
