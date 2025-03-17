@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate  } from 'react-router-dom';
 import { Link } from "react-router-dom";
 
-import apiService from '../../API/apiService';
+import apiService from '../API/apiService';
 import './login.css';
 
 export const Login = () => {
