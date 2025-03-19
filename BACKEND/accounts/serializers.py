@@ -35,3 +35,6 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError('Invalid credentials')
         data['user'] = user  # Add the user object to the validated data
         return data
+
+class LogoutSerializer(serializers.Serializer):
+    pass  # No fields needed for logout
