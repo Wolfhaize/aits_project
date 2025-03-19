@@ -2,7 +2,7 @@ from rest_framework import generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
-from .serializers import RegisterSerializer, LoginSerializer
+from .serializers import RegisterSerializer, LoginSerializer, LogoutSerializer
 from django.contrib.auth import authenticate, logout
 
 # Registration View
@@ -48,6 +48,7 @@ class LoginView(generics.GenericAPIView):
 # Logout View
 class LogoutView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
+    serializer_class = LogoutSerializer  # Added serializer class
 
     def post(self, request):
         request.user.auth_token.delete() 
