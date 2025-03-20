@@ -1,11 +1,11 @@
 
-import logging
 from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import CustomUser , Department, Issue
 from .serializers import CustomUserSerializer, DepartmentSerializer, IssueSerializer
 from notifications.models import Notification
+import logging
 
 class CustomUserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
