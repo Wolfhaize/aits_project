@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -25,8 +26,7 @@ SECRET_KEY = "django-insecure-8896zc$c!twi)t4o*h)0c24z_b_ni&062(0_$*hfajb6-$6@gv
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost',
-    '127.0.0.1',]
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -38,15 +38,14 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "SDPapp",
+    "SDPapp",  # Your app
 
-    # Third parties
+    # Third-party apps
     "rest_framework",  
-    "accounts",
-    "rest_framework.authtoken",
-    "corsheaders",
-    "notifications"
-   
+    "accounts",  # Custom accounts app
+    "rest_framework.authtoken",  # Token authentication
+    "corsheaders",  # For handling CORS
+    "notifications",  # For notifications
 ]
 
 MIDDLEWARE = [
@@ -128,17 +127,20 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
-AUTH_USER_MODEL = 'SDPapp.CustomUser'
+AUTH_USER_MODEL = 'SDPapp.CustomUser'  # Custom user model reference
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# Rest Framework Configuration
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
+
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
@@ -146,8 +148,36 @@ REST_FRAMEWORK = {
 }
 
 
-CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
-LOGIN_REDIRECT_URL = 'accounts:home'
-LOGOUT_REDIRECT_URL = 'accounts:login'
+
+# Redirect URLs after login/logout
+LOGIN_REDIRECT_URL = 'accounts:home'  # Adjust as per your app's home URL
+LOGOUT_REDIRECT_URL = 'accounts:login'  # Adjust as per your login URL
+
+
+# Additional Configuration
+
+# Email settings for password reset and registration confirmation emails
+# (use your SMTP provider's settings here, e.g., Gmail, SendGrid, etc.)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # For development purposes
+
+# If you're using production, configure email settings with a real service:
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'your-email@gmail.com'
+# EMAIL_HOST_PASSWORD = 'your-email-password'
+
+# Configure CORS if needed for production:
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",  # or the URL where your frontend is hosted
+    # Add your frontend URL for production
+]
+
+AUTH_USER_MODEL = 'SDPapp.CustomUser'
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'SDPapp.backends.EmailBackend',
+]
