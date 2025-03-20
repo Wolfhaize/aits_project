@@ -1,4 +1,3 @@
-import logging
 from rest_framework import viewsets, status, generics, permissions
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -10,6 +9,7 @@ from rest_framework.views import APIView
 from .models import CustomUser, Department, Issue, Token
 from .serializers import CustomUserSerializer, DepartmentSerializer, IssueSerializer, TokenSerializer
 from notifications.models import Notification
+import logging
 from django.shortcuts import render
 from django.contrib.auth.hashers import make_password
 from django.core.mail import send_mail
