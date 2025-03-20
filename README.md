@@ -1,9 +1,10 @@
-
+- there is still a lot that needs to be done even with this point reached
 # AITS Project
 
 This project is a web application for managing academic issues. It currently supports:
 - **User Authentication**: Login and Signup.
 - **Issue Management**: Students can create issues and view the issues they've created.
+
 
 
 
