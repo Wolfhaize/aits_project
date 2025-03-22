@@ -24,6 +24,7 @@ This project is a web application for managing academic issues. It currently sup
    - If you encounter database-related errors (e.g., merge conflicts), delete your `db.sqlite3` file and run migrations:
      ```bash
      cd backend
+     python manage.py makemigrations
      python manage.py migrate
      ```
 
@@ -105,8 +106,9 @@ This project is a web application for managing academic issues. It currently sup
 
 1. **Database**:
    - Do **not** push the `db.sqlite3` file to the repository. It causes merge conflicts and is specific to your local environment.
-   - If you need to recreate the database, run:
+   - If you need to recreate the database and migrations, run:
      ```bash
+     python manage.py makemigrations
      python manage.py migrate
 
 
