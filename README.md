@@ -21,9 +21,8 @@ This project is a web application for managing academic issues. It currently sup
    ```
 
 3. **Resolve Database Conflicts (If Any)**:
-   - If you encounter database-related errors (e.g., merge conflicts), delete your `db.sqlite3` file and run migrations:
+   - If you encounter database-related errors (e.g., merge conflicts), delete your `db.sqlite3` file, and delete everything inside migrations folder except(_init-.py) and run migrations:
      ```bash
-     cd backend
      python manage.py makemigrations
      python manage.py migrate
      ```
