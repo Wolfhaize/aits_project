@@ -16,5 +16,9 @@ class AuditLog(models.Model):
     action = models.CharField(max_length=255)
     timestamp = models.DateField(auto_now_add=True)
 
+
+
     def __str__(self):
         return f"{self.timestamp}:{self.user}-{self.action}"
+
+

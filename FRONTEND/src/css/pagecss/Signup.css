@@ -1,0 +1,43 @@
+
+@import url('https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600,700,800');
+
+*{
+    font-family: 'Fira Sans', sans-serif;
+}
+
+.Signup-wrapper {
+display: flex;
+justify-content: center;
+align-items: center;
+min-height: 100vh;
+padding: 10px;
+min-width: 500px;
+padding-top: 60px;
+}
+
+.Signup-form-container {
+width: 100%;
+max-width: 500px;
+padding: 20px;
+border-radius: 5px;
+box-shadow: 0 0 10px rgba(0,0,0,0.1);
+background-color: #fff;
+}
+
+.Signup-title {
+text-align: center;
+margin-bottom: 20px;
+}
+
+.Signup-form {
+margin-bottom: 15px;
+}
+
+.Signup-button {
+width: 100%;
+}
+
+.text-right {
+text-align: center;
+margin-top: 10px;
+}

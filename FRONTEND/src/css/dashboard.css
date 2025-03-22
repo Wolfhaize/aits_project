@@ -1,0 +1,43 @@
+.dashboard-container {
+    padding-top: 60px;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  
+  /* .navbar {
+    background-color: #004080;
+    color: white;
+    padding: 10px;
+    text-align: center;
+  } */
+  
+  .dashboard-content {
+    display: flex;
+    flex: 1;
+  }
+  
+  .sidebar {
+    width: 250px;
+    background-color: #f4f4f4;
+    padding: 20px;
+  }
+  
+  .main-content {
+    flex: 1;
+    padding: 20px;
+  }
+  
+  .issue-card {
+    background: white;
+    padding: 15px;
+    border: 1px solid #ddd;
+    margin: 10px 0;
+  }
+  
+  .notification {
+    background: #ffcc00;
+    padding: 10px;
+    margin: 10px 0;
+  }
+  
