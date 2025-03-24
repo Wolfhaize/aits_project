@@ -36,4 +36,58 @@ function LecturerProfile() {
   };
 
   /*rendering the profile page*/
-};
+  return (
+    <DashboardLayout isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}>
+      <div>
+        <h1>Lecturer Profile Page</h1>
+        <p>Edit profile details</p>
+
+        {/* Profile Form */}
+        <form onSubmit={handleFormSubmit}>
+          <div>
+            <label htmlFor="name">Name:</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={formValues.name}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div>
+            <label htmlFor="email">Email:</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formValues.email}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div>
+            <label htmlFor="department">Department:</label>
+            <input
+              type="text"
+              id="department"
+              name="department"
+              value={formValues.department}
+              onChange={handleInputChange}
+            />
+          </div>
+          <button type="submit">Update Profile</button>
+        </form>
+
+        {/* Display the current profile information */}
+        <div>
+          <h2>Your Profile Information</h2>
+          <p><strong>Name:</strong> {profile.name}</p>
+          <p><strong>Email:</strong> {profile.email}</p>
+          <p><strong>Department:</strong> {profile.department}</p>
+        </div>
+      </div>
+    </DashboardLayout>
+  );
+}
+
+export default LecturerProfile;
+
