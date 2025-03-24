@@ -3,7 +3,7 @@ import IssueCard from "../../../components/IssueCard";
 
 const LecturerDashboard = () => {
   return (
-    <DashboardLayout role="lecturer">
+    <DashboardLayout role="Lecturer">
       <h2>Lecturer Dashboard</h2>
       <p>Manage student academic issues related to your courses.</p>
       <IssueCard title="Grade Correction Request" status="In Progress" />
