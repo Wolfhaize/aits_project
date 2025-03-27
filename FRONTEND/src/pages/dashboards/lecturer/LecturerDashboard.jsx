@@ -1,5 +1,7 @@
 import DashboardLayout from "../../../layouts/DashboardLayout";
 import IssueCard from "../../../components/IssueCard";
+
+const LecturerDashboard = () => {
 import { useState } from "react";
 
 
@@ -10,6 +12,15 @@ const LecturerDashboard = ({lecturerName, department}) => {
   /*state to handle search input*/
   /*this will store the value entered by the lecturer in the searcg bar */
   const [searchQuery, setSearchQuery] = useState('');
+
+  /*store dashboard data for the lecturer */
+  /*these values would come from an API */
+  const [dashboardData, setDashboardData] = useState({
+    totalStudents : 50,
+    unReslovedIssues: 10,
+    resolvedIssues:200,
+    pendingIssues: 10,
+  });
 
   /*function is triggered whenever the lecturer types in the search bar*/
   const handleSearchChange = (e) => {
@@ -47,16 +58,44 @@ const LecturerDashboard = ({lecturerName, department}) => {
           {/*logout button, logs the lecturer out if clicked */}
           <button className = 'logout-button' onClick = {handleLogout}>Logout</button>
 
-          {/*main content of the dashboard */}
+          
           
 
         </div>
 
       </header>
 
+
+
       {/*main content of the dashboard */}
-      <h3>Lecturer Dashboard</h3>
+      <h2>Lecturer Dashboard</h2>
       <p>Manage student academic issues related to your courses.</p>
+
+      {/*display values or data for the lecturer */}
+      <div className= 'values-container'>
+        <div className = 'values'>
+          <h4>Total Students Assigned</h4>
+          {/*dashboardData contains totalstudents, unresolvedtasks, resolvedtasks, and pending issues */}
+          <p>{dashboardData.totalStudents}</p>
+        </div>
+
+        <div className = 'values'>
+          <h4>Unresolved Issues</h4> {/*these are issues reported but not yet addressed  */}
+          <p>{dashboardData.unReslovedIssues}</p>
+        </div>
+
+        <div className = 'values'>
+          <h4>Resolved Issues</h4>
+          <p>{dashboardData.resolvedIssues}</p>
+        </div>
+
+        <div className = 'values'>
+          <h4>Pending issues</h4> {/* these are issues that are waiting on action by the lecturer*/}
+          <p>{dashboardData.pendingIssues}</p>
+        </div>
+      </div>
+
+      {/*issue cards for tasks and student-related issues */}
       <IssueCard title="Grade Correction Request" status="In Progress" />
     </DashboardLayout>
   );
