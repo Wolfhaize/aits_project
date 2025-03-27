@@ -1,9 +1,20 @@
+# accounts/views.py
+
+from django.contrib.auth.decorators import user_passes_test
+from django.utils.decorators import method_decorator
+from django.contrib.auth.models import Group
 from rest_framework import generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from .serializers import RegisterSerializer, LoginSerializer, LogoutSerializer
 from django.contrib.auth import authenticate, logout
+
+# Custom decorator to check if user is in a specific group
+def group_required(group_name):
+    def in_group(user):
+        return user.groups.filter(name=group_name).exists() or user.is_superuser
+    return user_passes_test(in_group)
 
 # Registration View
 class RegisterView(generics.CreateAPIView):
@@ -16,13 +27,17 @@ class RegisterView(generics.CreateAPIView):
         
         user = serializer.save()
 
+        # Optionally, add user to a group
+        group = Group.objects.get(name='MyGroup')  # Replace with your group name
+        user.groups.add(group)
+
         token, created = Token.objects.get_or_create(user=user)
         
         response_data = serializer.data
         response_data['token'] = token.key 
         
         return Response(response_data, status=201)
-    
+
 # Login View
 class LoginView(generics.GenericAPIView):
     permission_classes = [AllowAny]
@@ -46,6 +61,7 @@ class LoginView(generics.GenericAPIView):
         })
 
 # Logout View
+@method_decorator(group_required('MyGroup'), name='dispatch')  # Use the custom decorator here
 class LogoutView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = LogoutSerializer  # Added serializer class
