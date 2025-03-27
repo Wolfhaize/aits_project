@@ -1,5 +1,7 @@
 import DashboardLayout from "../../../layouts/DashboardLayout";
 import IssueCard from "../../../components/IssueCard";
+
+const LecturerDashboard = () => {
 import { useState } from "react";
 
 
