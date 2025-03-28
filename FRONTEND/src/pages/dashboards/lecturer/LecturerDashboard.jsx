@@ -1,13 +1,11 @@
 import DashboardLayout from "../../../layouts/DashboardLayout";
 import IssueCard from "../../../components/IssueCard";
-
-const LecturerDashboard = () => {
 import { useState } from "react";
-
+ 
 
 /*LecturerDashboard component is the main dashboard for lecturers*/
 /*it will display a header with the lecturer's name, department, search bar, and logout button*/
-const LecturerDashboard = ({lecturerName, department}) => {
+const  LecturerDashboard = ({lecturerName, department}) => {
 
   /*state to handle search input*/
   /*this will store the value entered by the lecturer in the searcg bar */
@@ -58,9 +56,6 @@ const LecturerDashboard = ({lecturerName, department}) => {
           {/*logout button, logs the lecturer out if clicked */}
           <button className = 'logout-button' onClick = {handleLogout}>Logout</button>
 
-          
-          
-
         </div>
 
       </header>
@@ -100,5 +95,6 @@ const LecturerDashboard = ({lecturerName, department}) => {
     </DashboardLayout>
   );
 };
+
 
 export default LecturerDashboard;

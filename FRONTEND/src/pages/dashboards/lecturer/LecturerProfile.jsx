@@ -16,3 +16,4 @@ function LecturerProfile() {
 }
 
 export default LecturerProfile;
+
