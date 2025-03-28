@@ -33,7 +33,27 @@ function LecturerIssues() {
 
     }, []); /*empty array enseures this only runs once the component mounts */
 
+/*handle status update of an issue(mark as resolved, in progress, pending, unresolved) */
+const handleUpdateStatus = async (id, newStatus) => {
+  try{
+    /*send PUT request to update the issue status in the backend */
+    const response = await fetch ('/api/issues/${id}/status', {
+      method: 'PUT',
+      headers: {'content-Type': 'application/json'},
+      body: JSON.stringify({ status: newStatus})
+    });
+    if (!response.ok) {
+      throw new Error ('Failed to update issue status');
+    }
 
+    /*update the status locally once the update is succesful */
+    setIssues(issues.map((issue) =>
+    issue.id === id ? {...issue, status: newStatus} : issue
+  ));
+  } catch (err) {
+    console.error(err);
+  }
+};
     
 };
   
