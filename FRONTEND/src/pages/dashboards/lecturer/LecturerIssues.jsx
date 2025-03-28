@@ -55,7 +55,7 @@ const handleUpdateStatus = async (id, newStatus) => {
   }
 };
     
-};
+}
   
   return (
     <DashboardLayout>
