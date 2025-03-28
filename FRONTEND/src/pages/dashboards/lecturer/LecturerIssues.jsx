@@ -54,8 +54,16 @@ const handleUpdateStatus = async (id, newStatus) => {
     console.error(err); 
   }
 };
+
+/* handling adding a comment to an issue*/
+
     
-}
+
+};
+    
+
+    
+
   
   return (
     <DashboardLayout>
