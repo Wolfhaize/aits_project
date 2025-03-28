@@ -51,7 +51,7 @@ const handleUpdateStatus = async (id, newStatus) => {
     issue.id === id ? {...issue, status: newStatus} : issue
   ));
   } catch (err) {
-    console.error(err);
+    console.error(err); 
   }
 };
     
