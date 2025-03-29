@@ -7,6 +7,10 @@ function LecturerIssues() {
   const [issues, setIssues] = useState([]);
   const [loading, setLoading] = useState(true); /* for showing a loading spinner */
   const [error, setError] = useState(null); /* to handle errors during fetch */
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [sortOrder, setSortOrder] = useState('desc'); /*Sort order by submission date*/
+
 
   /* fetch issues data from API */
   useEffect(() => {
@@ -78,7 +82,27 @@ function LecturerIssues() {
     }
   };
 
-  // Show loading spinner while fetching data
+
+  // Search and filter logic
+  const filteredIssues = issues.filter(issue => {
+    return (
+      (issue.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+       issue.description.toLowerCase().includes(searchQuery.toLowerCase())) &&
+      (statusFilter ? issue.status === statusFilter : true)
+    );
+  });
+
+  /*Sorting logic*/
+  const sortedIssues = filteredIssues.sort((a, b) => {
+    const dateA = new Date(a.submissionDate);
+    const dateB = new Date(b.submissionDate);
+    return sortOrder === 'desc' ? dateB - dateA : dateA - dateB;
+  });
+
+
+
+
+  /*Show loading spinner while fetching data*/
   if (loading) {
     return <div>Loading issues...</div>;
   }
@@ -95,12 +119,33 @@ function LecturerIssues() {
         <h1>Lecturer Issues</h1>
         <p>View and manage academic issues.</p>
 
+
+         {/* Search and Filter Section */}
+         <div className="search-filter">
+          <input
+            type="text"
+            placeholder="Search by title or description"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <select onChange={(e) => setStatusFilter(e.target.value)} value={statusFilter}>
+            <option value="">All Status</option>
+            <option value="pending">Pending</option>
+            <option value="in-progress">In Progress</option>
+            <option value="resolved">Resolved</option>
+          </select>
+          <select onChange={(e) => setSortOrder(e.target.value)} value={sortOrder}>
+            <option value="desc">Newest First</option>
+            <option value="asc">Oldest First</option>
+          </select>
+        </div>
+
         <div className='issues-list'>
           {/* display all issues */}
-          {issues.length === 0 ? (
+          {sortedIssues.length === 0 ? (
             <p>No issues available at the moment</p>
           ) : (
-            issues.map((issue) => (
+            sortedIssues.map((issue) => (
               <IssueCard
                 key={issue.id}
                 issue={issue}
