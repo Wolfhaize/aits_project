@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const IssueCard = ({ id, title, description, status, comments, onUpdateStatus, onAddComment }) => {
+const IssueCard = ({ id, title, description, status, comments = [], onUpdateStatus, onAddComment }) => {
   const [newComment, setNewComment] = useState('');
 
   // Handle adding a new comment
@@ -28,7 +28,7 @@ const IssueCard = ({ id, title, description, status, comments, onUpdateStatus, o
         <button onClick={() => handleStatusChange('Resolved')}>Mark as Resolved</button>
         <button onClick={() => handleStatusChange('In Progress')}>Mark as In Progress</button>
         <button onClick={() => handleStatusChange('Pending')}>Mark as Pending</button>
-      </div>*/
+      </div>
 
       {/* Comment section */}
       <div className="comment-section">

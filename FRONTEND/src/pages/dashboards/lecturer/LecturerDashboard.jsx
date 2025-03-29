@@ -5,7 +5,7 @@ import { useState } from "react";
 
 /*LecturerDashboard component is the main dashboard for lecturers*/
 /*it will display a header with the lecturer's name, department, search bar, and logout button*/
-const  LecturerDashboard = ({lecturerName, department}) => {
+const  LecturerDashboard = ({lecturerName = 'John Doe', department= 'Computer Science'}) => {
 
   /*state to handle search input*/
   /*this will store the value entered by the lecturer in the searcg bar */
@@ -31,7 +31,7 @@ const  LecturerDashboard = ({lecturerName, department}) => {
   };
 
   return (
-    <DashboardLayout role="Lecturer">
+    <DashboardLayout>
       {/*header section will be displayed at the top of the dashboard */}
       <header className = 'dashboard-header'>
         <div className = 'header-container'>
