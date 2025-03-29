@@ -14,11 +14,15 @@ const  LecturerDashboard = ({lecturerName = 'John Doe', department= 'Computer Sc
   /*store dashboard data for the lecturer */
   /*these values would come from an API */
   const [dashboardData, setDashboardData] = useState({
-    totalStudents : 50,
-    unReslovedIssues: 10,
-    resolvedIssues:200,
-    pendingIssues: 10,
+    totalStudents : 0,
+    unReslovedIssues: 0,
+    resolvedIssues:0,
+    pendingIssues: 0,
   });
+
+  /*State to handle loading state and errors*/
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   /*function is triggered whenever the lecturer types in the search bar*/
   const handleSearchChange = (e) => {
@@ -29,6 +33,43 @@ const  LecturerDashboard = ({lecturerName = 'John Doe', department= 'Computer Sc
   const handleLogout = () => {
     console.log('Logging out ...');
   };
+
+  /* Fetch the dashboard data from the API on component mount*/
+  useEffect(() => {
+    /*Step 1: Define the API endpoint (replace with the actual API endpoint)*/
+    const apiUrl = "https://your-api.com/dashboardData"; // Example API URL
+
+    /*Step 2: Make the API request to fetch data*/
+    const fetchDashboardData = async () => {
+      try {
+        setLoading(true); /*Set loading to true while fetching data*/
+        const response = await fetch(apiUrl);
+        
+        /* Check if the response is OK*/
+        if (!response.ok) {
+          throw new Error("Failed to fetch dashboard data");
+        }
+        
+        const data = await response.json();
+        
+        /* Step 3: Update state with the fetched data*/
+        setDashboardData({
+          totalStudents: data.totalStudents,
+          unResolvedIssues: data.unResolvedIssues,
+          resolvedIssues: data.resolvedIssues,
+          pendingIssues: data.pendingIssues,
+        });
+        setLoading(false); /*Set loading to false when data is fetched*/
+      } catch (error) {
+        setError(error.message); /* Set error if any*/
+        setLoading(false); /*Set loading to false if there's an error*/
+      }
+    };
+
+    /*Step 4: Call the fetch function*/
+    fetchDashboardData();
+  }, []); /* Empty dependency array ensures the effect runs only once when the component mounts*/
+
 
   return (
     <DashboardLayout>
@@ -66,12 +107,19 @@ const  LecturerDashboard = ({lecturerName = 'John Doe', department= 'Computer Sc
       <h2>Lecturer Dashboard</h2>
       <p>Manage student academic issues related to your courses.</p>
 
-      {/*display values or data for the lecturer */}
-      <div className= 'values-container'>
-        <div className = 'values'>
-          <h4>Total Students Assigned</h4>
-          {/*dashboardData contains totalstudents, unresolvedtasks, resolvedtasks, and pending issues */}
-          <p>{dashboardData.totalStudents}</p>
+      {/* Show loading state if data is still being fetched */}
+      {loading && <p>Loading dashboard data...</p>}
+
+      {/* Show error if the API request fails */}
+      {error && <p>Error: {error}</p>}
+
+      {/* Display values or data for the lecturer */}
+      {!loading && !error && (
+        <div className= 'values-container'>
+          <div className = 'values'>
+            <h4>Total Students Assigned</h4>
+            {/*dashboardData contains totalstudents, unresolvedtasks, resolvedtasks, and pending issues */}
+            <p>{dashboardData.totalStudents}</p>
         </div>
 
         <div className = 'values'>
@@ -89,6 +137,7 @@ const  LecturerDashboard = ({lecturerName = 'John Doe', department= 'Computer Sc
           <p>{dashboardData.pendingIssues}</p>
         </div>
       </div>
+      )}
 
       {/*issue cards for tasks and student-related issues */}
       <IssueCard title="Grade Correction Request" status="In Progress" />
