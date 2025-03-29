@@ -1,25 +1,20 @@
-import React from 'react';
+import { useState } from 'react';
 
-
-import React, { useState } from 'react';
-
-const IssueCard = ({ id, title, description, status, onUpdateStatus, onAddComment }) => {
+const IssueCard = ({ id, title, description, status, comments, onUpdateStatus, onAddComment }) => {
   const [newComment, setNewComment] = useState('');
-  const [comments, setComments] = useState([]);
 
   // Handle adding a new comment
   const handleAddComment = (e) => {
     e.preventDefault();
     if (newComment.trim()) {
-      setComments([...comments, newComment]);
-      onAddComment(id, newComment); // Notify parent component about the new comment
-      setNewComment('');
+      onAddComment(id, newComment);  // Notify parent component about the new comment
+      setNewComment('');  // Clear the comment input field after submission
     }
   };
 
-  // Handle status change
+  // Handle status change (Resolved, In Progress, Pending)
   const handleStatusChange = (newStatus) => {
-    onUpdateStatus(id, newStatus); // Notify parent component about the status change
+    onUpdateStatus(id, newStatus);  // Notify parent component to update the status
   };
 
   return (
@@ -48,11 +43,11 @@ const IssueCard = ({ id, title, description, status, onUpdateStatus, onAddCommen
           </ul>
         )}
 
-        {/* Form to add new comment */}
+        {/* Form to add a new comment */}
         <form onSubmit={handleAddComment}>
           <textarea
             value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
+            onChange={(e) => setNewComment(e.target.value)}  // Update new comment state
             placeholder="Add a comment"
             rows="3"
           ></textarea>
@@ -64,5 +59,3 @@ const IssueCard = ({ id, title, description, status, onUpdateStatus, onAddCommen
 };
 
 export default IssueCard;
-
-  
