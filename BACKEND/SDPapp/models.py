@@ -43,7 +43,7 @@ class Issue(models.Model):
         null=True,
         blank=True,
         related_name='assigned_issues',
-        limit_choices_to={'role__in': ['LECTURER', 'ACADEMIC_REGISTRAR']},
+        limit_choices_to={'role__in': ['LECTURER', 'REGISTRAR']},
         help_text="The lecturer or registrar assigned to resolve this issue."
     )
     department = models.ForeignKey(

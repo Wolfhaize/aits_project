@@ -9,10 +9,16 @@ class DepartmentSerializer(serializers.ModelSerializer):
         model = Department
         fields = ['id', 'name', 'head']
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'username', 'student_number', 'first_name', 'last_name']  # Include student_number
+
 class IssueSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField(read_only=True)
+    user = UserSerializer(read_only=True)  # Use nested serializer for user
+
     assigned_to = serializers.PrimaryKeyRelatedField(
-        queryset=CustomUser.objects.filter(role__in=['LECTURER', 'ACADEMIC_REGISTRAR']),
+        queryset=CustomUser.objects.filter(role__in=['LECTURER', 'REGISTRAR']),
         allow_null=True
     )
     department = serializers.PrimaryKeyRelatedField(
