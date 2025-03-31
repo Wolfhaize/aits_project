@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import Sidebar from "../components/Sidebar";
-import "../css/dashboard.css"; // Optional for styling
 import { useRole } from "../contexts/RoleContext"; // Import the custom hook
 
 const DashboardLayout = ({ children, isLoggedIn, setIsLoggedIn }) => {

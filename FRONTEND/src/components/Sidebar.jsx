@@ -13,32 +13,27 @@ import {
 import { toast } from "react-toastify";
 import { useAuth } from "../contexts/AuthContext"; // Import useAuth
 
-const Sidebar = (props) => {
+const Sidebar = () => {
   const { role } = useRole();
   let navigate = useNavigate();
-  const { setName, setEmail } = props;
-
-  // Use isLoggedIn and logout from AuthContext
-  const { logout } = useAuth();
+  const { logout, user } = useAuth(); // Get user details
 
   const handleLogout = () => {
-    // Call the logout function from AuthContext
     logout();
-
-    // Reset any local state (if needed)
-    setName(null);
-    setEmail(null);
-
-    // Navigate to the home page or login page
     navigate("/");
-
-    // Show logout success message
     toast.success("You are successfully logged out!");
   };
 
   return (
     <div className="area">
       <nav className="main-menu">
+        {/* Display User's Full Name */}
+        <div className="user-info">
+          <span className="user-name">
+            {user.first_name}
+          </span>
+        </div>
+
         <ul>
           <li>
             <Link to={`/dashboards/${role}/${role}-dashboard`}>
@@ -58,14 +53,12 @@ const Sidebar = (props) => {
               <span className="nav-text">Notifications</span>
             </Link>
           </li>
-
           <li>
             <Link to="#">
               <FontAwesomeIcon icon={faCogs} className="fa-2x" />
               <span className="nav-text">Help</span>
             </Link>
           </li>
-
           <li>
             <Link to="#">
               <FontAwesomeIcon icon={faInfo} className="fa-2x" />

@@ -3,6 +3,8 @@ import IssueCard from "../../../components/IssueCard";
 import IssueForm from "../../../components/IssueForm";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import "../../../css/dashboardcss/student/StudentDashboard.css";
+
 
 const StudentDashboard = () => {
   const [issues, setIssues] = useState([]);
@@ -39,9 +41,7 @@ const StudentDashboard = () => {
           {/* Left Column - Issue Form */}
           <section className="dashboard-section">
             <div className="card">
-              <div className="card-header">
-                <h2 className="card-title">Submit New Issue</h2>
-              </div>
+             
               <div className="card-body">
                 <IssueForm />
               </div>
@@ -73,7 +73,6 @@ const StudentDashboard = () => {
                   ) : (
                     <div className="empty-state">
                       <p>No ongoing issues at the moment</p>
-                      <button className="btn btn-link">Create your first issue</button>
                     </div>
                   )}
                 </div>

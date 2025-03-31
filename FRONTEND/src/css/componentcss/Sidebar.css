@@ -20,7 +20,7 @@
   display: block;
 }
 
-.main-menu li a {
+.main-menu li a{
   position: relative;
   display: flex;
   align-items: center;
@@ -29,6 +29,16 @@
   border-bottom: 1px solid #3a4e63;
   text-decoration: none;
   transition: all 0.3s ease;
+}
+
+.user-name{
+  color: #e7e7e7;
+  text-transform: uppercase;
+  vertical-align: middle;
+  position: relative;
+  display: inline-block;
+  margin-left: 5rem;
+  white-space: nowrap;
 }
 
 /* Add to your CSS */
