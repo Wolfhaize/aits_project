@@ -1,8 +1,9 @@
 from django.contrib import admin
-from .models import CustomUser, Department, Issue, Token
+from accounts.models import CustomUser
+from .models import Department, Issue, AuditLog
 
 # Register your models here.
 admin.site.register(CustomUser)
 admin.site.register(Department)
 admin.site.register(Issue)
-admin.site.register(Token)
+admin.site.register(AuditLog)
