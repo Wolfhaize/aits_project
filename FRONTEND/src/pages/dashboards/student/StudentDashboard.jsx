@@ -1,76 +1,117 @@
 import DashboardLayout from "../../../layouts/DashboardLayout";
 import IssueCard from "../../../components/IssueCard";
-import IssueForm from "../../../components/IssueForm";  // Assuming you have a form component for issues
+import IssueForm from "../../../components/IssueForm";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";  // Assuming you're using React Router for navigation
+import { Link } from "react-router-dom";
 
 const StudentDashboard = () => {
   const [issues, setIssues] = useState([]);
   const [notifications, setNotifications] = useState([]);
 
-  // Fetch the issues and notifications when the dashboard loads
   useEffect(() => {
-    // You should replace these with actual API calls
     fetchIssues();
     fetchNotifications();
   }, []);
 
-  // Fetch student's issues (Replace with API call)
   const fetchIssues = async () => {
-    // Example: Replace this with an actual API call
-    const response = await fetch("/api/issues?student=true"); // Adjust based on your API
+    const response = await fetch("/api/issues?student=true");
     const data = await response.json();
     setIssues(data);
   };
 
-  // Fetch student's notifications (Replace with API call)
   const fetchNotifications = async () => {
-    // Example: Replace this with an actual API call
-    const response = await fetch("/api/notifications?student=true"); // Adjust based on your API
+    const response = await fetch("/api/notifications?student=true");
     const data = await response.json();
     setNotifications(data);
   };
 
   return (
     <DashboardLayout role="student">
-      <h2>Student Dashboard</h2>
-      <p>Submit and track academic issues.</p>
-      
-      {/* Issue Submission Form */}
-      <IssueForm />
+      <div className="dashboard-container">
+        {/* Header Section */}
+        <header className="dashboard-header">
+          <h1 className="dashboard-title">Student Dashboard</h1>
+          <p className="dashboard-subtitle">Submit and track academic issues</p>
+        </header>
 
-      <section>
-        <h3>Ongoing Issues</h3>
-        {/* Display a list of issues with a simple IssueCard component */}
-        {issues.length > 0 ? (
-          issues.map((issue) => (
-            <IssueCard
-              key={issue.id}
-              title={issue.title}
-              status={issue.status}
-              // Add other necessary fields like due dates, assignees, etc.
-            />
-          ))
-        ) : (
-          <p>No ongoing issues at the moment.</p>
-        )}
-      </section>
-
-      <section>
-        <h3>Recent Notifications</h3>
-        {/* Display notifications with links to the notification page for more details */}
-        {notifications.length > 0 ? (
-          notifications.map((notification) => (
-            <div key={notification.id} className="notification-card">
-              <p>{notification.message}</p>
-              <Link to="/notifications">View all notifications</Link>
+        {/* Main Content Grid */}
+        <div className="dashboard-content">
+          {/* Left Column - Issue Form */}
+          <section className="dashboard-section">
+            <div className="card">
+              <div className="card-header">
+                <h2 className="card-title">Submit New Issue</h2>
+              </div>
+              <div className="card-body">
+                <IssueForm />
+              </div>
             </div>
-          ))
-        ) : (
-          <p>No new notifications.</p>
-        )}
-      </section>
+          </section>
 
+          {/* Right Column - Issues and Notifications */}
+          <div className="dashboard-right-column">
+            {/* Ongoing Issues */}
+            <section className="dashboard-section">
+              <div className="card">
+                <div className="card-header">
+                  <h2 className="card-title">Ongoing Issues</h2>
+                  <span className="badge">{issues.length} active</span>
+                </div>
+                <div className="card-body">
+                  {issues.length > 0 ? (
+                    <div className="issues-list">
+                      {issues.map((issue) => (
+                        <IssueCard
+                          key={issue.id}
+                          title={issue.title}
+                          status={issue.status}
+                          date={issue.createdAt}
+                          priority={issue.priority}
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="empty-state">
+                      <p>No ongoing issues at the moment</p>
+                      <button className="btn btn-link">Create your first issue</button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </section>
+
+            {/* Notifications */}
+            <section className="dashboard-section">
+              <div className="card">
+                <div className="card-header">
+                  <h2 className="card-title">Recent Notifications</h2>
+                  {notifications.length > 0 && (
+                    <Link to="/notifications" className="view-all">View All</Link>
+                  )}
+                </div>
+                <div className="card-body">
+                  {notifications.length > 0 ? (
+                    <ul className="notifications-list">
+                      {notifications.slice(0, 3).map((notification) => (
+                        <li key={notification.id} className="notification-item">
+                          <div className="notification-content">
+                            <p>{notification.message}</p>
+                            <span className="notification-time">{notification.time}</span>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <div className="empty-state">
+                      <p>No new notifications</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
     </DashboardLayout>
   );
 };
