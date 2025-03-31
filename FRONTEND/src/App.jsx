@@ -25,6 +25,7 @@ import LecturerProfile from "./pages/dashboards/lecturer/LecturerProfile";
 import RegistrarIssues from "./pages/dashboards/registrar/RegistrarIssues"; // Example for registrar, similar for others
 import RegistrarNotifications from "./pages/dashboards/registrar/RegistrarNotifications";
 import RegistrarProfile from "./pages/dashboards/registrar/RegistrarProfile";
+import IssueDetails from "./pages/dashboards/registrar/IssueDetails";
 
 import { RoleProvider } from "./contexts/RoleContext";
 import { AuthProvider } from "./contexts/AuthContext"; 
@@ -142,6 +143,8 @@ function App() {
               path="/dashboards/registrar/profile"
               element={<RegistrarProfile />}
             />
+            <Route path="/dashboards/registrar/issues/:id" element={<IssueDetails/>}></Route>
+            
           </Routes>
         </main>
       </RoleProvider>

@@ -1,0 +1,100 @@
+/* Basic container styling */
+.container {
+  margin: 0 auto;
+  max-width: 80px;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+/* Heading styles */
+h1 {
+  text-align: center;
+  font-size: 2rem;
+  color: #333;
+}
+
+h2 {
+  font-size: 1.5rem;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+
+.profile-info {
+  margin-bottom: 30px;
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile-info p {
+  font-size: 1rem;
+  margin-bottom: 10px;
+}
+
+.profile-info strong {
+  color: #333;
+}
+
+/* Form Styling */
+form {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+form label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 1rem;
+  color: #555;
+}
+
+form input {
+  width: 20%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+  color: #333;
+  background-color: #f9f9f9;
+  box-sizing: border-box;
+}
+
+form input:focus {
+  outline: none;
+  border-color: #4CAF50;
+  background-color: #fff;
+}
+
+/* Submit button styling */
+form button {
+  width: 20%;
+  padding: 12px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+form button:hover {
+  background-color: #45a049;
+}
+
+/* Password change status message */
+p {
+  color: #d9534f;
+  font-size: 1rem;
+  margin-top: 20px;
+}
+
+p.success {
+  color: #5bc0de;
+}
+
