@@ -64,6 +64,8 @@ class RegisterView(generics.CreateAPIView):
             "message": "You are now registered!",
             "user_id": user.id,
             "email": user.email,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
             "role": user.role,
             "student_number": user.student_number if user.role == 'STUDENT' else None,
             "token": token.key
@@ -94,6 +96,8 @@ class LoginView(generics.GenericAPIView):
                 "message": "Logged in successfully",
                 "email": user.email,
                 "role": user.role,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
                 "student_number": user.student_number if user.role == 'STUDENT' else None,
                 "token": token.key
             }, status=status.HTTP_200_OK)

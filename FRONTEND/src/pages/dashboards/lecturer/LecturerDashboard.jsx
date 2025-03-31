@@ -1,6 +1,6 @@
 import DashboardLayout from "../../../layouts/DashboardLayout";
 import IssueCard from "../../../components/IssueCard";
-import { useState } from "react";
+import { useState, useEffect } from "react";
  
 
 /*LecturerDashboard component is the main dashboard for lecturers*/

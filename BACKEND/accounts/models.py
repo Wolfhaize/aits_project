@@ -30,7 +30,7 @@ class CustomUser (AbstractUser ):
     USER_ROLES = [
         ('STUDENT', 'Student'),
         ('LECTURER', 'Lecturer'),
-        ('ACADEMIC_REGISTRAR', 'Academic Registrar'),
+        ('REGISTRAR', 'Registrar'),
         ('ADMIN', 'Administrator'),
     ]
     email = models.EmailField(unique=True)
@@ -39,6 +39,7 @@ class CustomUser (AbstractUser ):
     student_number = models.CharField(max_length=15, blank=True, null=True, unique=True)
     lecturer_number = models.CharField(max_length=15, blank=True, null=True, unique=True)
     registrar_number = models.CharField(max_length=15, blank=True, null=True, unique=True)
+   
 
     objects = CustomUserManager()
     USERNAME_FIELD = 'email'
@@ -67,7 +68,7 @@ class CustomUser (AbstractUser ):
                 raise ValueError("Student number is required for students.")
             elif self.role == 'LECTURER' and not self.lecturer_number:
                 raise ValueError("Lecturer number is required for lecturers.")
-            elif self.role == 'ACADEMIC_REGISTRAR' and not self.registrar_number:
+            elif self.role == 'REGISTRAR' and not self.registrar_number:
                 raise ValueError("Registrar number is required for academic registrars.")
         super().save(*args, **kwargs)
 

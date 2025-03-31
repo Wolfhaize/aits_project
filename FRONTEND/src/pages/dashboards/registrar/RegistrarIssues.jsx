@@ -1,65 +1,107 @@
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useAuth } from "../../../contexts/AuthContext"; // Import useAuth
 import DashboardLayout from "../../../layouts/DashboardLayout";
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import "../../../css/pagecss/issues.css";
+import "../../../css/dashboard.css";
+import "../../../css/dashboardcss/registrar/RegistrarIssues.css";
 
-const IssuesList = () => {
-  const navigate = useNavigate();
-  const [issues, setIssues] = useState([]);
 
+function RegistrarIssues() {
+  const [issues, setIssues] = useState([]); // Store all issues
+  const [loading, setLoading] = useState(true); // Loading state
+  const [error, setError] = useState(""); // Error handling state
+  const { user } = useAuth(); // Get logged-in user
+
+  // Fetch all issues (registrar has full access)
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/issues")
-      .then((res) => res.json())
-      .then((data) => setIssues(data))
-      .catch((error) => console.error("Error fetching issues:", error));
-  }, []);
+    const fetchIssues = async () => {
+      try {
+        if (!user || !user.token) {
+          setError("User not authenticated. Please log in again.");
+          setLoading(false);
+          return;
+        }
 
-  const handleView = (id) => {
-    navigate(`/issues/${id}`);
-  };
+        console.log("User Token:", user.token);
 
-  const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this issue?")) {
-      fetch(`http://127.0.0.1:8000/api/issues/${id}`, { method: "DELETE" })
-        .then(() => setIssues(issues.filter((issue) => issue.id !== id)))
-        .catch((error) => console.error("Error deleting issue:", error));
+        const response = await axios.get("http://127.0.0.1:8000/api/issues/", {
+          headers: {
+            Authorization: `Token ${user.token}`,
+          },
+        });
+
+        console.log("Full API Response:", response.data);
+
+        if (!Array.isArray(response.data)) {
+          console.error("Error: API response is not an array", response.data);
+          setError("Unexpected response format from server.");
+          setLoading(false);
+          return;
+        }
+
+        setIssues(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching issues:", error);
+        if (error.response?.status === 401) {
+          setError("You are not authorized. Please log in again.");
+        } else {
+          setError("Failed to fetch issues. Please try again.");
+        }
+        setLoading(false);
+      }
+    };
+
+    if (user && user.token) {
+      fetchIssues();
+    } else {
+      setLoading(false);
     }
-  };
+  }, [user]);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div style={{ color: "red" }}>{error}</div>;
 
   return (
     <DashboardLayout role="registrar">
       <div>
         <h1>Registrar Issues</h1>
-        <p>View and manage academic Issues </p>
+        <p>View and manage all academic issues.</p>
+
+        {/* Display issues in a table */}
+        {issues.length > 0 ? (
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Student Name</th>
+                <th>Student Number</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Created At</th>
+              </tr>
+            </thead>
+            <tbody>
+              {issues.map((issue) => (
+                <tr key={issue.id}>
+                  <td>{issue.id}</td>
+                  <td>{issue.title}</td>
+                  <td>{issue.user?.first_name} {issue.user?.last_name}</td>
+                  <td>{issue.user?.student_number}</td>
+                  <td>{issue.category}</td>
+                  <td>{issue.status}</td>
+                  <td>{new Date(issue.created_at).toLocaleDateString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <p>No issues found.</p>
+        )}
       </div>
-      <h2>Academic Issues</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Student Name</th>
-            <th>Student number</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {issues.map((issue) => (
-            <tr key={issue.id}>
-              <td>{issue.id}</td>
-              <td>{issue.student_name}</td>
-              <td>{issue.description}</td>
-              <td>{issue.status}</td>
-              <td>
-                <button onClick={() => handleView(issue.id)}>View</button>
-                <button onClick={() => handleDelete(issue.id)}>Delete</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
     </DashboardLayout>
   );
-};
+}
 
-export default IssuesList;
+export default RegistrarIssues;

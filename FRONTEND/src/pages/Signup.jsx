@@ -10,7 +10,7 @@ import { Form, Button } from "react-bootstrap";
 import "../css/pagecss/Signup.css";
 
 function Signup() {
-  const { setIsLoggedIn } = useAuth(); // Use context
+  const { login } = useAuth(); // Use context
   const { changeRole } = useRole();
   let navigate = useNavigate();
 
@@ -18,7 +18,7 @@ function Signup() {
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [role, setRole] = useState("student");
+  const [role, setRole] = useState("");
   const [roleSpecificId, setRoleSpecificId] = useState("");
   const [errors, setErrors] = useState({});
 
@@ -77,7 +77,7 @@ function Signup() {
         if (response.status === 201 || response.status === 200) {
           changeRole(role);
           toast.success("Signup successful");
-          setIsLoggedIn(true);
+          login(response.data); // Call the login function with the user data
           localStorage.setItem("isLoggedIn", "true");
           navigate(`/dashboards/${role}/profile`);
         } else {
@@ -166,15 +166,20 @@ function Signup() {
                   setRoleSpecificId("");
                 }}
               >
+                <option value="" disabled>Pick a Role</option>
                 <option value="STUDENT">Student</option>
-                <option value="LECTURER">Lecturer</option>
+                {/* <option value="LECTURER">Lecturer</option> THIS IS NOT READY */}
                 <option value="REGISTRAR">Registrar</option>
               </Form.Control>
             </Form.Group>
 
             <FormInput
               controlId="formRoleSpecificId"
-              label={role === "STUDENT" ? "Student Number" : role === "LECTURER" ? "Lecturer Number" : "Registrar Number"}
+              label={role === "STUDENT" ? "Student Number" : 
+                // role === "LECTURER" ? "Lecturer Number" : 
+                role === "REGISTRAR" ? "Registrar Number"  : 
+                "Select Role First"
+              }
               value={roleSpecificId}
               onChange={(e) => setRoleSpecificId(e.target.value)}
               isInvalid={!!errors.roleSpecificId}

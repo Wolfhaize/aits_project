@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../../contexts/AuthContext"; // Import useAuth
 import DashboardLayout from "../../../layouts/DashboardLayout";
+import "../../../css/dashboard.css"
 
 function StudentIssues() {
   const [issues, setIssues] = useState([]); // State to store issues
@@ -14,49 +15,64 @@ function StudentIssues() {
     const fetchIssues = async () => {
       try {
         if (!user || !user.token) {
-          throw new Error("User not authenticated. Please log in again.");
+          setError("User not authenticated. Please log in again.");
+          setLoading(false);
+          return;
         }
-
-        // Log the token for debugging
+  
         console.log("User Token:", user.token);
-
-        // Fetch issues from the API
+  
         const response = await axios.get("http://127.0.0.1:8000/api/issues/", {
           headers: {
-            Authorization: `Token ${user.token}`, // Include the token in the headers
+            Authorization: `Token ${user.token}`,
           },
         });
-
-        // Log the full API response for debugging
-        console.log("API Response:", response.data);
-
-        // Filter issues by the logged-in user's student_number
+  
+        console.log("Full API Response:", response.data);
+  
+        // Ensure response.data is an array
+        if (!Array.isArray(response.data)) {
+          console.error("Error: API response is not an array", response.data);
+          setError("Unexpected response format from server.");
+          setLoading(false);
+          return;
+        }
+  
+        // Debugging each issue's student_number
+        response.data.forEach((issue, index) => {
+          console.log(
+            `Issue ${index + 1}: student_number=${issue.user.student_number}, user.student_number=${user.student_number}`
+          );
+        });
+  
         const userIssues = response.data.filter(
-          (issue) => issue.student_number === user.student_number
+          (issue) => issue.user.student_number === user.student_number
         );
-
-        // Log the filtered issues for debugging
+  
         console.log("Filtered Issues:", userIssues);
-
-        setIssues(userIssues); // Set the filtered issues
-        setLoading(false); // Set loading to false
+  
+        setIssues(userIssues);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching issues:", error);
-
-        // Handle 401 Unauthorized error
+  
         if (error.response && error.response.status === 401) {
           setError("You are not authorized. Please log in again.");
         } else {
           setError("Failed to fetch issues. Please try again.");
         }
-
+  
         setLoading(false);
       }
     };
-
-    fetchIssues();
-  }, [user]); // Re-fetch issues if the user changes
-
+  
+    if (user && user.token) {
+      fetchIssues();
+    } else {
+      setLoading(false);
+    }
+  }, [user]);
+  
   if (loading) {
     return <div>Loading...</div>; // Show a loading message
   }

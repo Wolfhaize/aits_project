@@ -65,7 +65,7 @@ class AssignIssueView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, issue_id):
-        if request.user.role not in ['LECTURER', 'ACADEMIC_REGISTRAR', 'ADMIN']:
+        if request.user.role not in ['LECTURER', 'REGISTRAR', 'ADMIN']:
             return Response(
                 {"detail": "Only lecturers, registrars, or admins can assign issues."},
                 status=status.HTTP_403_FORBIDDEN
@@ -76,7 +76,7 @@ class AssignIssueView(APIView):
         assigned_to = get_object_or_404(
             CustomUser,
             id=assigned_to_id,
-            role__in=['LECTURER', 'ACADEMIC_REGISTRAR']
+            role__in=['LECTURER', 'REGISTRAR']
         )
         
         issue.assigned_to = assigned_to
@@ -102,7 +102,7 @@ class ResolveIssueView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, issue_id):
-        if request.user.role not in ['LECTURER', 'ACADEMIC_REGISTRAR', 'ADMIN']:
+        if request.user.role not in ['LECTURER', 'REGISTRAR', 'ADMIN']:
             return Response({"detail": "Only authorized users can resolve issues."}, status=403)
         issue = get_object_or_404(Issue, id=issue_id)
         issue.status = 'resolved'
