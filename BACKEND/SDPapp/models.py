@@ -57,7 +57,12 @@ class Issue(models.Model):
         verbose_name=_("Issue Title"),
         help_text=_("A brief title describing the issue.")
     )
-    category = models.CharField(max_length=30, choices=CATEGORY_CHOICES)
+    category = models.CharField(
+        max_length=30,
+        choices=Category.choices,
+        verbose_name=_("Category"),
+        help_text=_("The type of issue being reported.")
+    )
     status = models.CharField(max_length=30, choices=STATUS_CHOICES, default='pending')
     description = models.TextField()
     course_code = models.CharField(max_length=20)
