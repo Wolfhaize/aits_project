@@ -47,7 +47,13 @@ class IssueViewSet(viewsets.ModelViewSet):
             )
         return queryset  # For registrar/admin to see all
 
-        
+    def get_permissions(self):
+        if self.action == 'create':
+            return [permissions.IsAuthenticated()]
+        if self.action in ['update', 'partial_update', 'destroy']:
+            return [permissions.IsAdminUser() or permissions.IsLecturer()]
+        return super().get_permissions()
+    
     def perform_create(self, serializer):
         """Restrict issue creation to students and log it."""
         if self.request.user.role != 'STUDENT':
