@@ -70,7 +70,8 @@ class IssueViewSet(viewsets.ModelViewSet):
             details=_("Issue created"),
             new_state=self._get_issue_state(issue)
         )
-        
+
+        # Notify department head if exists
         if issue.department and issue.department.head:
             Notification.objects.create(
                 user=issue.department.head,
