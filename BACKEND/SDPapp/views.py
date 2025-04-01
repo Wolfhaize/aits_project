@@ -121,6 +121,14 @@ class AssignIssueView(APIView):
             Issue.objects.select_related('department'),
             id=issue_id
         )
+
+        # Validate assignee
+        assigned_to_id = request.data.get('assigned_to')
+        if not assigned_to_id:
+            return Response(
+                {"detail": _("Assignee ID is required.")},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         
         issue = get_object_or_404(Issue, id=issue_id)
         assigned_to_id = request.data.get('assigned_to')
