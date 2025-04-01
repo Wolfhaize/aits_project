@@ -167,6 +167,14 @@ class AssignIssueView(APIView):
                 'status': issue.status
             }
         )
+
+        # Create notifications
+        Notification.objects.create(
+            user=assigned_to,
+            message=_("You've been assigned issue '%(title)s'") % {'title': issue.title}
+        )
+
+        
         
         
         
