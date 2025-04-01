@@ -95,6 +95,7 @@ class Issue(models.Model):
         blank=True,
         related_name='assigned_issues',
         limit_choices_to={'role__in': ['LECTURER', 'REGISTRAR']},
+        verbose_name=_("Assigned To"),
         help_text="The lecturer or registrar assigned to resolve this issue."
     )
     department = models.ForeignKey(
