@@ -135,6 +135,11 @@ class Issue(models.Model):
     def __str__(self):
         return f"{self.title} ({self.course_code})"
 
+    @property
+    def is_resolved(self):
+        return self.status == self.Status.RESOLVED
+
+
 class AuditLog(models.Model):
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, related_name='audit_logs')
     user = models.ForeignKey('accounts.CustomUser', on_delete=models.SET_NULL, null=True)
