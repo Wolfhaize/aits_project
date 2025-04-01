@@ -143,6 +143,14 @@ class AssignIssueView(APIView):
                 {"detail": _("You can only assign issues in your department.")},
                 status=status.HTTP_403_FORBIDDEN
             )
+
+            # Capture old state before update
+        old_state = {
+            'assigned_to': str(issue.assigned_to) if issue.assigned_to else None,
+            'status': issue.status
+        }
+
+        
         
         
         
