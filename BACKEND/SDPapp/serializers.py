@@ -76,3 +76,13 @@ class IssueSerializer(serializers.ModelSerializer):
         required=False,
         help_text=_("ID of the lecturer/registrar to assign this issue to")
     )
+
+    department = DepartmentSerializer(read_only=True)
+    department_id = serializers.PrimaryKeyRelatedField(
+        queryset=Department.objects.all(),
+        source='department',
+        write_only=True,
+        allow_null=True,
+        required=False,
+        help_text=_("ID of the related department")
+    )
