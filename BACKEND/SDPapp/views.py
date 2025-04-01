@@ -103,7 +103,14 @@ class IssueViewSet(viewsets.ModelViewSet):
                 new_state=self._get_issue_state(updated_issue)
             )
 
-
+def _get_issue_state(self, issue):
+        """Helper to get JSON representation of issue state"""
+        return {
+            'status': issue.status,
+            'assigned_to': str(issue.assigned_to) if issue.assigned_to else None,
+            'resolution_notes': issue.resolution_notes,
+            'last_updated': str(issue.updated_at)
+        }
 
 # Assign Issue View
 class AssignIssueView(APIView):
