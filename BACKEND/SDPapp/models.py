@@ -41,11 +41,11 @@ class Issue(models.Model):
     """
     Represents an academic issue raised by a student regarding marks or other academic matters.
     """
-    STATUS_CHOICES = [
-        ('pending', 'Pending'),
-        ('assigned', 'Assigned'),
-        ('resolved', 'Resolved'),
-    ]
+    class Status(models.TextChoices):
+        PENDING = 'pending', _('Pending')
+        ASSIGNED = 'assigned', _('Assigned')
+        RESOLVED = 'resolved', _('Resolved')
+
     CATEGORY_CHOICES = [
         ('missing_marks', 'Missing Marks'),
         ('appeal', 'Appeal'),
