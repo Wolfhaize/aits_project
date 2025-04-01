@@ -150,7 +150,13 @@ class AuditLog(models.Model):
         related_name='audit_logs',
         verbose_name=_("Related Issue")
     )
-    user = models.ForeignKey('accounts.CustomUser', on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(
+        'accounts.CustomUser',
+        on_delete=models.SET_NULL,
+        null=True,
+        verbose_name=_("Action By"),
+        help_text=_("User who performed the action.")
+    )
     action = models.CharField(max_length=100)  # e.g., "Created", "Assigned", "Resolved"
     timestamp = models.DateTimeField(auto_now_add=True)
     details = models.TextField(blank=True)  # e.g., "Assigned to Lecturer X"
