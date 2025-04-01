@@ -115,6 +115,12 @@ class Issue(models.Model):
         auto_now=True,
         verbose_name=_("Last Updated")
     )
+    resolution_notes = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name=_("Resolution Notes"),
+        help_text=_("Notes about how the issue was resolved.")
+    )
 
     def __str__(self):
         return f"{self.title} ({self.course_code})"
