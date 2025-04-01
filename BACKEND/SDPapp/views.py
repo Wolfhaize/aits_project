@@ -174,12 +174,19 @@ class AssignIssueView(APIView):
             message=_("You've been assigned issue '%(title)s'") % {'title': issue.title}
         )
 
+        if issue.user != request.user:  # Don't notify yourself
+            Notification.objects.create(
+                user=issue.user,
+                message=_("Your issue '%(title)s' was assigned for resolution") % {
+                    'title': issue.title
+                }
+            )
+            
+        return Response(
+            {"detail": _("Issue assigned successfully.")},
+            status=status.HTTP_200_OK
+        )
         
-        
-        
-        
-       
-    
 class ResolveIssueView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
