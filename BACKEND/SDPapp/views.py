@@ -67,8 +67,10 @@ class IssueViewSet(viewsets.ModelViewSet):
             issue=issue,
             user=self.request.user,
             action="Created",
-            details=f"Issue '{issue.title}' created by {self.request.user.email}"
+            details=_("Issue created"),
+            new_state=self._get_issue_state(issue)
         )
+        
         if issue.department and issue.department.head:
             Notification.objects.create(
                 user=issue.department.head,
