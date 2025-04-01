@@ -87,6 +87,9 @@ class IssueViewSet(viewsets.ModelViewSet):
         old_status = issue.status
         old_state = self._get_issue_state(issue)
         
+        serializer.save()
+        updated_issue = serializer.instance
+        
 
 # Assign Issue View
 class AssignIssueView(APIView):
