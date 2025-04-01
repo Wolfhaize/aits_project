@@ -117,11 +117,10 @@ class AssignIssueView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, issue_id):
-        if request.user.role not in ['LECTURER', 'REGISTRAR', 'ADMIN']:
-            return Response(
-                {"detail": "Only lecturers, registrars, or admins can assign issues."},
-                status=status.HTTP_403_FORBIDDEN
-            )
+        issue = get_object_or_404(
+            Issue.objects.select_related('department'),
+            id=issue_id
+        )
         
         issue = get_object_or_404(Issue, id=issue_id)
         assigned_to_id = request.data.get('assigned_to')
