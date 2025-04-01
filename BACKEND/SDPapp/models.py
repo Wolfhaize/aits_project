@@ -166,7 +166,12 @@ class AuditLog(models.Model):
         auto_now_add=True,
         verbose_name=_("Timestamp")
     )
-    details = models.TextField(blank=True)  # e.g., "Assigned to Lecturer X"
+    details = models.TextField(
+        blank=True,
+        verbose_name=_("Details"),
+        help_text=_("Additional details about the action.")
+    )
+    
 
     def __str__(self):
         return f"{self.action} on {self.issue} by {self.user}"
