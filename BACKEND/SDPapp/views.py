@@ -85,14 +85,8 @@ class IssueViewSet(viewsets.ModelViewSet):
     def perform_update(self, serializer):
         issue = self.get_object()
         old_status = issue.status
-        serializer.save()
-        if issue.status != old_status:
-            AuditLog.objects.create(
-                issue=issue,
-                user=self.request.user,
-                action="Status Updated",
-                details=f"Status changed from '{old_status}' to '{issue.status}' by {self.request.user.email}"
-            )
+        old_state = self._get_issue_state(issue)
+        
 
 # Assign Issue View
 class AssignIssueView(APIView):
