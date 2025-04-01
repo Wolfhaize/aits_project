@@ -1,6 +1,13 @@
 import DashboardLayout from "../../../layouts/DashboardLayout";
 import IssueCard from "../../../components/IssueCard";
 import { useState } from "react";
+import "../../../css/pagecss/lecturerdasboards/LecturerDashboard.css";
+
+
+
+ 
+
+
  
 
 /*LecturerDashboard component is the main dashboard for lecturers*/
@@ -34,41 +41,16 @@ const  LecturerDashboard = ({lecturerName = 'John Doe', department= 'Computer Sc
     console.log('Logging out ...');
   };
 
-  /* Fetch the dashboard data from the API on component mount*/
-  useEffect(() => {
-    /*Step 1: Define the API endpoint (replace with the actual API endpoint)*/
-    const apiUrl = "https://your-api.com/dashboardData"; // Example API URL
+   
 
-    /*Step 2: Make the API request to fetch data*/
-    const fetchDashboardData = async () => {
-      try {
-        setLoading(true); /*Set loading to true while fetching data*/
-        const response = await fetch(apiUrl);
-        
-        /* Check if the response is OK*/
-        if (!response.ok) {
-          throw new Error("Failed to fetch dashboard data");
-        }
-        
-        const data = await response.json();
-        
-        /* Step 3: Update state with the fetched data*/
-        setDashboardData({
-          totalStudents: data.totalStudents,
-          unResolvedIssues: data.unResolvedIssues,
-          resolvedIssues: data.resolvedIssues,
-          pendingIssues: data.pendingIssues,
-        });
-        setLoading(false); /*Set loading to false when data is fetched*/
-      } catch (error) {
-        setError(error.message); /* Set error if any*/
-        setLoading(false); /*Set loading to false if there's an error*/
-      }
-    };
 
-    /*Step 4: Call the fetch function*/
-    fetchDashboardData();
-  }, []); /* Empty dependency array ensures the effect runs only once when the component mounts*/
+  
+
+  
+
+
+
+
 
 
   return (

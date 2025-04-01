@@ -23,8 +23,7 @@
   .lecturer-infor {
     display: flex;
     flex-direction: column;
-    margin-right: 20px;
-    text-align: right;
+    text-align: left;
   }
   
   .lecturer-name,
@@ -38,7 +37,6 @@
     width: 200px;
     border-radius: 5px;
     border: 1px solid #ccc;
-    margin-right: 20px;
   }
   
   .logout-button {
