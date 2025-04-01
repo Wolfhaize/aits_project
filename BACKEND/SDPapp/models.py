@@ -111,7 +111,10 @@ class Issue(models.Model):
         auto_now_add=True,
         verbose_name=_("Created At")
     )
-    updated_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        verbose_name=_("Last Updated")
+    )
 
     def __str__(self):
         return f"{self.title} ({self.course_code})"
