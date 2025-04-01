@@ -75,7 +75,10 @@ class IssueViewSet(viewsets.ModelViewSet):
         if issue.department and issue.department.head:
             Notification.objects.create(
                 user=issue.department.head,
-                message=f"New issue '{issue.title}' created by {self.request.user.email}"
+                message=_("New issue '%(title)s' created by %(email)s") % {
+                    'title': issue.title,
+                    'email': self.request.user.email
+                }
             )
 
     def perform_update(self, serializer):
