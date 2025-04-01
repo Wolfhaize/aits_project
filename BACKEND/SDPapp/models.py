@@ -37,6 +37,10 @@ class Department(models.Model):
         return self.name
 
 class Issue(models.Model):
+
+    """
+    Represents an academic issue raised by a student regarding marks or other academic matters.
+    """
     STATUS_CHOICES = [
         ('pending', 'Pending'),
         ('assigned', 'Assigned'),
