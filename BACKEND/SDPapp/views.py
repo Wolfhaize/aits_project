@@ -62,7 +62,7 @@ class IssueViewSet(viewsets.ModelViewSet):
 
         issue = serializer.save(user=self.request.user)
 
-        
+        # Create audit log with state snapshots
         AuditLog.objects.create(
             issue=issue,
             user=self.request.user,
