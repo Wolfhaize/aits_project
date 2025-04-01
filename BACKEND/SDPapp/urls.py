@@ -1,14 +1,9 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+from rest_framework import generics, permissions
+from django.shortcuts import get_object_or_404
+from django.core.exceptions import PermissionDenied
+from django.utils.translation import gettext_lazy as _
 from . import views
-
-router = DefaultRouter()
-router.register(r'departments', views.DepartmentViewSet)
-router.register(r'issues', views.IssueViewSet)
-
-urlpatterns = [
-    path('', include(router.urls)),
-    path('issues/<int:issue_id>/assign/', views.AssignIssueView.as_view(), name='assign-issue'),
-    path('issues/<int:issue_id>/resolve/', views.ResolveIssueView.as_view(), name='resolve-issue'),
-    path('', include('accounts.urls', namespace='accounts')),
-    ]
+from .models import Issue, AuditLog
+from .serializers import AuditLogSerializer
