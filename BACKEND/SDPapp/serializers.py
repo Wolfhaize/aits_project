@@ -21,20 +21,22 @@ class UserSerializer(serializers.ModelSerializer):
         read_only_fields = fields
 
 
-         def get_full_name(self, obj):
+    def get_full_name(self, obj):
         return obj.get_full_name()
 
 class DepartmentSerializer(serializers.ModelSerializer):
-    head = serializers.StringRelatedField()
+    head = UserSerializer(read_only=True)
+    head_id = serializers.PrimaryKeyRelatedField(
+        queryset=CustomUser.objects.filter(role=CustomUser.Role.LECTURER),
+        source='head',
+        write_only=True,
+        allow_null=True,
+        required=False,
+        help_text=_("ID of the lecturer to assign as department head")
+    )
+    
+            
 
-    class Meta:
-        model = Department
-        fields = ['id', 'name', 'head']
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CustomUser
-        fields = ['id', 'username', 'student_number', 'first_name', 'last_name']  # Include student_number
 
 class IssueSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)  # Use nested serializer for user
