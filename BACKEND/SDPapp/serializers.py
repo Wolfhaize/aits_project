@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Department, Issue
+from django.utils.translation import gettext_lazy as _
+from .models import Department, Issue, AuditLog
 from accounts.models import CustomUser
 
 class DepartmentSerializer(serializers.ModelSerializer):
