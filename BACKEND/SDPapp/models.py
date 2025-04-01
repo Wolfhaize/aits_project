@@ -171,7 +171,15 @@ class AuditLog(models.Model):
         verbose_name=_("Details"),
         help_text=_("Additional details about the action.")
     )
-    
+    class Meta:
+        verbose_name = _("Audit Log")
+        verbose_name_plural = _("Audit Logs")
+        ordering = ['-timestamp']
+        indexes = [
+            models.Index(fields=['issue']),
+            models.Index(fields=['user']),
+            models.Index(fields=['timestamp']),
+        ]
 
     def __str__(self):
         return f"{self.action} on {self.issue} by {self.user}"
