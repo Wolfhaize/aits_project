@@ -75,11 +75,16 @@ class Issue(models.Model):
         verbose_name=_("Description"),
         help_text=_("Detailed description of the issue (max 1000 characters).")
     )
-    course_code = models.CharField(max_length=20)
+    course_code = models.CharField(
+        max_length=20,
+        verbose_name=_("Course Code"),
+        help_text=_("The course code related to this issue.")
+    )
     user = models.ForeignKey(
         'accounts.CustomUser',
         on_delete=models.CASCADE,
         limit_choices_to={'role': 'STUDENT'},
+        
         help_text="The student who logged this issue."
     )
     assigned_to = models.ForeignKey(
