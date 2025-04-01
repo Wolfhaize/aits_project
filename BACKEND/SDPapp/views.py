@@ -8,13 +8,15 @@ from accounts.models import CustomUser
 from .models import Department, Issue, AuditLog
 from .serializers import DepartmentSerializer, IssueSerializer
 from notifications.models import Notification
+import json
+from django.utils.translation import gettext_lazy as _
 
 # Department ViewSet
 class DepartmentViewSet(viewsets.ModelViewSet):
-    queryset = Department.objects.all()
+    queryset = Department.objects.all().order_by('name')
     serializer_class = DepartmentSerializer
     permission_classes = [permissions.IsAuthenticated]
-
+    
 # Issue ViewSet
 class IssueViewSet(viewsets.ModelViewSet):
     queryset = Issue.objects.all()
