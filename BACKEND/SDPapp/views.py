@@ -81,6 +81,7 @@ class IssueViewSet(viewsets.ModelViewSet):
                 }
             )
 
+
     def perform_update(self, serializer):
         issue = self.get_object()
         old_status = issue.status
