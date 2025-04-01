@@ -3,6 +3,23 @@ from django.utils.translation import gettext_lazy as _
 from .models import Department, Issue, AuditLog
 from accounts.models import CustomUser
 
+class UserSerializer(serializers.ModelSerializer):
+    full_name = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = CustomUser
+        fields = [
+            'id', 
+            'username', 
+            'email',
+            'student_number', 
+            'first_name', 
+            'last_name',
+            'full_name',
+            'role'
+        ]
+        read_only_fields = fields
+        
 class DepartmentSerializer(serializers.ModelSerializer):
     head = serializers.StringRelatedField()
 
