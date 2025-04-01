@@ -162,7 +162,10 @@ class AuditLog(models.Model):
         verbose_name=_("Action"),
         help_text=_("The action performed (e.g., Created, Assigned, Resolved).")
     )
-    timestamp = models.DateTimeField(auto_now_add=True)
+     timestamp = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_("Timestamp")
+    )
     details = models.TextField(blank=True)  # e.g., "Assigned to Lecturer X"
 
     def __str__(self):
