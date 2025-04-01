@@ -178,6 +178,14 @@ class AuditLog(models.Model):
         verbose_name=_("Previous State"),
         help_text=_("Snapshot of the issue before this action.")
     )
+
+     new_state = models.JSONField(
+        null=True,
+        blank=True,
+        verbose_name=_("New State"),
+        help_text=_("Snapshot of the issue after this action.")
+    )
+    
     class Meta:
         verbose_name = _("Audit Log")
         verbose_name_plural = _("Audit Logs")
