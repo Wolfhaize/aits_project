@@ -154,6 +154,19 @@ class AssignIssueView(APIView):
         issue.assigned_to = assigned_to
         issue.status = Issue.Status.ASSIGNED
         issue.save()
+
+        # Create audit log with state changes
+        AuditLog.objects.create(
+            issue=issue,
+            user=request.user,
+            action="Assigned",
+            details=_("Assigned to %(email)s") % {'email': assigned_to.email},
+            previous_state=old_state,
+            new_state={
+                'assigned_to': str(assigned_to),
+                'status': issue.status
+            }
+        )
         
         
         
