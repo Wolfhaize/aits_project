@@ -1,76 +1,187 @@
 from rest_framework import serializers
-from .models import CustomUser, Department, Issue, Token
+from django.utils.translation import gettext_lazy as _
+from .models import Department, Issue, AuditLog
+from accounts.models import CustomUser
 
-class CustomUserSerializer(serializers.ModelSerializer):
-    # Include fields for the user's registration
-    password = serializers.CharField(write_only=True, required=False)
-    student_number = serializers.CharField(allow_null=True, required=False)
-    lecturer_number = serializers.CharField(allow_null=True, required=False)
-    registrar_number = serializers.CharField(allow_null=True, required=False)
-    role = serializers.ChoiceField(choices=['STUDENT', 'LECTURER', 'REGISTRAR'])
-    first_name = serializers.CharField(allow_null=True, required=True)
-    last_name = serializers.CharField(allow_null=True, required=True)
-
+class UserSerializer(serializers.ModelSerializer):
+    full_name = serializers.SerializerMethodField()
+    
     class Meta:
         model = CustomUser
-        fields = ['email', 'role', 'password', 'first_name', 'last_name', 'student_number', 'lecturer_number', 'registrar_number']
-        extra_kwargs = {'password': {'write_only': True}}
+        fields = [
+            'id', 
+            'username', 
+            'email',
+            'student_number', 
+            'first_name', 
+            'last_name',
+            'full_name',
+            'role'
+        ]
+        read_only_fields = fields
 
-    def validate(self, data):
-        role = data.get('role')
-        
-        if role == 'STUDENT':
-            if not data.get('student_number'):
-                raise serializers.ValidationError("Student number is required for students.")
-            # Remove unrelated fields
-            data.pop('lecturer_number', None)
-            data.pop('registrar_number', None)
-            
-        elif role == 'LECTURER':
-            if not data.get('lecturer_number'):
-                raise serializers.ValidationError("Lecturer number is required for lecturers.")
-            data.pop('student_number', None)
-            data.pop('registrar_number', None)
-            
-        elif role == 'ACADEMIC_REGISTRAR':
-            if not data.get('registrar_number'):
-                raise serializers.ValidationError("Registrar number is required for academic registrars.")
-            data.pop('student_number', None)
-            data.pop('lecturer_number', None)
-            
-        return data
-    def create(self, validated_data):
-        """
-        Create a new user with hashed password.
-        """
-        email = validated_data.get('email')
 
-        # Check if the email is already in use
-        if CustomUser.objects.filter(email=email).exists():
-            raise serializers.ValidationError("Email is already in use.")
+    def get_full_name(self, obj):
+        return obj.get_full_name()
 
-        # Remove 'username' from validated_data if it exists
-        validated_data.pop('username', None)
-
-        # Hash the password
-        password = validated_data.pop('password')  # Remove password from validated_data
-        user = CustomUser(**validated_data)  # Create the user without the password
-        user.set_password(password)  # Hash the password and set it
-        user.save()  # Save the user to the database
-
-        return user
 class DepartmentSerializer(serializers.ModelSerializer):
+    head = UserSerializer(read_only=True)
+    head_id = serializers.PrimaryKeyRelatedField(
+        queryset=CustomUser.objects.filter(role=CustomUser.Role.LECTURER),
+        source='head',
+        write_only=True,
+        allow_null=True,
+        required=False,
+        help_text=_("ID of the lecturer to assign as department head")
+    )
+
     class Meta:
         model = Department
-        fields = ['id', 'name', 'description']
+        fields = [
+            'id', 
+            'name', 
+            'head',
+            'head_id',
+            'created_at',
+            'updated_at'
+        ]
+        read_only_fields = ['created_at', 'updated_at']
+
+class AuditLogSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    
+    class Meta:
+        model = AuditLog
+        fields = [
+            'id',
+            'action',
+            'details',
+            'user',
+            'timestamp',
+            'previous_state',
+            'new_state'
+        ]
+        read_only_fields = fields
 
 class IssueSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    assigned_to = UserSerializer(read_only=True)
+    assigned_to_id = serializers.PrimaryKeyRelatedField(
+        queryset=CustomUser.objects.filter(
+            role__in=[CustomUser.Role.LECTURER, CustomUser.Role.REGISTRAR]
+        ),
+        source='assigned_to',
+        write_only=True,
+        allow_null=True,
+        required=False,
+        help_text=_("ID of the lecturer/registrar to assign this issue to")
+    )
+
+    department = DepartmentSerializer(read_only=True)
+    department_id = serializers.PrimaryKeyRelatedField(
+        queryset=Department.objects.all(),
+        source='department',
+        write_only=True,
+        allow_null=True,
+        required=False,
+        help_text=_("ID of the related department")
+    )
+
+    audit_logs = AuditLogSerializer(many=True, read_only=True)
+    is_resolved = serializers.BooleanField(read_only=True)
+    
     class Meta:
         model = Issue
-        fields = ['id', 'title', 'category', 'user', 'student_number', 'description', 'status', 'assigned_to', 'created_at', 'updated_at']
+        fields = [
+            'id',
+            'title',
+            'category',
+            'status',
+            'description',
+            'course_code',
+            'resolution_notes',
+            'user',
+            'assigned_to',
+            'assigned_to_id',
+            'department',
+            'department_id',
+            'created_at',
+            'updated_at',
+            'audit_logs',
+            'is_resolved'
+        ]
+        read_only_fields = [
+            'id',
+            'user',
+            'status',
+            'created_at',
+            'updated_at',
+            'audit_logs',
+            'is_resolved'
+        ]
+        extra_kwargs = {
+            'description': {
+                'help_text': _("Detailed description of the issue (max 1000 characters)")
+            },
+            'resolution_notes': {
+                'help_text': _("Notes about how the issue was resolved"),
+                'required': False,
+                'allow_blank': True
+            }
+        }
 
+    def validate_description(self, value):
+        if len(value) > 1000:
+            raise serializers.ValidationError(
+                _("Description cannot exceed 1000 characters")
+            )
+        return value
 
-class TokenSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Token
-        fields = ["token", "created_at", "expires_at", "user_id", "is_used"]
+    def validate(self, data):
+        """
+        Additional validation for issue creation/updating
+        """
+        if self.instance is None:  # Creating new issue
+            if self.context['request'].user.role != CustomUser.Role.STUDENT:
+                raise serializers.ValidationError(
+                    _("Only students can create issues")
+                )
+        
+        # Validate department assignment if provided
+        if 'department' in data and data['department']:
+            department = data['department']
+            if 'assigned_to' in data and data['assigned_to']:
+                assigned_to = data['assigned_to']
+                if (assigned_to.role == CustomUser.Role.LECTURER and 
+                    assigned_to != department.head):
+                    raise serializers.ValidationError(
+                        _("Can only assign to department head or registrars")
+                    )
+        
+        return data
+
+class IssueStatusUpdateSerializer(serializers.Serializer):
+    status = serializers.ChoiceField(
+        choices=Issue.Status.choices,
+        help_text=_("New status for the issue")
+    )
+    resolution_notes = serializers.CharField(
+        required=False,
+        allow_blank=True,
+        help_text=_("Required when resolving an issue")
+    )
+
+    def validate(self, data):
+        if data.get('status') == Issue.Status.RESOLVED and not data.get('resolution_notes'):
+            raise serializers.ValidationError(
+                _("Resolution notes are required when resolving an issue")
+            )
+        return data
+
+class IssueAssignmentSerializer(serializers.Serializer):
+    assigned_to_id = serializers.PrimaryKeyRelatedField(
+        queryset=CustomUser.objects.filter(
+            role__in=[CustomUser.Role.LECTURER, CustomUser.Role.REGISTRAR]
+        ),
+        help_text=_("ID of the lecturer/registrar to assign this issue to")
+    )

@@ -1,9 +1,8 @@
 import DashboardLayout from "../../../layouts/DashboardLayout";
 import React, { useEffect, useState } from "react";
-import "../../../css/pagecss/registrardashboard.css";
 
 const RegistrarDashboard = () => {
-  const [issues, setIssues] = useState([]);
+  const [ setIssues] = useState([]);
   const [stats, setStats] = useState({ total: 0, pending: 0, resolved: 0 });
 
   useEffect(() => {
@@ -24,7 +23,7 @@ const RegistrarDashboard = () => {
       }
     };
     fetchIssues();
-  }, []);
+  }, [setIssues]);
 
   return (
     <DashboardLayout role="registrar">

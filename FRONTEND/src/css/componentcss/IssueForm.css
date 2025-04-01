@@ -1,0 +1,121 @@
+/* IssueForm Styles */
+:root {
+    --primary: #2A5C8D;
+    --secondary: #3F88C5;
+    --accent: #44BBA4;
+    --background: #F7F9FC;
+    --text: #2B2D42;
+    --border: #E0E4E9;
+    --radius: 12px;
+    --shadow: 0 3px 15px rgba(0,0,0,0.1);
+  }
+  
+  /* Base Form Styles */
+  form {
+    background: white;
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    max-width: 800px;
+    margin: auto;
+  }
+
+  form input, select {
+    margin-bottom: 1.5rem;
+  }
+
+  select {
+    margin-top:1.5rem;
+  }
+  
+  h2 {
+    text-align: center;
+    font-size: 2rem;
+    color: var(--primary);
+    margin-bottom: 2rem;
+  }
+  
+  /* Input Fields */
+  input,
+  textarea,
+  select {
+    padding: 1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 1rem;
+    color: var(--text);
+    background: #f8fafc;
+    transition: border 0.3s ease;
+  }
+  
+  input:focus,
+  textarea:focus,
+  select:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+  
+  /* Button */
+  button {
+    padding: 1rem 1.5rem;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    margin-top: 1.5rem;
+  }
+  
+  button:hover {
+    background: var(--secondary);
+    transform: translateY(-2px);
+  }
+  
+  button:disabled {
+    background: #D1D5DB;
+    cursor: not-allowed;
+  }
+  
+  /* Error and Success Messages */
+  p {
+    font-size: 1rem;
+    text-align: center;
+  }
+  
+  p[style*="color: red"] {
+    color: var(--accent);
+  }
+  
+  p[style*="color: green"] {
+    color: var(--primary);
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    form {
+      padding: 1.5rem;
+    }
+  
+    h2 {
+      font-size: 1.6rem;
+    }
+  
+    input,
+    textarea,
+    select {
+      font-size: 0.9rem;
+    }
+  
+    button {
+      padding: 0.8rem 1.3rem;
+      font-size: 0.9rem;
+    }
+  }
+  
+  .form-container {
+    width: 100%;
+  }

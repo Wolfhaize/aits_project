@@ -1,0 +1,213 @@
+/* Dashboard Styles */
+:root {
+  --primary: #2A5C8D;
+  --secondary: #3F88C5;
+  --accent: #44BBA4;
+  --background: #F7F9FC;
+  --text: #2B2D42;
+  --border: #E0E4E9;
+  --radius: 12px;
+  --shadow: 0 3px 15px rgba(0,0,0,0.1);
+}
+
+/* Base Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--background);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+/* Main Container */
+.dashboard-container {
+  max-width: 100%;
+  margin: auto;
+  padding: 0 40px;
+  margin-left: -5%; /* Adjusted this margin */
+}
+
+/* Header Section */
+.dashboard-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding: 2rem 0;
+  border-bottom: 2px solid var(--border);
+  margin-left: 35%;
+}
+
+.dashboard-title {
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 0.75rem;
+}
+
+.dashboard-subtitle {
+  font-size: 1.1rem;
+  color: #6B7280;
+}
+
+/* Main Content Layout */
+.dashboard-content {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  gap: 3rem;
+  align-items: start;
+  margin-left: -10px; /* Ensure it doesn't have any margin shifting */
+}
+
+/* Left Column - Form Section */
+.dashboard-section {
+  background: rgb(248, 248, 248);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 2.5rem;
+  margin-left: 145px;
+  width: 100%;
+}
+
+.card {
+  width: 100%; 
+}
+
+.card-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid var(--border);
+}
+
+.card-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+/* Right Column Layout */
+.dashboard-right-column {
+  display: grid;
+  gap: 2.5rem;
+  position: sticky;
+  top: 2rem;
+}
+
+/* Issues List */
+.issues-list {
+  display: grid;
+  gap: 1.5rem;
+}
+
+/* Notifications */
+.notifications-list {
+  background: white;
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+}
+
+.notification-item {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Submit New Issue Section */
+.submit-new-issue {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2rem; /* Add margin only on top if needed */
+}
+
+/* Responsive Design */
+@media (max-width: 1400px) {
+  .dashboard-container {
+    padding: 0 30px;
+  }
+  
+  .dashboard-content {
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 1200px) {
+  .dashboard-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .dashboard-right-column {
+    grid-column: 1;
+    position: static;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 0 20px;
+  }
+  
+  .dashboard-header {
+    margin-bottom: 2rem;
+  }
+  
+  .dashboard-title {
+    font-size: 2rem;
+  }
+  
+  .dashboard-right-column {
+    grid-template-columns: 1fr;
+  }
+  
+  .dashboard-section {
+    padding: 1.5rem;
+  }
+}
+
+/* Component Styles */
+.badge {
+  background: var(--accent);
+  color: white;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: #6B7280;
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.8rem 1.5rem;
+  background: var(--secondary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  background: var(--primary);
+  transform: translateY(-1px);
+}
+
+.view-all {
+  color: var(--secondary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.view-all:hover {
+  color: var(--primary);
+}

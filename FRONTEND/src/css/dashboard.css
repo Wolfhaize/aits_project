@@ -1,43 +1,25 @@
-.dashboard-container {
-    padding-top: 60px;
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
+/* General Dashboard page Styles */
+:root {
+    --primary: #2A5C8D;
+    --secondary: #3F88C5;
+    --accent: #44BBA4;
+    --background: #F7F9FC;
+    --text: #2B2D42;
+    --border: #E0E4E9;
+    --radius: 12px;
+    --shadow: 0 3px 15px rgba(0,0,0,0.1);
   }
   
-  /* .navbar {
-    background-color: #004080;
-    color: white;
-    padding: 10px;
-    text-align: center;
-  } */
-  
-  .dashboard-content {
-    display: flex;
-    flex: 1;
+  /* Base Reset */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
   
-  .sidebar {
-    width: 250px;
-    background-color: #f4f4f4;
-    padding: 20px;
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--background);
+    color: var(--text);
+    line-height: 1.6;
   }
-  
-  .main-content {
-    flex: 1;
-    padding: 20px;
-  }
-  
-  .issue-card {
-    background: white;
-    padding: 15px;
-    border: 1px solid #ddd;
-    margin: 10px 0;
-  }
-  
-  .notification {
-    background: #ffcc00;
-    padding: 10px;
-    margin: 10px 0;
-  }
-  

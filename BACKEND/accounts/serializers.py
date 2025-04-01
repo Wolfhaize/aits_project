@@ -1,40 +1,50 @@
-from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from django.contrib.auth import authenticate
-
-CustomUser  = get_user_model()
+from .models import CustomUser, Token
 
 class RegisterSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, min_length=8, style={'input_type': 'password'})
-    password2 = serializers.CharField(write_only=True, style={'input_type': 'password'})
-
+    first_name = serializers.CharField(required=True)  # Add first_name field
+    last_name = serializers.CharField(required=True)   # Add last_name field
+    
     class Meta:
-        model = CustomUser 
-        fields = ["id", "username", "email", "password", "password2"]
-        extra_kwargs = {"password": {"write_only": True}}
-
-    def validate(self, data):
-        if data['password'] != data['password2']:
-            raise serializers.ValidationError({'password': 'Passwords do not match.'})
-        return data
+        model = CustomUser
+        fields = ['email', 'password', 'role', 'first_name', 'last_name', 'student_number', 'lecturer_number', 'registrar_number']
+        extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        validated_data.pop('password2')  
-        user = CustomUser(**validated_data) 
-        user.set_password(validated_data['password'])
-        user.save() 
+        user = CustomUser.objects.create_user(
+            email=validated_data['email'],
+            password=validated_data['password'],
+            role=validated_data.get('role', 'STUDENT'),
+            first_name=validated_data['first_name'],  # Ensure first_name is passed
+            last_name=validated_data['last_name'],    # Ensure last_name is passed
+            student_number=validated_data.get('student_number'),
+            lecturer_number=validated_data.get('lecturer_number'),
+            registrar_number=validated_data.get('registrar_number'),
+        )
         return user
 
 class LoginSerializer(serializers.Serializer):
-    username = serializers.CharField()
-    password = serializers.CharField(write_only=True, style={'input_type': 'password'})
-
-    def validate(self, data):
-        user = authenticate(username=data['username'], password=data['password'])
-        if user is None:
-            raise serializers.ValidationError('Invalid credentials')
-        data['user'] = user  # Add the user object to the validated data
-        return data
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True)
 
 class LogoutSerializer(serializers.Serializer):
-    pass  # No fields needed for logout
+    pass
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'email', 'first_name', 'last_name', 'role', 'student_number', 'lecturer_number', 'registrar_number']  # Include first_name and last_name
+
+class CustomUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'email', 'first_name', 'last_name', 'role', 'student_number', 'lecturer_number', 'registrar_number', 'password']
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def create(self, validated_data):
+        return CustomUser.objects.create_user(**validated_data)
+
+class TokenSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Token
+        fields = ['token', 'created_at', 'expires_at', 'user', 'is_used']

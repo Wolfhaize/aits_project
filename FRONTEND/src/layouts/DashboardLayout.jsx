@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import TopNavbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
-import "../css/dashboard.css"; // Optional for styling
 import { useRole } from "../contexts/RoleContext"; // Import the custom hook
 
 const DashboardLayout = ({ children, isLoggedIn, setIsLoggedIn }) => {
@@ -11,18 +9,15 @@ const DashboardLayout = ({ children, isLoggedIn, setIsLoggedIn }) => {
 
   return (
     <div className="dashboard-container">
-      <TopNavbar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} setName={setName} setEmail={setEmail} />
       <div className="dashboard-content">
-        <Sidebar role={role} /> {/* Pass role to Sidebar */}
+        <Sidebar role={role} isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} setName={setName} setEmail={setEmail} /> 
         <main className="main-content">
           {name && email ? (
             <div className="user-info">
               <h3>Welcome, {name}</h3>
               <p>Email: {email}</p>
             </div>
-          ) : (
-            <p>Loading user information...</p>
-          )}
+          ) : null}
           {children}
         </main>
       </div>

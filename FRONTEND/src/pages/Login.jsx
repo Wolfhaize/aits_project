@@ -42,11 +42,13 @@ function Login() {
       });
   
       if (response.data.success) {
-        const { token, role, student_number } = response.data;
+        const { token, role, first_name, last_name, student_number } = response.data;
        
         login({
           email,
           role,
+          first_name,
+          last_name,
           student_number,
           token, // Include the student's number
         });
@@ -58,7 +60,9 @@ function Login() {
         localStorage.setItem("userData", JSON.stringify({
           email,
           role,
-          student_number
+          student_number,
+          first_name,
+          last_name
         }));
 
 

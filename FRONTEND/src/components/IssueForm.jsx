@@ -1,14 +1,27 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useAuth } from "../contexts/AuthContext"; // Use AuthContext to get the logged-in user
+import { useAuth } from "../contexts/AuthContext";
+import "../css/componentcss/IssueForm.css";
+
+const departmentOptions = [
+  { id: 1, name: "Computer Science" },
+  { id: 2, name: "Business Administration" },
+];
+
+const courseOptions = {
+  1: ["CS101", "CS102", "CS103", "CS104"], // Courses for Computer Science
+  2: ["BA201", "BA202", "BA203", "BA204"], // Courses for Business Administration
+};
 
 const IssueForm = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [category, setCategory] = useState(""); // Add category field
+  const [category, setCategory] = useState("");
+  const [department, setDepartment] = useState("");
+  const [courseCode, setCourseCode] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const { user } = useAuth(); // Get the logged-in user from context
+  const { user } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,16 +34,18 @@ const IssueForm = () => {
         return;
       }
 
-      // Log the request payload for debugging
       const payload = {
         title,
         description,
-        category, // Include category
-        student_number: user.student_number,// Use the student's number
-        user: 1, 
+        category,
+        course_code: courseCode,
+        department: parseInt(department), // Convert to number
+        student_number: user.student_number,
+        user: 1,
         assigned_to: null,
-        status: "open", // Default status as per the model
+        status: "open",
       };
+
       console.log("Request Payload:", payload);
 
       const response = await axios.post(
@@ -38,7 +53,7 @@ const IssueForm = () => {
         payload,
         {
           headers: {
-            Authorization: `Token ${user.token}`, // Include the token in the headers
+            Authorization: `Token ${user.token}`,
           },
         }
       );
@@ -47,14 +62,14 @@ const IssueForm = () => {
         setSuccess("Issue submitted successfully!");
         setTitle("");
         setDescription("");
-        setCategory(""); // Reset category field
+        setCategory("");
+        setDepartment("");
+        setCourseCode("");
       } else {
         setError("Failed to submit issue. Please try again.");
       }
     } catch (error) {
       console.error("Issue submission failed:", error);
-
-      // Log the server's error response for debugging
       if (error.response) {
         console.error("Server Error Response:", error.response.data);
         setError(
@@ -68,10 +83,10 @@ const IssueForm = () => {
   };
 
   return (
-    <div>
+    <div className="form-container">
       <h2>Submit an Issue</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      {success && <p style={{ color: "green" }}>{success}</p>}
+      {error && <p className="error-message">{error}</p>}
+      {success && <p className="success-message">{success}</p>}
       <form onSubmit={handleSubmit}>
         <input
           type="text"
@@ -96,6 +111,40 @@ const IssueForm = () => {
           <option value="appeal">Appeal</option>
           <option value="other">Other</option>
         </select>
+        
+        {/* Department Selection */}
+        <select
+          value={department}
+          onChange={(e) => {
+            setDepartment(e.target.value);
+            setCourseCode(""); // Reset course code when department changes
+          }}
+          required
+        >
+          <option value="" disabled>Select Department</option>
+          {departmentOptions.map((dept) => (
+            <option key={dept.id} value={dept.id}>
+              {dept.name}
+            </option>
+          ))}
+        </select>
+
+        {/* Course Selection - Changes Based on Department */}
+        <select
+          value={courseCode}
+          onChange={(e) => setCourseCode(e.target.value)}
+          required
+          disabled={!department} // Disable if no department is selected
+        >
+          <option value="" disabled>Select Course</option>
+          {department &&
+            courseOptions[department].map((course) => (
+              <option key={course} value={course}>
+                {course}
+              </option>
+            ))}
+        </select>
+
         <button type="submit">Submit Issue</button>
       </form>
     </div>
