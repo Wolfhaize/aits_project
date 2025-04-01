@@ -107,7 +107,10 @@ class Issue(models.Model):
         verbose_name=_("Department"),
         help_text="The department related to this issue."
     )
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_("Created At")
+    )
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
