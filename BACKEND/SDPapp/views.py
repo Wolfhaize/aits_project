@@ -150,7 +150,10 @@ class AssignIssueView(APIView):
             'status': issue.status
         }
 
-        
+        # Perform assignment
+        issue.assigned_to = assigned_to
+        issue.status = Issue.Status.ASSIGNED
+        issue.save()
         
         
         
