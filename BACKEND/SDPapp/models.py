@@ -70,7 +70,11 @@ class Issue(models.Model):
         verbose_name=_("Status"),
         help_text=_("The current status of the issue.")
     )
-    description = models.TextField()
+    description = models.TextField(
+        validators=[MaxLengthValidator(1000)],
+        verbose_name=_("Description"),
+        help_text=_("Detailed description of the issue (max 1000 characters).")
+    )
     course_code = models.CharField(max_length=20)
     user = models.ForeignKey(
         'accounts.CustomUser',
