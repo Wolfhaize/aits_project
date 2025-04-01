@@ -121,6 +121,16 @@ class Issue(models.Model):
         verbose_name=_("Resolution Notes"),
         help_text=_("Notes about how the issue was resolved.")
     )
+    class Meta:
+        verbose_name = _("Issue")
+        verbose_name_plural = _("Issues")
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['status']),
+            models.Index(fields=['category']),
+            models.Index(fields=['course_code']),
+        ]
+
 
     def __str__(self):
         return f"{self.title} ({self.course_code})"
