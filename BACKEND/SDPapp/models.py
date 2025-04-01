@@ -27,6 +27,12 @@ class Department(models.Model):
         help_text="The lecturer designated as head of this department."
     )
 
+    class Meta:
+        verbose_name = _("Department")
+        verbose_name_plural = _("Departments")
+        ordering = ['name']
+
+
     def __str__(self):
         return self.name
 
