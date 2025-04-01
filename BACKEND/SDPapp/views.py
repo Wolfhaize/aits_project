@@ -135,33 +135,18 @@ class AssignIssueView(APIView):
             id=assigned_to_id,
             role__in=[CustomUser.Role.LECTURER, CustomUser.Role.REGISTRAR]
         )
+
+         # Check if assigner has permission for this department
+        if (request.user.role == CustomUser.Role.LECTURER and 
+            issue.department.head != request.user):
+            return Response(
+                {"detail": _("You can only assign issues in your department.")},
+                status=status.HTTP_403_FORBIDDEN
+            )
         
-        issue = get_object_or_404(Issue, id=issue_id)
-        assigned_to_id = request.data.get('assigned_to')
-        assigned_to = get_object_or_404(
-            CustomUser,
-            id=assigned_to_id,
-            role__in=['LECTURER', 'REGISTRAR']
-        )
         
-        issue.assigned_to = assigned_to
-        issue.status = 'assigned'
-        issue.save()
         
-        AuditLog.objects.create(
-            issue=issue,
-            user=request.user,
-            action="Assigned",
-            details=f"Issue assigned to {assigned_to.email} by {request.user.email}"
-        )
-        Notification.objects.create(
-            user=assigned_to,
-            message=f"You have been assigned issue '{issue.title}' by {request.user.email}"
-        )
-        return Response(
-            {"detail": "Issue assigned successfully."},
-            status=status.HTTP_200_OK
-        )
+       
     
 class ResolveIssueView(APIView):
     permission_classes = [permissions.IsAuthenticated]
