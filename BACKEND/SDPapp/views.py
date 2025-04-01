@@ -129,6 +129,12 @@ class AssignIssueView(APIView):
                 {"detail": _("Assignee ID is required.")},
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+            assigned_to = get_object_or_404(
+            CustomUser,
+            id=assigned_to_id,
+            role__in=[CustomUser.Role.LECTURER, CustomUser.Role.REGISTRAR]
+        )
         
         issue = get_object_or_404(Issue, id=issue_id)
         assigned_to_id = request.data.get('assigned_to')
