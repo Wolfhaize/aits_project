@@ -86,3 +86,7 @@ class IssueSerializer(serializers.ModelSerializer):
         required=False,
         help_text=_("ID of the related department")
     )
+
+    audit_logs = AuditLogSerializer(many=True, read_only=True)
+    is_resolved = serializers.BooleanField(read_only=True)
+    
