@@ -46,12 +46,12 @@ class Issue(models.Model):
         ASSIGNED = 'assigned', _('Assigned')
         RESOLVED = 'resolved', _('Resolved')
 
-    CATEGORY_CHOICES = [
-        ('missing_marks', 'Missing Marks'),
-        ('appeal', 'Appeal'),
-        ('corrections', 'Corrections'),
-        ('other', 'Other'),
-    ]
+    class Category(models.TextChoices):
+        MISSING_MARKS = 'missing_marks', _('Missing Marks')
+        APPEAL = 'appeal', _('Appeal')
+        CORRECTIONS = 'corrections', _('Corrections')
+        OTHER = 'other', _('Other')
+
     title = models.CharField(max_length=200)
     category = models.CharField(max_length=30, choices=CATEGORY_CHOICES)
     status = models.CharField(max_length=30, choices=STATUS_CHOICES, default='pending')
