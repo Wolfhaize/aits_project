@@ -84,7 +84,8 @@ class Issue(models.Model):
         'accounts.CustomUser',
         on_delete=models.CASCADE,
         limit_choices_to={'role': 'STUDENT'},
-        
+        related_name='reported_issues',
+        verbose_name=_("Reported By"),
         help_text="The student who logged this issue."
     )
     assigned_to = models.ForeignKey(
