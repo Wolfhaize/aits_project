@@ -17,13 +17,20 @@ class DepartmentViewSet(viewsets.ModelViewSet):
     serializer_class = DepartmentSerializer
     permission_classes = [permissions.IsAuthenticated]
     
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            return [permissions.IsAdminUser()]
+        return super().get_permissions()
+
 # Issue ViewSet
 class IssueViewSet(viewsets.ModelViewSet):
-    queryset = Issue.objects.all()
     serializer_class = IssueSerializer
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['status', 'department', 'category']
+    filterset_fields = ['status', 'department', 'category', 'assigned_to']
+    search_fields = ['title', 'description', 'course_code']
+    ordering_fields = ['created_at', 'updated_at']
+    ordering = ['-created_at']
 
     def get_queryset(self):
         if self.request.user.role == 'STUDENT':
