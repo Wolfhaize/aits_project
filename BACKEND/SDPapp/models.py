@@ -4,7 +4,18 @@ from django.utils.translation import gettext_lazy as _
 
 
 class Department(models.Model):
-    name = models.CharField(max_length=100, unique=True)
+
+    """
+    Represents an academic department within the institution.
+    """
+    name = models.CharField(
+        max_length=100,
+        unique=True,
+        verbose_name=_("Department Name"),
+        help_text=_("The name of the academic department.")
+    )
+
+    
     head = models.ForeignKey(
         'accounts.CustomUser',
         on_delete=models.SET_NULL,
