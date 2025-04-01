@@ -19,7 +19,11 @@ class UserSerializer(serializers.ModelSerializer):
             'role'
         ]
         read_only_fields = fields
-        
+
+
+         def get_full_name(self, obj):
+        return obj.get_full_name()
+
 class DepartmentSerializer(serializers.ModelSerializer):
     head = serializers.StringRelatedField()
 
