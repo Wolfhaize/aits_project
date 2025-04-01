@@ -32,11 +32,12 @@ class IssueViewSet(viewsets.ModelViewSet):
     ordering_fields = ['created_at', 'updated_at']
     ordering = ['-created_at']
 
-    def get_queryset(self):
-        if self.request.user.role == 'STUDENT':
-            return Issue.objects.filter(user=self.request.user)
-        return Issue.objects.all() # For registrar to see and filter
 
+    def get_queryset(self):
+        queryset = Issue.objects.select_related(
+            'user', 'assigned_to', 'department'
+        ).prefetch_related('audit_logs')
+        
     def perform_create(self, serializer):
         """Restrict issue creation to students and log it."""
         if self.request.user.role != 'STUDENT':
