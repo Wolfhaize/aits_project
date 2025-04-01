@@ -22,6 +22,8 @@ class Department(models.Model):
         null=True,
         blank=True,
         limit_choices_to={'role': 'LECTURER'},
+        related_name='headed_departments',
+        verbose_name=_("Department Head"),
         help_text="The lecturer designated as head of this department."
     )
 
