@@ -90,3 +90,98 @@ class IssueSerializer(serializers.ModelSerializer):
     audit_logs = AuditLogSerializer(many=True, read_only=True)
     is_resolved = serializers.BooleanField(read_only=True)
     
+    class Meta:
+        model = Issue
+        fields = [
+            'id',
+            'title',
+            'category',
+            'status',
+            'description',
+            'course_code',
+            'resolution_notes',
+            'user',
+            'assigned_to',
+            'assigned_to_id',
+            'department',
+            'department_id',
+            'created_at',
+            'updated_at',
+            'audit_logs',
+            'is_resolved'
+        ]
+        read_only_fields = [
+            'id',
+            'user',
+            'status',
+            'created_at',
+            'updated_at',
+            'audit_logs',
+            'is_resolved'
+        ]
+        extra_kwargs = {
+            'description': {
+                'help_text': _("Detailed description of the issue (max 1000 characters)")
+            },
+            'resolution_notes': {
+                'help_text': _("Notes about how the issue was resolved"),
+                'required': False,
+                'allow_blank': True
+            }
+        }
+
+    def validate_description(self, value):
+        if len(value) > 1000:
+            raise serializers.ValidationError(
+                _("Description cannot exceed 1000 characters")
+            )
+        return value
+
+    def validate(self, data):
+        """
+        Additional validation for issue creation/updating
+        """
+        if self.instance is None:  # Creating new issue
+            if self.context['request'].user.role != CustomUser.Role.STUDENT:
+                raise serializers.ValidationError(
+                    _("Only students can create issues")
+                )
+        
+        # Validate department assignment if provided
+        if 'department' in data and data['department']:
+            department = data['department']
+            if 'assigned_to' in data and data['assigned_to']:
+                assigned_to = data['assigned_to']
+                if (assigned_to.role == CustomUser.Role.LECTURER and 
+                    assigned_to != department.head):
+                    raise serializers.ValidationError(
+                        _("Can only assign to department head or registrars")
+                    )
+        
+        return data
+
+class IssueStatusUpdateSerializer(serializers.Serializer):
+    status = serializers.ChoiceField(
+        choices=Issue.Status.choices,
+        help_text=_("New status for the issue")
+    )
+    resolution_notes = serializers.CharField(
+        required=False,
+        allow_blank=True,
+        help_text=_("Required when resolving an issue")
+    )
+
+    def validate(self, data):
+        if data.get('status') == Issue.Status.RESOLVED and not data.get('resolution_notes'):
+            raise serializers.ValidationError(
+                _("Resolution notes are required when resolving an issue")
+            )
+        return data
+
+class IssueAssignmentSerializer(serializers.Serializer):
+    assigned_to_id = serializers.PrimaryKeyRelatedField(
+        queryset=CustomUser.objects.filter(
+            role__in=[CustomUser.Role.LECTURER, CustomUser.Role.REGISTRAR]
+        ),
+        help_text=_("ID of the lecturer/registrar to assign this issue to")
+    )
