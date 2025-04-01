@@ -38,6 +38,16 @@ class IssueViewSet(viewsets.ModelViewSet):
             'user', 'assigned_to', 'department'
         ).prefetch_related('audit_logs')
         
+        if self.request.user.role == CustomUser.Role.STUDENT:
+            return queryset.filter(user=self.request.user)
+        elif self.request.user.role == CustomUser.Role.LECTURER:
+            return queryset.filter(
+                models.Q(assigned_to=self.request.user) |
+                models.Q(department__head=self.request.user)
+            )
+        return queryset  # For registrar/admin to see all
+
+        
     def perform_create(self, serializer):
         """Restrict issue creation to students and log it."""
         if self.request.user.role != 'STUDENT':
