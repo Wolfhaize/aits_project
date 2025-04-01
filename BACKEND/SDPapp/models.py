@@ -157,7 +157,11 @@ class AuditLog(models.Model):
         verbose_name=_("Action By"),
         help_text=_("User who performed the action.")
     )
-    action = models.CharField(max_length=100)  # e.g., "Created", "Assigned", "Resolved"
+    action = models.CharField(
+        max_length=100,
+        verbose_name=_("Action"),
+        help_text=_("The action performed (e.g., Created, Assigned, Resolved).")
+    )
     timestamp = models.DateTimeField(auto_now_add=True)
     details = models.TextField(blank=True)  # e.g., "Assigned to Lecturer X"
 
