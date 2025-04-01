@@ -144,7 +144,12 @@ class AuditLog(models.Model):
     """
     Tracks all changes made to issues for accountability and history.
     """
-    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, related_name='audit_logs')
+    issue = models.ForeignKey(
+        Issue,
+        on_delete=models.CASCADE,
+        related_name='audit_logs',
+        verbose_name=_("Related Issue")
+    )
     user = models.ForeignKey('accounts.CustomUser', on_delete=models.SET_NULL, null=True)
     action = models.CharField(max_length=100)  # e.g., "Created", "Assigned", "Resolved"
     timestamp = models.DateTimeField(auto_now_add=True)
