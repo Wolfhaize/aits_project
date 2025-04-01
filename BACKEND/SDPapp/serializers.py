@@ -64,19 +64,15 @@ class AuditLogSerializer(serializers.ModelSerializer):
         read_only_fields = fields
 
 class IssueSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)  # Use nested serializer for user
-
-    assigned_to = serializers.PrimaryKeyRelatedField(
-        queryset=CustomUser.objects.filter(role__in=['LECTURER', 'REGISTRAR']),
-        allow_null=True
+    user = UserSerializer(read_only=True)
+    assigned_to = UserSerializer(read_only=True)
+    assigned_to_id = serializers.PrimaryKeyRelatedField(
+        queryset=CustomUser.objects.filter(
+            role__in=[CustomUser.Role.LECTURER, CustomUser.Role.REGISTRAR]
+        ),
+        source='assigned_to',
+        write_only=True,
+        allow_null=True,
+        required=False,
+        help_text=_("ID of the lecturer/registrar to assign this issue to")
     )
-    department = serializers.PrimaryKeyRelatedField(
-        queryset=Department.objects.all(),
-        allow_null=True
-    )
-
-    class Meta:
-        model = Issue
-        fields = ['id', 'title', 'category', 'status', 'description', 'course_code', 
-                  'user', 'assigned_to', 'department', 'created_at', 'updated_at']
-        read_only_fields = ['user', 'created_at', 'updated_at', 'status', 'assigned_to']
