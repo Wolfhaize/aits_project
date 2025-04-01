@@ -54,13 +54,12 @@ class IssueViewSet(viewsets.ModelViewSet):
             return [permissions.IsAdminUser() or permissions.IsLecturer()]
         return super().get_permissions()
     
-    def perform_create(self, serializer):
-        """Restrict issue creation to students and log it."""
-        if self.request.user.role != 'STUDENT':
-            return Response(
-                {"detail": "Only students can create issues."},
-                status=status.HTTP_403_FORBIDDEN
+     def perform_create(self, serializer):
+        if self.request.user.role != CustomUser.Role.STUDENT:
+            raise permissions.PermissionDenied(
+                _("Only students can create issues.")
             )
+            
         issue = serializer.save(user=self.request.user)
         AuditLog.objects.create(
             issue=issue,
