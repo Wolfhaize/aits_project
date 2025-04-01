@@ -45,8 +45,23 @@ class DepartmentSerializer(serializers.ModelSerializer):
             'created_at',
             'updated_at'
         ]
-        read_only_fields = ['created_at', 'updated_at']        
+        read_only_fields = ['created_at', 'updated_at']
 
+class AuditLogSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    
+    class Meta:
+        model = AuditLog
+        fields = [
+            'id',
+            'action',
+            'details',
+            'user',
+            'timestamp',
+            'previous_state',
+            'new_state'
+        ]
+        read_only_fields = fields
 
 class IssueSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)  # Use nested serializer for user
