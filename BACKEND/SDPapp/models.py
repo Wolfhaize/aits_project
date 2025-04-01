@@ -52,7 +52,11 @@ class Issue(models.Model):
         CORRECTIONS = 'corrections', _('Corrections')
         OTHER = 'other', _('Other')
 
-    title = models.CharField(max_length=200)
+    title = models.CharField(
+        max_length=200,
+        verbose_name=_("Issue Title"),
+        help_text=_("A brief title describing the issue.")
+    )
     category = models.CharField(max_length=30, choices=CATEGORY_CHOICES)
     status = models.CharField(max_length=30, choices=STATUS_CHOICES, default='pending')
     description = models.TextField()
