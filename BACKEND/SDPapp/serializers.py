@@ -34,8 +34,18 @@ class DepartmentSerializer(serializers.ModelSerializer):
         required=False,
         help_text=_("ID of the lecturer to assign as department head")
     )
-    
-            
+
+    class Meta:
+        model = Department
+        fields = [
+            'id', 
+            'name', 
+            'head',
+            'head_id',
+            'created_at',
+            'updated_at'
+        ]
+        read_only_fields = ['created_at', 'updated_at']        
 
 
 class IssueSerializer(serializers.ModelSerializer):
