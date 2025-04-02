@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../../contexts/AuthContext"; // Import useAuth
 import DashboardLayout from "../../../layouts/DashboardLayout";
-import "../../../css/dashboard.css"
+import "../../../css/dashboardcss/student/StudentIssues.css"
 
 function StudentIssues() {
   const [issues, setIssues] = useState([]); // State to store issues
@@ -84,14 +84,19 @@ function StudentIssues() {
   return (
     <DashboardLayout>
       <div>
+        <div className="headings">
         <h1>Student Issues</h1>
         <p>View and manage academic issues.</p>
+
+        </div>
+       
 
         {/* Display issues in a table */}
         {issues.length > 0 ? (
           <table>
             <thead>
               <tr>
+              <th>Course Code</th>
                 <th>Title</th>
                 <th>Category</th>
                 <th>Status</th>
@@ -101,9 +106,11 @@ function StudentIssues() {
             <tbody>
               {issues.map((issue) => (
                 <tr key={issue.id}>
+                  <td>{issue.course_code}</td>
                   <td>{issue.title}</td>
                   <td>{issue.category}</td>
                   <td>{issue.status}</td>
+                  
                   <td>{new Date(issue.created_at).toLocaleDateString()}</td>
                 </tr>
               ))}

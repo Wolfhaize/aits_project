@@ -1,4 +1,4 @@
-/* Basic container styling */
+/* Basic container styling
 .container {
   margin: 0 auto;
   max-width: 80px;
@@ -6,7 +6,6 @@
   font-family: Arial, sans-serif;
 }
 
-/* Heading styles */
 h1 {
   text-align: center;
   font-size: 2rem;
@@ -37,7 +36,6 @@ h2 {
   color: #333;
 }
 
-/* Form Styling */
 form {
   background-color: #fff;
   padding: 20px;
@@ -70,7 +68,6 @@ form input:focus {
   background-color: #fff;
 }
 
-/* Submit button styling */
 form button {
   width: 20%;
   padding: 12px;
@@ -87,7 +84,6 @@ form button:hover {
   background-color: #45a049;
 }
 
-/* Password change status message */
 p {
   color: #d9534f;
   font-size: 1rem;
@@ -97,4 +93,40 @@ p {
 p.success {
   color: #5bc0de;
 }
+ */
 
+ :root {
+  --primary: #2A5C8D;
+  --secondary: #3F88C5;
+  --accent: #44BBA4;
+  --background: #F7F9FC;
+  --text: #2B2D42;
+  --border: #E0E4E9;
+  --radius: 12px;
+  --shadow: 0 3px 15px rgba(0,0,0,0.1);
+}
+
+  
+  /* Base Reset */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    background: var(--background);
+    color: var(--secondary);
+    line-height: 1.6;
+    margin-left: -75%;
+  }
+
+  .heading-prof h1{
+    margin-left: 25%;
+
+  }
+
+  .heading-prof p{
+    margin-left: 15px;
+
+  }

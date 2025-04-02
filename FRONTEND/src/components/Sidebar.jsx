@@ -35,6 +35,12 @@ const Sidebar = () => {
         </div>
 
         <ul>
+        <li>
+            <Link to={`/dashboards/${role}/profile`}>
+              <FontAwesomeIcon icon={faHome} className="fa-2x" />
+              <span className="nav-text">Profile</span>
+            </Link>
+          </li>
           <li>
             <Link to={`/dashboards/${role}/${role}-dashboard`}>
               <FontAwesomeIcon icon={faHome} className="fa-2x" />
