@@ -8,185 +8,96 @@ from accounts.models import CustomUser
 from .models import Department, Issue, AuditLog
 from .serializers import DepartmentSerializer, IssueSerializer
 from notifications.models import Notification
-import json
-from django.utils.translation import gettext_lazy as _
 
 # Department ViewSet
 class DepartmentViewSet(viewsets.ModelViewSet):
-    queryset = Department.objects.all().order_by('name')
+    queryset = Department.objects.all()
     serializer_class = DepartmentSerializer
     permission_classes = [permissions.IsAuthenticated]
-    
-    def get_permissions(self):
-        if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            return [permissions.IsAdminUser()]
-        return super().get_permissions()
 
 # Issue ViewSet
 class IssueViewSet(viewsets.ModelViewSet):
+    queryset = Issue.objects.all()
     serializer_class = IssueSerializer
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['status', 'department', 'category', 'assigned_to']
-    search_fields = ['title', 'description', 'course_code']
-    ordering_fields = ['created_at', 'updated_at']
-    ordering = ['-created_at']
-
+    filterset_fields = ['status', 'department', 'category']
 
     def get_queryset(self):
-        queryset = Issue.objects.select_related(
-            'user', 'assigned_to', 'department'
-        ).prefetch_related('audit_logs')
-        
-        if self.request.user.role == CustomUser.Role.STUDENT:
-            return queryset.filter(user=self.request.user)
-        elif self.request.user.role == CustomUser.Role.LECTURER:
-            return queryset.filter(
-                models.Q(assigned_to=self.request.user) |
-                models.Q(department__head=self.request.user)
-            )
-        return queryset  # For registrar/admin to see all
+        if self.request.user.role == 'STUDENT':
+            return Issue.objects.filter(user=self.request.user)
+        return Issue.objects.all() # For registrar to see and filter
 
-    def get_permissions(self):
-        if self.action == 'create':
-            return [permissions.IsAuthenticated()]
-        if self.action in ['update', 'partial_update', 'destroy']:
-            return [permissions.IsAdminUser() or permissions.IsLecturer()]
-        return super().get_permissions()
-    
     def perform_create(self, serializer):
-        if self.request.user.role != CustomUser.Role.STUDENT:
-            raise permissions.PermissionDenied(
-                _("Only students can create issues.")
+        """Restrict issue creation to students and log it."""
+        if self.request.user.role != 'STUDENT':
+            return Response(
+                {"detail": "Only students can create issues."},
+                status=status.HTTP_403_FORBIDDEN
             )
-
         issue = serializer.save(user=self.request.user)
-
-        # Create audit log with state snapshots
         AuditLog.objects.create(
             issue=issue,
             user=self.request.user,
             action="Created",
-            details=_("Issue created"),
-            new_state=self._get_issue_state(issue)
+            details=f"Issue '{issue.title}' created by {self.request.user.email}"
         )
-
-        # Notify department head if exists
         if issue.department and issue.department.head:
             Notification.objects.create(
                 user=issue.department.head,
-                message=_("New issue '%(title)s' created by %(email)s") % {
-                    'title': issue.title,
-                    'email': self.request.user.email
-                }
+                message=f"New issue '{issue.title}' created by {self.request.user.email}"
             )
-
 
     def perform_update(self, serializer):
         issue = self.get_object()
         old_status = issue.status
-        old_state = self._get_issue_state(issue)
-        
         serializer.save()
-        updated_issue = serializer.instance
-        
-        if issue.status != old_status or old_state != self._get_issue_state(updated_issue):
+        if issue.status != old_status:
             AuditLog.objects.create(
-                issue=updated_issue,
+                issue=issue,
                 user=self.request.user,
-                action="Updated",
-                details=_("Status changed from '%(old)s' to '%(new)s'") % {
-                    'old': old_status,
-                    'new': updated_issue.status
-                },
-                previous_state=old_state,
-                new_state=self._get_issue_state(updated_issue)
+                action="Status Updated",
+                details=f"Status changed from '{old_status}' to '{issue.status}' by {self.request.user.email}"
             )
-
-def _get_issue_state(self, issue):
-        """Helper to get JSON representation of issue state"""
-        return {
-            'status': issue.status,
-            'assigned_to': str(issue.assigned_to) if issue.assigned_to else None,
-            'resolution_notes': issue.resolution_notes,
-            'last_updated': str(issue.updated_at)
-        }
 
 # Assign Issue View
 class AssignIssueView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, issue_id):
-        issue = get_object_or_404(
-            Issue.objects.select_related('department'),
-            id=issue_id
-        )
-
-        # Validate assignee
-        assigned_to_id = request.data.get('assigned_to')
-        if not assigned_to_id:
+        if request.user.role not in ['LECTURER', 'REGISTRAR', 'ADMIN']:
             return Response(
-                {"detail": _("Assignee ID is required.")},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-            assigned_to = get_object_or_404(
-            CustomUser,
-            id=assigned_to_id,
-            role__in=[CustomUser.Role.LECTURER, CustomUser.Role.REGISTRAR]
-        )
-
-         # Check if assigner has permission for this department
-        if (request.user.role == CustomUser.Role.LECTURER and 
-            issue.department.head != request.user):
-            return Response(
-                {"detail": _("You can only assign issues in your department.")},
+                {"detail": "Only lecturers, registrars, or admins can assign issues."},
                 status=status.HTTP_403_FORBIDDEN
             )
-
-            # Capture old state before update
-        old_state = {
-            'assigned_to': str(issue.assigned_to) if issue.assigned_to else None,
-            'status': issue.status
-        }
-
-        # Perform assignment
+        
+        issue = get_object_or_404(Issue, id=issue_id)
+        assigned_to_id = request.data.get('assigned_to')
+        assigned_to = get_object_or_404(
+            CustomUser,
+            id=assigned_to_id,
+            role__in=['LECTURER', 'REGISTRAR']
+        )
+        
         issue.assigned_to = assigned_to
-        issue.status = Issue.Status.ASSIGNED
+        issue.status = 'assigned'
         issue.save()
-
-        # Create audit log with state changes
+        
         AuditLog.objects.create(
             issue=issue,
             user=request.user,
             action="Assigned",
-            details=_("Assigned to %(email)s") % {'email': assigned_to.email},
-            previous_state=old_state,
-            new_state={
-                'assigned_to': str(assigned_to),
-                'status': issue.status
-            }
+            details=f"Issue assigned to {assigned_to.email} by {request.user.email}"
         )
-
-        # Create notifications
         Notification.objects.create(
             user=assigned_to,
-            message=_("You've been assigned issue '%(title)s'") % {'title': issue.title}
+            message=f"You have been assigned issue '{issue.title}' by {request.user.email}"
         )
-
-        if issue.user != request.user:  # Don't notify yourself
-            Notification.objects.create(
-                user=issue.user,
-                message=_("Your issue '%(title)s' was assigned for resolution") % {
-                    'title': issue.title
-                }
-            )
-            
         return Response(
-            {"detail": _("Issue assigned successfully.")},
+            {"detail": "Issue assigned successfully."},
             status=status.HTTP_200_OK
         )
-        
+    
 class ResolveIssueView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
@@ -207,5 +118,3 @@ class ResolveIssueView(APIView):
             message=f"Your issue '{issue.title}' has been resolved by {request.user.email}"
         )
         return Response({"detail": "Issue resolved successfully."}, status=200) 
-
-
