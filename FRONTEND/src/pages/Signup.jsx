@@ -79,7 +79,7 @@ function Signup() {
           toast.success("Signup successful");
           login(response.data); // Call the login function with the user data
           localStorage.setItem("isLoggedIn", "true");
-          navigate(`/dashboards/${role}/profile`);
+          navigate(`/dashboards/${role}/${role}-dashboard`);
         } else {
           toast.error("Unexpected response. Check logs.");
         }

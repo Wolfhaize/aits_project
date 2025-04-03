@@ -1,4 +1,4 @@
-/* Dashboard Styles */
+/* student-dashboard Styles */
 :root {
   --primary: #2A5C8D;
   --secondary: #3F88C5;
@@ -25,36 +25,36 @@ body {
 }
 
 /* Main Container */
-.dashboard-container {
+.student-dashboard-container {
   max-width: 100%;
   margin: auto;
   padding: 0 40px;
-  margin-left: -5%; /* Adjusted this margin */
+  margin-left: 50%; /* Adjusted this margin */
 }
 
 /* Header Section */
-.dashboard-header {
+.student-dashboard-header {
   text-align: center;
   margin-bottom: 3rem;
   padding: 2rem 0;
   border-bottom: 2px solid var(--border);
-  margin-left: 35%;
+  margin-left: 20%; /* Adjusted this margin to center the header */
 }
 
-.dashboard-title {
+.student-dashboard-title {
   font-size: 2.8rem;
   font-weight: 700;
   color: var(--primary);
   margin-bottom: 0.75rem;
 }
 
-.dashboard-subtitle {
+.student-dashboard-subtitle {
   font-size: 1.1rem;
   color: #6B7280;
 }
 
 /* Main Content Layout */
-.dashboard-content {
+.student-dashboard-content {
   display: grid;
   grid-template-columns: 3fr 1fr;
   gap: 3rem;
@@ -63,7 +63,7 @@ body {
 }
 
 /* Left Column - Form Section */
-.dashboard-section {
+.student-dashboard-section {
   background: rgb(248, 248, 248);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
@@ -73,7 +73,7 @@ body {
 }
 
 .card {
-  width: 100%; 
+  width: 80%; 
 }
 
 .card-header {
@@ -89,7 +89,7 @@ body {
 }
 
 /* Right Column Layout */
-.dashboard-right-column {
+.student-dashboard-right-column {
   display: grid;
   gap: 2.5rem;
   position: sticky;
@@ -124,22 +124,22 @@ body {
 
 /* Responsive Design */
 @media (max-width: 1400px) {
-  .dashboard-container {
+  .student-dashboard-container {
     padding: 0 30px;
   }
   
-  .dashboard-content {
+  .student-dashboard-content {
     grid-template-columns: 2fr 1fr;
     gap: 2rem;
   }
 }
 
 @media (max-width: 1200px) {
-  .dashboard-content {
+  .student-dashboard-content {
     grid-template-columns: 1fr;
   }
   
-  .dashboard-right-column {
+  .student-dashboard-right-column {
     grid-column: 1;
     position: static;
     grid-template-columns: repeat(2, 1fr);
@@ -148,23 +148,23 @@ body {
 }
 
 @media (max-width: 768px) {
-  .dashboard-container {
+  .student-dashboard-container {
     padding: 0 20px;
   }
   
-  .dashboard-header {
+  .student-dashboard-header {
     margin-bottom: 2rem;
   }
   
-  .dashboard-title {
+  .student-dashboard-title {
     font-size: 2rem;
   }
   
-  .dashboard-right-column {
+  .student-dashboard-right-column {
     grid-template-columns: 1fr;
   }
   
-  .dashboard-section {
+  .student-dashboard-section {
     padding: 1.5rem;
   }
 }

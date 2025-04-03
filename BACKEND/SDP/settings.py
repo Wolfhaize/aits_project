@@ -32,6 +32,9 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+
+
+
 ROOT_URLCONF = "SDP.urls"
 
 TEMPLATES = [

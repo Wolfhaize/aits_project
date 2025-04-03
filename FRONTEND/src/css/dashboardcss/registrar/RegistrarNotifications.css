@@ -23,13 +23,17 @@
       line-height: 1.6;
       margin-left: -75%;
     }
+
+    .reg-notifs-container {
+      margin-left: 50%;
+    }
   
-    .heading-notifs h1{
-      margin-left: 25%;
+    .reg-heading-notifs h1{
+      margin-left: 35%;
   
     }
   
-    .heading-notifs p{
-      margin-left: 15px;
+    .reg-heading-notifs p{
+      margin-left: 0;
   
     }
