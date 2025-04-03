@@ -11,12 +11,12 @@ class SdpappConfig(AppConfig):
 
     #     departments = ["Computer Science", "Business Administration"]
         
-    #     for dept_name in departments:
-    #         try:
-    #             dept, created = Department.objects.get_or_create(name=dept_name)
-    #             if created:
-    #                 print(f"Created department: {dept_name}")
-    #             else:
-    #                 print(f"Department already exists: {dept_name}")
-    #         except IntegrityError:
-    #             print(f"Error creating department: {dept_name}")  # Handle potential conflicts
+        for dept_name in departments:
+            try:
+                dept, created = Department.objects.get_or_create(name=dept_name)
+                if created:
+                    print(f"Created department: {dept_name}")
+                else:
+                    print(f"Department already exists: {dept_name}")
+            except IntegrityError:
+                print(f"Error creating department: {dept_name}")  # Handle potential conflicts
