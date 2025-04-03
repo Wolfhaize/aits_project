@@ -1,64 +1,69 @@
-import { useState, useEffect } from "react";
+// import { useState, useEffect } from "react";
 import DashboardLayout from "../../../layouts/DashboardLayout";
+import "../../../css/dashboardcss/registrar/RegistrarProfile.css"
 //declaring state for the registrar's profile by defining a component(RegistrarProfile)
 function RegistrarProfile() {
-  const [registrar, setRegistrar] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    registrarId: "",
-  });
+  // const [registrar, setRegistrar] = useState({
+  //   firstName: "",
+  //   lastName: "",
+  //   email: "",
+  //   registrarId: "",
+  // });
 
-  useEffect(() => {
-    // Fetching registrar's information depending on what was submitted when signing in 
-    const fetchProfile = async () => {
-      try {
-        const token = localStorage.getItem("authToken"); //Retrieving authentication token from the local storage
-        const response = await fetch("http://localhost:8000/api/profile/", { //sending a get request to that API to fetch profile data
-          method: "GET", 
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
+  // useEffect(() => {
+  //   // Fetching registrar's information depending on what was submitted when signing in 
+  //   const fetchProfile = async () => {
+  //     try {
+  //       const token = localStorage.getItem("authToken"); //Retrieving authentication token from the local storage
+  //       const response = await fetch("http://localhost:8000/api/profile/", { //sending a get request to that API to fetch profile data
+  //         method: "GET", 
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //           "Content-Type": "application/json",
+  //         },
+  //       });
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch profile data");
-        }
+  //       if (!response.ok) {
+  //         throw new Error("Failed to fetch profile data");
+  //       }
 
-        const registrarinfo = await response.json();//converting the response data into js object and converting response from API into json data
-        setRegistrar({ //updating the registrar state
-          firstName: registrarinfo.first_name,
-          lastName: registrarinfo.last_name,
-          email: registrarinfo.email,
-          registrarId: registrarinfo.registrar_id,
-        });
-      } catch (error) {
-        console.error("Error fetching profile:", error);
-      }
-    };
+  //       const registrarinfo = await response.json();//converting the response data into js object and converting response from API into json data
+  //       setRegistrar({ //updating the registrar state
+  //         firstName: registrarinfo.first_name,
+  //         lastName: registrarinfo.last_name,
+  //         email: registrarinfo.email,
+  //         registrarId: registrarinfo.registrar_id,
+  //       });
+  //     } catch (error) {
+  //       console.error("Error fetching profile:", error);
+  //     }
+  //   };
 
-    fetchProfile();
-  }, []);
+  //   fetchProfile();
+  // }, []);
 
   return (
     <DashboardLayout>
       <div style={styles.container}>
+        <div className="heading-prof">
         <h1>Registrar Profile</h1>
-        <div style={styles.profileInfo}>
+
+        </div>
+        
+        {/* <div style={styles.profileInfo}>
           <p><strong>First Name:</strong> {registrar.firstName}</p>
           <p><strong>Last Name:</strong> {registrar.lastName}</p>
           <p><strong>Email:</strong> {registrar.email}</p>
           <p><strong>Registrar ID:</strong> {registrar.registrarId}</p>
-        </div>
-      <div>
+        </div> */}
+      {/* <div>
         <h1>Change Password</h1>
         <p>To change password fill these fields;</p>
         <p>Old Password:<span contentEditable="true" class = "editable"></span></p>
         <p>New Password:<span contentEditable = "true" class="editable"></span></p>
         <p>Confirm Password:<span contentEditable="true" class = "editable"></span></p>
 
-      </div>
+      </div> */}
       </div>
     </DashboardLayout>
   );

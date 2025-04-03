@@ -1,9 +1,9 @@
-import { React } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-// import "./ResetPassword.css";
-
+import { Form, Button } from "react-bootstrap";
+import "../css/pagecss/ResetPassword.css"; 
 
 const ResetPassword = () => {
   const [searchParams] = useSearchParams();
@@ -11,47 +11,100 @@ const ResetPassword = () => {
   const id = searchParams.get("id");
   const token = searchParams.get("token");
 
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!newPassword) newErrors.newPassword = "New password is required";
+    else if (newPassword.length < 6)
+      newErrors.newPassword = "Password must be at least 6 characters";
+    if (newPassword !== confirmPassword)
+      newErrors.confirmPassword = "Passwords do not match";
+    return newErrors;
+  };
+
   const handleResetPassword = async (ev) => {
     ev.preventDefault();
-    const newpassword = ev.target.newpassword.value;
-    const confirmpassword = ev.target.confirmpassword.value;
-    if (newpassword !== confirmpassword)
-      toast.error("Passwords do not match !");
-    const formData = { id: id, token: token, password: newpassword };
-    const res = await axios.post('http://localhost:8000/api/resetPassword', formData);
-    const data = res.data;
-    if (data.success === true) {
-      toast.success(data.message);
-      navigate("/login");
-    } else toast.error(data.message);
+    const formErrors = validateForm();
+    if (Object.keys(formErrors).length > 0) {
+      setErrors(formErrors);
+      return;
+    }
+
+    try {
+      const formData = { id, token, password: newPassword };
+      const res = await axios.post("http://localhost:8000/api/resetPassword", formData);
+      const data = res.data;
+      
+      if (data.success) {
+        toast.success(data.message);
+        navigate("/login");
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.error("Reset Password Error:", error);
+      toast.error("Something went wrong. Please try again.");
+    }
   };
 
   return (
     <div className="reset-password-container">
       <div className="reset-password-box">
         <h5 className="reset-password-title">Reset Password</h5>
-        <form className="reset-password-form" onSubmit={handleResetPassword}>
-          <div>
-            <label htmlFor="newpassword" className="reset-password-label">
+        <Form className="reset-password-form" onSubmit={handleResetPassword}>
+          <Form.Group className="reset-password-group">
+            <Form.Label htmlFor="newpassword" className="reset-password-label">
               New Password
-            </label>
-            <input id="newpassword" name="newpassword" type="password" placeholder="New Password" required
-              className="reset-password-input" />
-          </div>
-          <div>
-            <label htmlFor="confirmpassword" className="reset-password-label">
+            </Form.Label>
+            <Form.Control
+              id="newpassword"
+              name="newpassword"
+              type="password"
+              placeholder="New Password"
+              required
+              className="reset-password-input"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              isInvalid={!!errors.newPassword}
+            />
+            <Form.Control.Feedback type="invalid">
+              {errors.newPassword}
+            </Form.Control.Feedback>
+          </Form.Group>
+
+          <Form.Group className="reset-password-group">
+            <Form.Label htmlFor="confirmpassword" className="reset-password-label">
               Confirm Password
-            </label>
-            <input id="confirmpassword" name="confirmpassword" type="password" placeholder="Confirm Password" required
-              className="reset-password-input" />
-          </div>
-          <button type="submit" className="reset-password-button">
+            </Form.Label>
+            <Form.Control
+              id="confirmpassword"
+              name="confirmpassword"
+              type="password"
+              placeholder="Confirm Password"
+              required
+              className="reset-password-input"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              isInvalid={!!errors.confirmPassword}
+            />
+            <Form.Control.Feedback type="invalid">
+              {errors.confirmPassword}
+            </Form.Control.Feedback>
+          </Form.Group>
+
+          <Button type="submit" className="reset-password-button">
             Submit
-          </button>
-          <p className="reset-password-text">
-            Not yet registered? <a href="signup" className="reset-password-link">Register Here</a>
-          </p>
-        </form>
+          </Button>
+        </Form>
+        <p className="reset-password-text">
+          Not yet registered?{" "}
+          <a href="/signup" className="reset-password-link">
+            Register Here
+          </a>
+        </p>
       </div>
     </div>
   );

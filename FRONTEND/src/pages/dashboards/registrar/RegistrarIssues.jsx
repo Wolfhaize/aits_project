@@ -65,8 +65,11 @@ function RegistrarIssues() {
   return (
     <DashboardLayout role="registrar">
       <div>
+        <div className="heading-issues">
         <h1>Registrar Issues</h1>
         <p>View and manage all academic issues.</p>
+        </div>
+        
 
         {/* Display issues in a table */}
         {issues.length > 0 ? (
