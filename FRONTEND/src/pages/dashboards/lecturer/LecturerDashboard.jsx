@@ -1,7 +1,7 @@
 import DashboardLayout from "../../../layouts/DashboardLayout";
 import IssueCard from "../../../components/IssueCard";
 import { useState } from "react";
-import "../../../css/pagecss/lecturerdasboards/LecturerDashboard.css";
+// import "../../../css/dashboardcss/lecturer/LecturerDashboard.css"
 
 
 

@@ -10,8 +10,8 @@ function Home() {
           <h1>Welcome to the Academic Issue Tracking System</h1>
           <p>Track and resolve academic record-related issues with ease.</p>
           <div className="auth-buttons">
-            <Link to="/signup" className="btn signup-btn">Sign Up</Link>
-            <Link to="/login" className="btn login-btn">Log In</Link>
+            <Link to="/signup" className="btn btn-home signup-btn">Sign Up</Link>
+            <Link to="/login" className="btn btn-home login-btn">Log In</Link>
           </div>
         </div>
       </div>
