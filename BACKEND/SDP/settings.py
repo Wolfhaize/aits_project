@@ -33,8 +33,6 @@ MIDDLEWARE = [
 ]
 
 
-
-
 ROOT_URLCONF = "SDP.urls"
 
 TEMPLATES = [
