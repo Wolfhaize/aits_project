@@ -1,6 +1,6 @@
 import { useState } from "react";
 import DashboardLayout from "../../../layouts/DashboardLayout";
-import "../../../css/dashboard.css"
+import "../../../css/dashboardcss/student/StudentProfile.css";
 
 
 function StudentProfile() {
@@ -9,8 +9,8 @@ function StudentProfile() {
 
   return (
     <DashboardLayout isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}>
-      <div>
-        <div className="heading">
+      <div className="student-profile-container">
+        <div className="student-heading">
         <h1>Student Profile Page</h1>
         <p>View and update your profile details here.</p>
         </div>

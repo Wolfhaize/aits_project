@@ -24,12 +24,17 @@
       margin-left: -75%;
     }
   
-    .headings h1{
-      margin-left: 32% !important;
-  
+    .student-issues-container {
+      max-width: 100%;
+      margin: auto;
+      padding: 0 40px;
+      margin-left: 55%; /* Adjusted this margin */
+    }
+
+    .student-headings h1 {
+      margin-left: 40%;
     }
   
-    .headings p{
+    .student-headings p {
       margin-left: 0;
-  
     }

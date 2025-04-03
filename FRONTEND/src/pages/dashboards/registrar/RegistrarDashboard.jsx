@@ -65,9 +65,11 @@ const RegistrarDashboard = () => {
 
   return (
     <DashboardLayout role="registrar">
-      <div className="heading-dash">
+      <div className="reg-dashboard-container">
+    
+        <div className="reg-heading-dash">
         <h2>Registrar Dashboard</h2>
-      </div>
+      
 
       <div style={{ display: "flex", gap: "20px", marginTop: "20px" }}>
         {/* Total Issues */}
@@ -88,6 +90,12 @@ const RegistrarDashboard = () => {
           <p>{pendingIssues.length}</p>
         </div>
       </div>
+        
+      </div>
+
+      </div>
+     
+      
     </DashboardLayout>
   );
 };

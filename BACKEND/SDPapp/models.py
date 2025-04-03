@@ -12,7 +12,7 @@ class Department(models.Model):
     )
 
     def __str__(self):
-        return self.name
+        return self.nameb
 
 class Issue(models.Model):
     STATUS_CHOICES = [

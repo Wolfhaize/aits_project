@@ -29,17 +29,17 @@ const StudentDashboard = () => {
 
   return (
     <DashboardLayout role="student">
-      <div className="dashboard-container">
+      <div className="student-dashboard-container">
         {/* Header Section */}
-        <header className="dashboard-header">
-          <h1 className="dashboard-title">Student Dashboard</h1>
-          <p className="dashboard-subtitle">Submit and track academic issues</p>
+        <header className="student-dashboard-header">
+          <h1 className="student-dashboard-title">Student Dashboard</h1>
+          <p className="student-dashboard-subtitle">Submit and track academic issues</p>
         </header>
 
         {/* Main Content Grid */}
-        <div className="dashboard-content">
+        <div className="student-dashboard-content">
           {/* Left Column - Issue Form */}
-          <section className="dashboard-section">
+          <section className="student-dashboard-section">
             <div className="card">
              
               <div className="card-body">
@@ -49,9 +49,9 @@ const StudentDashboard = () => {
           </section>
 
           {/* Right Column - Issues and Notifications */}
-          <div className="dashboard-right-column">
+          <div className="student-dashboard-right-column">
             {/* Ongoing Issues */}
-            <section className="dashboard-section">
+            <section className="student-dashboard-section">
               <div className="card">
                 <div className="card-header">
                   <h2 className="card-title">Ongoing Issues</h2>
@@ -80,7 +80,7 @@ const StudentDashboard = () => {
             </section>
 
             {/* Notifications */}
-            <section className="dashboard-section">
+            <section className="student-dashboard-section">
               <div className="card">
                 <div className="card-header">
                   <h2 className="card-title">Recent Notifications</h2>

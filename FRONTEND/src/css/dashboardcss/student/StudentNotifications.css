@@ -23,13 +23,20 @@
       line-height: 1.6;
       margin-left: -75%;
     }
+
+    .student-notifications-container {
+      max-width: 100%;
+      margin: auto;
+      padding: 0 40px;
+      margin-left: 55%; /* Adjusted this margin */
+    }
   
-    .heading h1{
-      margin-left: -50%;
+    .student-notifs-heading h1{
+      margin-left: 27%;
   
     }
   
-    .heading p{
+    .student-notifs-heading p{
       margin-left: 0 !important;
   
     }

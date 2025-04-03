@@ -121,12 +121,10 @@ p.success {
     margin-left: -75%;
   }
 
-  .heading-prof h1{
-    margin-left: 25%;
-
+  .reg-prof-container {
+   margin-left: 55%;
   }
 
-  .heading-prof p{
-    margin-left: 15px;
-
+  .reg-prof-heading {
+    text-align: center;
   }

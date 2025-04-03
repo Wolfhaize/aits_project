@@ -83,8 +83,8 @@ function StudentIssues() {
 
   return (
     <DashboardLayout>
-      <div>
-        <div className="headings">
+      <div className="student-issues-container">
+        <div className="student-headings">
         <h1>Student Issues</h1>
         <p>View and manage academic issues.</p>
 
