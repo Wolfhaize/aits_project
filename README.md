@@ -1,4 +1,6 @@
 - there is still a lot that needs to be done even with this point reached
+backendurl = "https://rita004.pythonanywhere.com/api/"
+
 
 # AITS Project
 
