@@ -9,7 +9,7 @@
 | Akankunda Rita        | 24/U/03072/PS       |
 | Nakawunde Cana        | 24/U/08407/PS       |
 | Ayesiga Calvin Rodney | 24/U/04101/PS       |
-| nicole mariah | 24/U/04101/PS       |
+| Nabasirye Nicole      | 23/U/0946       |
 
 backendurl = "https://rita004.pythonanywhere.com/api/"
 
