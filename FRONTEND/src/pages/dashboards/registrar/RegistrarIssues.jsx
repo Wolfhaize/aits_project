@@ -64,8 +64,8 @@ function RegistrarIssues() {
 
   return (
     <DashboardLayout role="registrar">
-      <div>
-        <div className="heading-issues">
+      <div className="reg-issues-container">
+        <div className="reg-issues-heading">
         <h1>Registrar Issues</h1>
         <p>View and manage all academic issues.</p>
         </div>

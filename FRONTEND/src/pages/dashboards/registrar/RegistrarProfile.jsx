@@ -44,8 +44,8 @@ function RegistrarProfile() {
 
   return (
     <DashboardLayout>
-      <div style={styles.container}>
-        <div className="heading-prof">
+      <div className="reg-prof-container">
+        <div className="reg-prof-heading">
         <h1>Registrar Profile</h1>
 
         </div>

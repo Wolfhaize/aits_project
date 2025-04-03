@@ -32,10 +32,17 @@
       margin: 10px 0; /* Space between each box vertically */
     }
   }
+
+  .reg-dashboard-container {
+    max-width: 100%;
+    margin: auto;
+    padding: 0 40px;
+    margin-left: 55%; /* Adjusted this margin */
+  }
   
 
-  .heading-dash h2{
-    margin-left: 0;
+  .reg-heading-dash h2{
+    margin-left: -20%;
 
   }
 
