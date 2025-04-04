@@ -4,14 +4,15 @@
 
 | Name                  | Registration Number |
 |-----------------------|---------------------|
-| Kato Adrian Mugerwa   | 24/U/25909/PS       |
-| Tino Zoe Ramona       | 24/U/11508/PS       |
-| Akankunda Rita        | 24/U/03072/PS       |
-| Nakawunde Cana        | 24/U/08407/PS       |
-| Ayesiga Calvin Rodney | 24/U/04101/PS       |
-| Nabasirye Nicole      | 23/U/0946       |
+| [Kato Adrian Mugerwa](https://github.com/Wolfhaize)   | 24/U/25909/PS       |
+| [Tino Zoe Ramona](https://github.com/Zoe691)       | 24/U/11508/PS       |
+| [Akankunda Rita](https://github.com/RitaAkankunda)        | 24/U/03072/PS       |
+| [Nakawunde Cana](https://github.com/khana-kaye)        | 24/U/08407/PS       |
+| [Ayesiga Calvin Rodney](https://github.com/creeper-byte) | 24/U/04101/PS       |
+| [Nabasirye Nicole](https://github.com/NicoleMariah186)      | 23/U/0946       |
 
-backendurl = "https://rita004.pythonanywhere.com/api/"
+frontendurl = "https://aits-group-c.netlify.app/"
+backendurl = "https://rita004.pythonanywhere.com/admin"
 
 
 
