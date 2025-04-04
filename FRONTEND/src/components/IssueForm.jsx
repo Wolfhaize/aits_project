@@ -121,7 +121,7 @@ const IssueForm = () => {
           }}
           required
         >
-          <option value="" disabled>Select Department</option>
+          <option value="" disabled>Select Programme</option>
           {departmentOptions.map((dept) => (
             <option key={dept.id} value={dept.id}>
               {dept.name}

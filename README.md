@@ -1,6 +1,19 @@
-- there is still a lot that needs to be done even with this point reached
+# AITS PROJECT
 
-# AITS Project
+## Group C Members
+
+| Name                  | Registration Number |
+|-----------------------|---------------------|
+| Kato Adrian Mugerwa   | 24/U/25909/PS       |
+| Tino Zoe Ramona       | 24/U/11508/PS       |
+| Akankunda Rita        | 24/U/03072/PS       |
+| Nakawunde Cana        | 24/U/08407/PS       |
+| Ayesiga Calvin Rodney | 24/U/04101/PS       |
+| Nabasirye Nicole      | 23/U/0946       |
+
+backendurl = "https://rita004.pythonanywhere.com/api/"
+
+
 
 This project is a web application for managing academic issues. It currently supports:
 
