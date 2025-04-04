@@ -5,11 +5,11 @@ class SdpappConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
     name = "SDPapp"
 
-    # def ready(self):
-    #     """Ensure default departments exist and update them if needed."""
-    #     from SDPapp.models import Department  # Avoid circular imports
+   # def ready(self):
+    #    """Ensure default departments exist and update them if needed."""
+     #   from SDPapp.models import Department  # Avoid circular imports
 
-    #     departments = ["Computer Science", "Business Administration"]
+      #  departments = ["Computer Science", "Business Administration"]
         
         for dept_name in departments:
             try:
