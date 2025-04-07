@@ -16,7 +16,7 @@ def notify_issue_update(issue_id):
         recipient = issue.assigned_to.email if issue.assigned_to else None
         
         if recipient:
-            Notification.send_notification_email(subject, message, recipient)
+            send_notification_email(subject, message, recipient)
             Notification.objects.create(user=issue.assigned_to, message=message) #Create in-app notification
             
     except Issue.DoesNotExist:
