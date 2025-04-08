@@ -41,7 +41,7 @@ const IssueForm = () => {
         course_code: courseCode,
         department: parseInt(department), // Convert to number
         student_number: user.student_number,
-        user: 1,
+        user: user.id,
         assigned_to: null,
         status: "open",
       };

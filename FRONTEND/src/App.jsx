@@ -26,7 +26,7 @@ import LecturerProfile from "./pages/dashboards/lecturer/LecturerProfile";
 import RegistrarIssues from "./pages/dashboards/registrar/RegistrarIssues";
 import RegistrarNotifications from "./pages/dashboards/registrar/RegistrarNotifications";
 import RegistrarProfile from "./pages/dashboards/registrar/RegistrarProfile";
-import IssueDetails from "./pages/dashboards/registrar/IssueDetails";
+import Allocate from "./pages/dashboards/registrar/Allocate";
 
 function App() {
   return (
@@ -52,6 +52,8 @@ function App() {
               <Route path="/dashboards/student/issues" element={<StudentIssues />} />
               <Route path="/dashboards/lecturer/issues" element={<LecturerIssues />} />
               <Route path="/dashboards/registrar/issues" element={<RegistrarIssues />} />
+              <Route path="/registrar/issues/:id"element={<Allocate/>} />
+              
 
               {/* Role-specific Notifications */}
               <Route path="/dashboards/student/notifications" element={<StudentNotifications />} />
@@ -62,7 +64,7 @@ function App() {
               <Route path="/dashboards/student/profile" element={<StudentProfile />} />
               <Route path="/dashboards/lecturer/profile" element={<LecturerProfile />} />
               <Route path="/dashboards/registrar/profile" element={<RegistrarProfile />} />
-              <Route path="/dashboards/registrar/issues/:id" element={<IssueDetails />} />
+              
             </Route>
           </Routes>
         </main>

@@ -4,6 +4,7 @@ import { useAuth } from "../../../contexts/AuthContext"; // Import useAuth
 import DashboardLayout from "../../../layouts/DashboardLayout";
 import "../../../css/dashboard.css";
 import "../../../css/dashboardcss/registrar/RegistrarIssues.css";
+import { useNavigate } from "react-router-dom";
 
 
 function RegistrarIssues() {
@@ -11,6 +12,7 @@ function RegistrarIssues() {
   const [loading, setLoading] = useState(true); // Loading state
   const [error, setError] = useState(""); // Error handling state
   const { user } = useAuth(); // Get logged-in user
+  
 
   // Fetch all issues (registrar has full access)
   useEffect(() => {
@@ -83,6 +85,8 @@ function RegistrarIssues() {
                 <th>Category</th>
                 <th>Status</th>
                 <th>Created At</th>
+                <th>View</th>
+                <th>Delete</th>
               </tr>
             </thead>
             <tbody>
@@ -95,6 +99,12 @@ function RegistrarIssues() {
                   <td>{issue.category}</td>
                   <td>{issue.status}</td>
                   <td>{new Date(issue.created_at).toLocaleDateString()}</td>
+                  <td>
+                    <button onClick={()=>handleViewClick(issue.id)}>View</button>
+                  </td>
+                  <td>
+                    <button onClick={()=>handleDeleteClick(issue.id)}>Delete</button>
+                  </td>
                 </tr>
               ))}
             </tbody>
