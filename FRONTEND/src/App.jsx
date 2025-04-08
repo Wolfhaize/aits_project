@@ -25,7 +25,6 @@ import LecturerProfile from "./pages/dashboards/lecturer/LecturerProfile";
 
 import RegistrarIssues from "./pages/dashboards/registrar/RegistrarIssues";
 import RegistrarNotifications from "./pages/dashboards/registrar/RegistrarNotifications";
-import RegistrarProfile from "./pages/dashboards/registrar/RegistrarProfile";
 import Allocate from "./pages/dashboards/registrar/Allocate";
 
 function App() {
@@ -63,7 +62,7 @@ function App() {
               {/* Role-specific Profiles */}
               <Route path="/dashboards/student/profile" element={<StudentProfile />} />
               <Route path="/dashboards/lecturer/profile" element={<LecturerProfile />} />
-              <Route path="/dashboards/registrar/profile" element={<RegistrarProfile />} />
+              
               
             </Route>
           </Routes>
