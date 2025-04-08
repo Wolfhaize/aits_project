@@ -6,6 +6,7 @@ import "../css/componentcss/IssueForm.css";
 const departmentOptions = [
   { id: 1, name: "Computer Science" },
   { id: 2, name: "Business Administration" },
+  { id: 3, name: "Engineering" },
 ];
 
 const courseOptions = {
