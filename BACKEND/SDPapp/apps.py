@@ -9,7 +9,7 @@ class SdpappConfig(AppConfig):
         """Ensure default departments exist and update them if needed."""
         from SDPapp.models import Department  # Avoid circular imports
 
-        departments = ["Computer Science", "Business Administration","Engineering"]
+        departments = ["Computer Science", "Business Administration"]
         
         for dept_name in departments:
             try:
