@@ -5,7 +5,12 @@ from SDPapp.models import Issue
 
 @staticmethod
 def send_notification_email(subject, message, recipient_list):
-    send_mail(subject, message, settings.EMAIL_HOST_USER, recipient_list)
+    send_mail(
+        subject,
+        message,
+        settings.EMAIL_HOST_USER,
+        recipient_list
+        )
         
 def notify_issue_update(issue_id):
     try:
