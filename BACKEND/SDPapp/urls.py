@@ -10,5 +10,5 @@ urlpatterns = [
     path('', include(router.urls)),
     path('issues/<int:issue_id>/assign/', views.AssignIssueView.as_view(), name='assign-issue'),
     path('issues/<int:issue_id>/resolve/', views.ResolveIssueView.as_view(), name='resolve-issue'),
-    
+    path('',include('accounts.urls',namespace='accounts')),
     ]

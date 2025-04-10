@@ -1,6 +1,6 @@
 - there is still a lot that needs to be done even with this point reached
 
-# AITS Project
+ # AITS Project
 
 This project is a web application for managing academic issues. It currently supports:
 
