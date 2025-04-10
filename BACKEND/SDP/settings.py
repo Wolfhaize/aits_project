@@ -56,8 +56,8 @@ WSGI_APPLICATION = "SDP.wsgi.application"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'SdpDB',
-        'USER': 'Nicole',
+        'NAME': 'SdpDB',                           # Your PostgreSQL database name
+        'USER': 'Nicole',                          
         'PASSWORD': '2003',
         'HOST': 'localhost',
         'PORT': '5432',
