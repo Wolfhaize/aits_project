@@ -59,7 +59,7 @@ DATABASES = {
         'NAME': 'SdpDB',                           # Your PostgreSQL database name
         'USER': 'Nicole',                          # Your PostgreSQL username
         'PASSWORD': '2003',                        # Your PostgreSQL password
-        'HOST': 'localhost',
+        'HOST': 'localhost',                       # Usually 'localhost' if running locally
         'PORT': '5432',
     }
 }
