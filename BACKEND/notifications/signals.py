@@ -13,6 +13,11 @@ def notify_user_on_issue_update(sender, instance, created, **kwargs):
 
         if instance.assigned_to:
             recipient_email = instance.assigned_to.email
-            send_mail(subject, message, settings.EMAIL_HOST_USER, [recipient_email])
+            send_mail(
+                subject,
+                message,
+                settings.EMAIL_HOST_USER,
+                [recipient_email]
+                )
 
         Notification.objects.create(user=instance.assigned_to, message=message) #This creates in-app notifications
