@@ -39,8 +39,6 @@ class CustomUser (AbstractUser ):
     student_number = models.CharField(max_length=15, blank=True, null=True, unique=True)
     lecturer_number = models.CharField(max_length=15, blank=True, null=True, unique=True)
     registrar_number = models.CharField(max_length=15, blank=True, null=True, unique=True)
-   
-
     objects = CustomUserManager()
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
