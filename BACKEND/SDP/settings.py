@@ -55,24 +55,15 @@ WSGI_APPLICATION = "SDP.wsgi.application"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',  # ← Must be exact
-        'NAME': 'SdpDB',      # Your PostgreSQL DB name
-        'USER': 'Nicole',      # Your PostgreSQL username
-        'PASSWORD': '2003',       # Your PostgreSQL password
-        'HOST': 'localhost',               # Usually 'localhost' if running locally
-        'PORT': '5432',                    # Default PostgreSQL port
-    }
-}
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'SdpDB',                           # Your PostgreSQL database name
-        'USER': 'Nicole',                          # Your PostgreSQL username
-        'PASSWORD': '2003',                        # Your PostgreSQL password
-        'HOST': 'localhost',                       # Usually 'localhost' if running locally
+        'NAME': 'SdpDB',                            # Your PostgreSQL DB name
+        'USER': 'Nicole',                           # Your PostgreSQL username
+        'PASSWORD': '2003',                         # Your PostgreSQL password
+        'HOST': 'localhost',                        # Usually 'localhost' if running locally
         'PORT': '5432',                             # Default PostgreSQL port
     }
 }
+
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
