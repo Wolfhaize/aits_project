@@ -52,6 +52,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "SDP.wsgi.application"
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',  # ← Must be exact
