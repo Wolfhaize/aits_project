@@ -23,9 +23,11 @@ import LecturerIssues from "./pages/dashboards/lecturer/LecturerIssues";
 import LecturerNotifications from "./pages/dashboards/lecturer/LecturerNotifications";
 import LecturerProfile from "./pages/dashboards/lecturer/LecturerProfile";
 
+
 import RegistrarIssues from "./pages/dashboards/registrar/RegistrarIssues";
 import RegistrarNotifications from "./pages/dashboards/registrar/RegistrarNotifications";
 import Allocate from "./pages/dashboards/registrar/Allocate";
+import RegistrarProfile from "./pages/dashboards/registrar/RegistrarProfile";
 
 function App() {
   return (
@@ -62,6 +64,7 @@ function App() {
               {/* Role-specific Profiles */}
               <Route path="/dashboards/student/profile" element={<StudentProfile />} />
               <Route path="/dashboards/lecturer/profile" element={<LecturerProfile />} />
+              <Route path="/dashboards/registrar/profile" element={<RegistrarProfile/>}/>
               
               
             </Route>
