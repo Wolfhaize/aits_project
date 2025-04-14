@@ -44,8 +44,8 @@ function RegistrarNotifications() {
 
   return (
     <DashboardLayout>
-      <div>
-        <div className="heading-notifs">
+      <div className="reg-notifs-container">
+        <div className="reg-heading-notifs">
         <h1>Registrar Notifications</h1>
         <p>Check your recent notifications here.</p>
         {/* <p>Status: {status}</p> */}

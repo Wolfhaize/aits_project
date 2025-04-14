@@ -32,6 +32,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+
 ROOT_URLCONF = "SDP.urls"
 
 TEMPLATES = [
@@ -52,12 +53,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "SDP.wsgi.application"
 
+
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',  # ← Must be exact
+        'NAME': 'Sdpdb',                            # Your PostgreSQL DB name
+        'USER': 'nicole',                           # Your PostgreSQL username
+        'PASSWORD': '2003',                         # Your PostgreSQL password
+        'HOST': 'localhost',                        # Usually 'localhost' if running locally
+        'PORT': '5432',                             # Default PostgreSQL port
     }
 }
+
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
@@ -109,7 +117,13 @@ CORS_ALLOW_METHODS = [
 
 AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TILS = True
+EMAIL_HOST_USER = 'your_email@gmail.com'
+EMAIL_PASSWORD = 'your_password'
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 LOGIN_REDIRECT_URL = 'accounts:home'
 LOGOUT_REDIRECT_URL = 'accounts:login'

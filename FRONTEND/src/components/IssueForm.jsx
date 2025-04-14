@@ -41,7 +41,7 @@ const IssueForm = () => {
         course_code: courseCode,
         department: parseInt(department), // Convert to number
         student_number: user.student_number,
-        user: 1,
+        user: user.id,
         assigned_to: null,
         status: "open",
       };
@@ -121,7 +121,7 @@ const IssueForm = () => {
           }}
           required
         >
-          <option value="" disabled>Select Department</option>
+          <option value="" disabled>Select Programme</option>
           {departmentOptions.map((dept) => (
             <option key={dept.id} value={dept.id}>
               {dept.name}

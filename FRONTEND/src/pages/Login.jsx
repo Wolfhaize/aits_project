@@ -67,7 +67,7 @@ function Login() {
 
 
         toast.success('Login successful');
-        navigate(`/dashboards/${role}/profile`);
+        navigate(`/dashboards/${role}/${role}-dashboard`);
       } else {
         toast.error('Login failed');
       }

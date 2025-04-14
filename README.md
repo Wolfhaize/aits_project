@@ -1,4 +1,19 @@
-- there is still a lot that needs to be done even with this point reached
+# AITS PROJECT
+
+## Group C Members
+
+| Name                  | Registration Number |
+|-----------------------|---------------------|
+| [Kato Adrian Mugerwa](https://github.com/Wolfhaize)   | 24/U/25909/PS       |
+| [Tino Zoe Ramona](https://github.com/Zoe691)       | 24/U/11508/PS       |
+| [Akankunda Rita](https://github.com/RitaAkankunda)        | 24/U/03072/PS       |
+| [Nakawunde Cana](https://github.com/khana-kaye)        | 24/U/08407/PS       |
+| [Ayesiga Calvin Rodney](https://github.com/creeper-byte) | 24/U/04101/PS       |
+| [Nabasirye Nicole](https://github.com/NicoleMariah186)      | 23/U/0946       |
+
+frontendurl = "https://aits-group-c.netlify.app/"
+backendurl = "https://rita004.pythonanywhere.com/admin"
+
 
  # AITS Project
 

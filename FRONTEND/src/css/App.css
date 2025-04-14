@@ -9,7 +9,8 @@
   align-items: center;
   height: 100vh;
   text-align: center;
-  background-color: #f4f4f4;
+  background-color: #ffffff;
+  margin-left: 45%;
 }
 
 .hero-section {
@@ -21,7 +22,7 @@
   margin-top: 20px;
 }
 
-.btn {
+.btn-home {
   display: inline-block;
   padding: 10px 20px;
   margin: 10px;
@@ -36,6 +37,10 @@
 }
 
 .login-btn {
-  background-color: #28a745;
+  background-color: #28a745 !important;
   color: white;
+}
+
+.login-btn:hover, .signup-btn:hover{
+  color: #ffffff;
 }
