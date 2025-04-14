@@ -58,7 +58,7 @@ class IssueViewSet(viewsets.ModelViewSet):
                 details=f"Status changed from '{old_status}' to '{issue.status}' by {self.request.user.email}"
             )
 
-# Assign Issue View (Week 6)
+# Assign Issue View
 class AssignIssueView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 

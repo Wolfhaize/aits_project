@@ -64,8 +64,8 @@ function App() {
               {/* Role-specific Profiles */}
               <Route path="/dashboards/student/profile" element={<StudentProfile />} />
               <Route path="/dashboards/lecturer/profile" element={<LecturerProfile />} />
+
               <Route path="/dashboards/registrar/profile" element={<RegistrarProfile/>}/>
-              
               
             </Route>
           </Routes>
