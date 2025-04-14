@@ -5,11 +5,6 @@ import { useState } from "react";
 
 
 
- 
-
-
- 
-
 /*LecturerDashboard component is the main dashboard for lecturers*/
 /*it will display a header with the lecturer's name, department, search bar, and logout button*/
 const  LecturerDashboard = ({lecturerName = 'John Doe', department= 'Computer Science'}) => {
@@ -27,30 +22,54 @@ const  LecturerDashboard = ({lecturerName = 'John Doe', department= 'Computer Sc
     pendingIssues: 0,
   });
 
+  /* state to hold issues assigned to the lecturer */
+  const [issues, setIssues] = useState([]);
+
   /*State to handle loading state and errors*/
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  /*function is triggered whenever the lecturer types in the search bar*/
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-  };
 
   /*function that handles logout in case the lecturer taps the logout button*/
   const handleLogout = () => {
     console.log('Logging out ...');
   };
 
+  /*function is triggered whenever the lecturer types in the search bar*/
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  /* Fetch dashboard summary and issues when the component mount */
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        // Fetch summary stats
+        const summaryResponse = await fetch("/api/lecturer/summary");
+        const summary = await summaryResponse.json();
+        setDashboardData(summary);
+
+        // Fetch issues assigned to lecturer
+        const issuesResponse = await fetch("/api/lecturer/issues");
+        const issuesData = await issuesResponse.json();
+        setIssues(issuesData);
+
+        setLoading(false);
+      } catch (err) {
+        setError("Failed to load dashboard data. Please try again later.");
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
+  /* filter issues based on input */
+  const filteredIssues = issues.filter((issue) =>
+    issue.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    issue.studentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    issue.courseCode.toLowerCase().includes(searchQuery.toLowerCase())
    
-
-
-  
-
-  
-
-
-
-
 
 
   return (
@@ -86,14 +105,15 @@ const  LecturerDashboard = ({lecturerName = 'John Doe', department= 'Computer Sc
 
 
       {/*main content of the dashboard */}
-      <h2>Lecturer Dashboard</h2>
-      <p>Manage student academic issues related to your courses.</p>
+      <section className = 'dashboard-content'>
+        <h2>Lecturer Dashboard</h2>
+        <p>Manage student academic issues related to your courses.</p>
 
       {/* Show loading state if data is still being fetched */}
       {loading && <p>Loading dashboard data...</p>}
 
       {/* Show error if the API request fails */}
-      {error && <p>Error: {error}</p>}
+      {error && <p className = 'error-text'>{error}</p>}
 
       {/* Display values or data for the lecturer */}
       {!loading && !error && (
@@ -121,11 +141,53 @@ const  LecturerDashboard = ({lecturerName = 'John Doe', department= 'Computer Sc
       </div>
       )}
 
-      {/*issue cards for tasks and student-related issues */}
-      <IssueCard title="Grade Correction Request" status="In Progress" />
+    {/* Issues list section */}
+    <section className="issues-section">
+          <h3>Assigned Issues</h3>
+
+          {/* No issues found */}
+          {!loading && filteredIssues.length === 0 && (
+            <p>No issues match your search.</p>
+          )}
+
+          {/* Issue cards */}
+          <div className="issues-list">
+            {filteredIssues.map((issue) => (
+              <IssueCard
+                key={issue.id}
+                title={issue.title}
+                studentName={issue.studentName}
+                courseCode={issue.courseCode}
+                dateReported={issue.dateReported}
+                status={issue.status}
+              />
+            ))}
+          </div>
+        </section>
+      </section>
     </DashboardLayout>
   );
 };
 
-
 export default LecturerDashboard;
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
