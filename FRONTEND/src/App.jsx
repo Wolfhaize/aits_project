@@ -54,7 +54,6 @@ function App() {
               <Route path="/dashboards/lecturer/issues" element={<LecturerIssues />} />
               <Route path="/dashboards/registrar/issues" element={<RegistrarIssues />} />
               <Route path="/registrar/issues/:id"element={<Allocate/>} />
-              
 
               {/* Role-specific Notifications */}
               <Route path="/dashboards/student/notifications" element={<StudentNotifications />} />
