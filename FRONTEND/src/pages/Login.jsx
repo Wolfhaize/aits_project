@@ -112,7 +112,6 @@ function Login() {
   // }, [role, navigate]);  // Dependencies: role and navigate
 
   // useEffect to handle navigation after login and role change
-
   return (
     <>
       <TopNavbar />
