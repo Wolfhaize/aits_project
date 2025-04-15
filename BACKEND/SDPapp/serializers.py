@@ -12,30 +12,41 @@ class DepartmentSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'student_number', 'first_name', 'last_name']
+        fields = ['id', 'username', 'student_number', 'first_name', 'last_name', 'email']
 
 class IssueSerializer(serializers.ModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(
+    # For responses
+    user = UserSerializer(read_only=True)
+    # For writes
+    user_id = serializers.PrimaryKeyRelatedField(
         queryset=CustomUser.objects.all(),
+        source='user',
         write_only=True,
-        default=serializers.CreateOnlyDefault(lambda: serializers.CurrentUserDefault()),
+        default=serializers.CurrentUserDefault()
     )
-    assigned_to = serializers.PrimaryKeyRelatedField(
+    assigned_to = UserSerializer(read_only=True)
+    assigned_to_id = serializers.PrimaryKeyRelatedField(
         queryset=CustomUser.objects.filter(role='LECTURER'),
+        source='assigned_to',
+        write_only=True,
         allow_null=True,
-        required=False,
+        required=False
     )
-    department = serializers.PrimaryKeyRelatedField(
+    department = DepartmentSerializer(read_only=True)
+    department_id = serializers.PrimaryKeyRelatedField(
         queryset=Department.objects.all(),
+        source='department',
+        write_only=True,
         allow_null=True,
-        required=False,
+        required=False
     )
 
     class Meta:
         model = Issue
         fields = [
             'id', 'title', 'category', 'status', 'description', 'course_code',
-            'user', 'assigned_to', 'department', 'resolution_details',
+            'user', 'user_id', 'assigned_to', 'assigned_to_id', 
+            'department', 'department_id', 'resolution_details',
             'created_at', 'updated_at'
         ]
         read_only_fields = ['status', 'created_at', 'updated_at']
@@ -65,15 +76,18 @@ class IssueSerializer(serializers.ModelSerializer):
         return data
 
 class IssueAssignSerializer(serializers.ModelSerializer):
-    assigned_to = serializers.PrimaryKeyRelatedField(
+    assigned_to = UserSerializer(read_only=True)
+    assigned_to_id = serializers.PrimaryKeyRelatedField(
         queryset=CustomUser.objects.filter(role='LECTURER'),
+        source='assigned_to',
+        write_only=True,
         allow_null=True,
-        required=False,
+        required=False
     )
 
     class Meta:
         model = Issue
-        fields = ['id', 'assigned_to', 'status']
+        fields = ['id', 'assigned_to', 'assigned_to_id', 'status']
         read_only_fields = ['id']
 
     def validate(self, data):

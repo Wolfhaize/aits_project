@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useAuth } from "../contexts/AuthContext";
 import "../css/componentcss/IssueForm.css";
 
 const departmentOptions = [
@@ -9,8 +8,8 @@ const departmentOptions = [
 ];
 
 const courseOptions = {
-  1: ["CS101", "CS102", "CS103", "CS104"], // Courses for Computer Science
-  2: ["BA201", "BA202", "BA203", "BA204"], // Courses for Business Administration
+  1: ["CS101", "CS102", "CS103", "CS104"],
+  2: ["BA201", "BA202", "BA203", "BA204"],
 };
 
 const IssueForm = () => {
@@ -21,32 +20,35 @@ const IssueForm = () => {
   const [courseCode, setCourseCode] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const { user } = useAuth();
+
+  // ✅ Get user data from localStorage
+  const user = JSON.parse(localStorage.getItem("userData"));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
 
-    try {
-      if (!user || !user.student_number) {
-        setError("Student number not found. Please log in again.");
-        return;
-      }
+    if (!user || !user.student_number || !user.id || !user.token) {
+      setError("User details missing. Please log in again.");
+      return;
+    }
 
+    try {
       const payload = {
         title,
         description,
         category,
         course_code: courseCode,
-        department: parseInt(department), // Convert to number
+        department: parseInt(department),
         student_number: user.student_number,
-        user: user.id,
         assigned_to: null,
         status: "open",
       };
 
       console.log("Request Payload:", payload);
+      console.log("Token being sent:", user.token);
+console.log("User ID:", user.id);
 
       const response = await axios.post(
         "http://127.0.0.1:8000/api/issues/",
@@ -111,13 +113,11 @@ const IssueForm = () => {
           <option value="appeal">Appeal</option>
           <option value="other">Other</option>
         </select>
-        
-        {/* Department Selection */}
         <select
           value={department}
           onChange={(e) => {
             setDepartment(e.target.value);
-            setCourseCode(""); // Reset course code when department changes
+            setCourseCode("");
           }}
           required
         >
@@ -128,13 +128,11 @@ const IssueForm = () => {
             </option>
           ))}
         </select>
-
-        {/* Course Selection - Changes Based on Department */}
         <select
           value={courseCode}
           onChange={(e) => setCourseCode(e.target.value)}
           required
-          disabled={!department} // Disable if no department is selected
+          disabled={!department}
         >
           <option value="" disabled>Select Course</option>
           {department &&
@@ -144,7 +142,6 @@ const IssueForm = () => {
               </option>
             ))}
         </select>
-
         <button type="submit">Submit Issue</button>
       </form>
     </div>
