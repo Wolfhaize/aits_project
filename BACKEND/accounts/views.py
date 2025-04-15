@@ -49,6 +49,8 @@ class RegisterView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
         
         user = serializer.save()
+        
+        # Add to group if student
         if user.role == 'STUDENT':
             try:
                 group = Group.objects.get(name='Students')
@@ -56,50 +58,38 @@ class RegisterView(generics.CreateAPIView):
             except Group.DoesNotExist:
                 pass
         
-        # Create token with expires_at
+        # Create token
         created_at = timezone.now()
         expires_at = created_at + timedelta(days=30)
         token_str = hashlib.sha512(
             (str(user.id) + user.email + created_at.isoformat() + uuid.uuid4().hex).encode("utf-8")
         ).hexdigest()
         
-        try:
-            token = Token.objects.create(
-                user=user,
-                token=token_str,
-                created_at=created_at,
-                expires_at=expires_at,
-                is_used=False
-            )
-        except Exception as e:
-            logger.error(f"Failed to create token for user {user.email}: {str(e)}")
-            return Response({
-                "success": False,
-                "message": "Failed to create authentication token."
-            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        token = Token.objects.create(
+            user=user,
+            token=token_str,
+            created_at=created_at,
+            expires_at=expires_at,
+            is_used=False
+        )
         
         return Response({
             "success": True,
-            "message": "You are now registered!",
+            "message": "Registration successful",
             "user": {
                 "id": user.id,
-                "email": user.email,
-                "first_name": user.first_name,
-                "last_name": user.last_name,
-                "role": user.role,
-                "student_number": user.student_number if user.role == 'STUDENT' else None,
-                "lecturer_number": user.lecturer_number if user.role == 'LECTURER' else None,
-                "registrar_number": user.registrar_number if user.role == 'REGISTRAR' else None,
+                    "email": user.email,
+                    "role": user.role,
+                    "first_name": user.first_name,
+                    "last_name": user.last_name,
+                    "student_number": user.student_number,
             },
-            "token": token.token
+            "token": token.token  # Important - return the token
         }, status=status.HTTP_201_CREATED)
-
+    
 class LoginView(generics.GenericAPIView):
     permission_classes = [AllowAny]
     serializer_class = LoginSerializer
-
-    def get(self, request):
-        return Response({"detail": "Please log in via POST or use /admin/login/ for admin"})
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -128,25 +118,27 @@ class LoginView(generics.GenericAPIView):
                 expires_at=expires_at,
                 is_used=False
             )
+            
             return Response({
                 "success": True,
                 "message": "Logged in successfully",
                 "user": {
+                    "id": user.id,
                     "email": user.email,
                     "role": user.role,
                     "first_name": user.first_name,
                     "last_name": user.last_name,
-                    "student_number": user.student_number if user.role == 'STUDENT' else None,
-                    "lecturer_number": user.lecturer_number if user.role == 'LECTURER' else None,
-                    "registrar_number": user.registrar_number if user.role == 'REGISTRAR' else None,
+                    "student_number": user.student_number,
+                     # Make sure this is included
                 },
-                "token": token.token
+                "token": token.token 
             }, status=status.HTTP_200_OK)
+        
         return Response(
             {"success": False, "message": "Invalid credentials"},
             status=status.HTTP_401_UNAUTHORIZED
         )
-
+    
 class LogoutView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = LogoutSerializer

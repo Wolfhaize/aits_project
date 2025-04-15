@@ -47,60 +47,89 @@ function Signup() {
     const formErrors = validateForm();
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
-    } else {
-      setErrors({});
+      return; // Early return if errors exist
+    }
   
-      // Remove unnecessary fields based on the selected role
-      const requestData = {
-        email,
-        password,
-        first_name: firstName,
-        last_name: lastName,
-        role,
-        ...(role === 'STUDENT' && { student_number: roleSpecificId }),
-        ...(role === 'LECTURER' && { lecturer_number: roleSpecificId }),
-        ...(role === 'REGISTRAR' && { registrar_number: roleSpecificId }),
-      };
+    setErrors({});
+    
+    // Prepare request data
+    const requestData = {
+      email,
+      password,
+      first_name: firstName,
+      last_name: lastName,
+      role,
+      ...(role === 'STUDENT' && { student_number: roleSpecificId }),
+      ...(role === 'LECTURER' && { lecturer_number: roleSpecificId }),
+      ...(role === 'REGISTRAR' && { registrar_number: roleSpecificId }),
+    };
   
-      console.log("Filtered Request Data:", requestData); // Log the filtered request data
-  
-      try {
-        const response = await axios.post("http://localhost:8000/api/register/", requestData, {
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/register/", 
+        requestData, 
+        {
           headers: {
-            "Authorization": null,
             "Content-Type": "application/json",
           },
-        });
-  
-        console.log(response); // Log the response to check if there's an issue with the response format
-  
-        if (response.status === 201 || response.status === 200) {
-          changeRole(role);
-          toast.success("Signup successful");
-          login(response.data); // Call the login function with the user data
-          localStorage.setItem("isLoggedIn", "true");
-          navigate(`/dashboards/${role}/${role}-dashboard`);
-        } else {
-          toast.error("Unexpected response. Check logs.");
         }
-      } catch (error) {
-        console.error("Error:", error); // Log the error if something fails
+      );
   
-        if (error.response && error.response.data) {
-          console.error("Full error response:", error.response.data); // Log the full response from the server
+      // Ensure response has the expected structure
+      if (response.data?.success && response.data?.token && response.data?.user) {
+        // Transform the response data to match your auth system
+        const authData = {
+          token: response.data.token,
+          user: {
+            id: response.data.user.id,
+            email: response.data.user.email,
+            first_name: response.data.user.first_name,
+            last_name: response.data.user.last_name,
+            role: response.data.user.role,
+            student_number: response.data.user.student_number || null,
+            lecturer_number: response.data.user.lecturer_number || null,
+            registrar_number: response.data.user.registrar_number || null,
+            token: response.data.token, // Include token in user object if needed
+          }
+        };
   
-          // Check if the error has a detailed message and field info
-          const errorMessage = error.response.data.message || "Signup failed.";
-          const field = error.response.data.field || "Unknown field";  // Look for 'field' in the response
-  
-          // Display the error message with the field if possible
-          setErrors({
-            form: `${errorMessage} (Missing: ${field})`,
-          });
-        } else {
-          setErrors({ form: "Signup failed. Please try again." });
+        // Call login with properly formatted data
+        login(authData);
+        changeRole(authData.user.role);
+
+        
+        // Navigate based on role
+        navigate(`/dashboards/${role}/${role}-dashboard`);
+        toast.success("Signup successful!");
+      } else {
+        throw new Error("Unexpected response format");
+      }
+    } catch (error) {
+      console.error("Signup error:", error);
+      
+      let errorMessage = "Signup failed. Please try again.";
+      
+      if (error.response) {
+        // Handle field-specific errors
+        if (error.response.data) {
+          // Handle Django/drf validation errors
+          if (typeof error.response.data === 'object') {
+            // Field errors (e.g., {"email": ["This field must be unique"]})
+            const fieldErrors = Object.entries(error.response.data)
+              .map(([field, messages]) => `${field}: ${messages.join(', ')}`)
+              .join('; ');
+            
+            errorMessage = fieldErrors || errorMessage;
+          } 
+          // Handle custom error messages
+          else if (error.response.data.detail) {
+            errorMessage = error.response.data.detail;
+          }
         }
       }
+  
+      setErrors({ form: errorMessage });
+      toast.error(errorMessage);
     }
   };
   
@@ -168,7 +197,7 @@ function Signup() {
               >
                 <option value="" disabled>Pick a Role</option>
                 <option value="STUDENT">Student</option>
-                {/* <option value="LECTURER">Lecturer</option> THIS IS NOT READY */}
+                <option value="LECTURER">Lecturer</option> 
                 <option value="REGISTRAR">Registrar</option>
               </Form.Control>
             </Form.Group>
@@ -176,7 +205,7 @@ function Signup() {
             <FormInput
               controlId="formRoleSpecificId"
               label={role === "STUDENT" ? "Student Number" : 
-                // role === "LECTURER" ? "Lecturer Number" : 
+                role === "LECTURER" ? "Lecturer Number" : 
                 role === "REGISTRAR" ? "Registrar Number"  : 
                 "Select Role First"
               }

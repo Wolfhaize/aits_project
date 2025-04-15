@@ -5,13 +5,13 @@ import { Link, useNavigate } from "react-router-dom";
 import TopNavbar from "../components/Navbar";
 import { toast } from "react-toastify";
 import axios from "axios";
-import { useRole } from "../contexts/RoleContext"; 
-import { useAuth } from "../contexts/AuthContext"; 
+import { useRole } from "../contexts/RoleContext";
+import { useAuth } from "../contexts/AuthContext";
 
 function Login() {
   const { login } = useAuth();
   let navigate = useNavigate();
-  const { changeRole } = useRole();   // Use context to update the role
+  const { changeRole } = useRole(); // Use context to update the role
 
   // State for managing login form and role
   const [email, setEmail] = useState("");
@@ -20,10 +20,11 @@ function Login() {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!email) newErrors.email = 'Email is required';
-    else if (!/\S+@\S+\.\S+/.test(email)) newErrors.email = 'Email is invalid';
-    if (!password) newErrors.password = 'Password is required';
-    else if (password.length < 6) newErrors.password = 'Password must be at least 6 characters';
+    if (!email) newErrors.email = "Email is required";
+    else if (!/\S+@\S+\.\S+/.test(email)) newErrors.email = "Email is invalid";
+    if (!password) newErrors.password = "Password is required";
+    else if (password.length < 6)
+      newErrors.password = "Password must be at least 6 characters";
     return newErrors;
   };
 
@@ -36,51 +37,72 @@ function Login() {
     }
   
     try {
-      const response = await axios.post('http://localhost:8000/api/login/', {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        "http://localhost:8000/api/login/", 
+        { email, password },
+        {
+          headers: {
+            "Content-Type": "application/json"
+          }
+        }
+      );
   
-      if (response.data.success) {
-        const { token, role, first_name, last_name, student_number } = response.data;
-       
-        login({
-          email,
-          role,
-          first_name,
-          last_name,
-          student_number,
-          token, // Include the student's number
-        });
-
-        changeRole(role);
-
-        // Store in localStorage
-        localStorage.setItem("authToken", token);
-        localStorage.setItem("userData", JSON.stringify({
-          email,
-          role,
-          student_number,
-          first_name,
-          last_name
-        }));
-
-
-        toast.success('Login successful');
-        navigate(`/dashboards/${role}/${role}-dashboard`);
-      } else {
-        toast.error('Login failed');
+      // Validate response structure
+      if (!response.data?.success || !response.data?.token || !response.data?.user) {
+        throw new Error("Invalid response format");
       }
+  
+      const { token, user } = response.data;
+  
+      // Ensure required user fields exist
+      const authPayload = {
+        token,
+        user: {
+          id: user.id,
+          email: user.email || user.username, // Fallback to username if email missing
+          first_name: user.first_name || "",
+          last_name: user.last_name || "",
+          role: user.role || "STUDENT", // Default role
+          student_number: user.student_number || null,
+          lecturer_number: user.lecturer_number || null,
+          registrar_number: user.registrar_number || null,
+          token // Include in user object if needed by your system
+        }
+      };
+  
+      // Call auth context login
+      login(authPayload);
+  
+      // Update role context
+      changeRole(authPayload.user.role);
+  
+      // Show success and navigate
+      toast.success("Login successful");
+      navigate(`/dashboards/${authPayload.user.role}/${authPayload.user.role}-dashboard`);
+  
     } catch (error) {
       console.error("Login Error:", error);
-      if (error.response && error.response.data) {
-        setErrors({ form: error.response.data.detail || 'Login failed. Please try again.' });
-      } else {
-        setErrors({ form: 'Login failed. Please try again.' });
+      
+      let errorMessage = "Login failed. Please try again.";
+      
+      if (error.response) {
+        // Handle Django/drf errors
+        if (error.response.data?.detail) {
+          errorMessage = error.response.data.detail;
+        }
+        // Handle validation errors
+        else if (typeof error.response.data === 'object') {
+          errorMessage = Object.entries(error.response.data)
+            .map(([field, errors]) => `${field}: ${Array.isArray(errors) ? errors.join(', ') : errors}`)
+            .join('; ');
+        }
       }
+  
+      setErrors({ form: errorMessage });
+      toast.error(errorMessage);
     }
   };
-  
+
   // useEffect(() => {
   //   console.log("Role updated:", role);
   //   // Navigate when role is set
@@ -88,10 +110,9 @@ function Login() {
   //     navigate(`/dashboards/${role}/profile`);
   //   }
   // }, [role, navigate]);  // Dependencies: role and navigate
-  
 
   // useEffect to handle navigation after login and role change
- 
+
   return (
     <>
       <TopNavbar />
@@ -127,18 +148,18 @@ function Login() {
               </Form.Control.Feedback>
             </Form.Group>
 
-            {errors.form && <div className="text-danger mb-3">{errors.form}</div>}
+            {errors.form && (
+              <div className="text-danger mb-3">{errors.form}</div>
+            )}
 
             <Button variant="success" type="submit" className="login-button">
               LOG IN
             </Button>
             <Form.Text className="text-right">
-              New Here?{" "}
-              <Link to="/signup">Signup</Link>
+              New Here? <Link to="/signup">Signup</Link>
             </Form.Text>
             <Form.Text className="text-right">
-              Forgot Password?{" "}
-              <Link to="/ForgotPassword">Click Here</Link>
+              Forgot Password? <Link to="/ForgotPassword">Click Here</Link>
             </Form.Text>
           </Form>
         </div>
