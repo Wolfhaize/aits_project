@@ -97,7 +97,6 @@ function Signup() {
         login(authData);
         changeRole(authData.user.role);
 
-        
         // Navigate based on role
         navigate(`/dashboards/${role}/${role}-dashboard`);
         toast.success("Signup successful!");
