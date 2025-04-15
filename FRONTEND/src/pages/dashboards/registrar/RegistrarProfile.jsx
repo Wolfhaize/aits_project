@@ -1,5 +1,6 @@
 import { useState } from "react";
 import DashboardLayout from "../../../layouts/DashboardLayout";
+import '../../../css/dashboardcss/registrar/RegistrarProfile.css';
 
 
 function RegistrarProfile() {
