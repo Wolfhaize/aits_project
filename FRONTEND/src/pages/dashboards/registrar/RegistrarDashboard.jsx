@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import "../../../css/dashboardcss/registrar/RegistrarDashboard.css";
 import { useAuth } from "../../../contexts/AuthContext"; // Import useAuth
 import axios from "axios";
+import "../../dashboards/registrar/Assignedissues";
+import AssignedIssues from "../../dashboards/registrar/Assignedissues";
 
 const RegistrarDashboard = () => {
   const [issues, setIssues] = useState([]); // Store all issues
@@ -92,7 +94,7 @@ const RegistrarDashboard = () => {
       </div>
         
       </div>
-
+        <AssignedIssues/>
       </div>
      
       
