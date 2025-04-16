@@ -69,6 +69,7 @@ const  LecturerDashboard = ({lecturerName = 'John Doe', department= 'Computer Sc
     issue.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     issue.studentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
     issue.courseCode.toLowerCase().includes(searchQuery.toLowerCase())
+  );
    
 
 
