@@ -12,6 +12,7 @@ const RegistrarDashboard = () => {
   const [error, setError] = useState(""); // Error handling state
   const { user } = useAuth(); // Get logged-in user
 
+
   useEffect(() => {
     const fetchIssues = async () => {
       try {
