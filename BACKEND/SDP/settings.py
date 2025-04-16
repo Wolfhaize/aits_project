@@ -19,6 +19,8 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "corsheaders",
     "notifications",
+    "django_filters",
+
 ]
 
 MIDDLEWARE = [
@@ -56,16 +58,10 @@ WSGI_APPLICATION = "SDP.wsgi.application"
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',  # ← Must be exact
-        'NAME': 'Sdpdb',                            # Your PostgreSQL DB name
-        'USER': 'nicole',                           # Your PostgreSQL username
-        'PASSWORD': '2003',                         # Your PostgreSQL password
-        'HOST': 'localhost',                        # Usually 'localhost' if running locally
-        'PORT': '5432',                             # Default PostgreSQL port
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
@@ -87,8 +83,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
+        'accounts.authentication.CustomTokenAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
+        
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
