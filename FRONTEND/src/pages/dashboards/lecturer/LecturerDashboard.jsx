@@ -49,19 +49,17 @@ const LecturerDashboard = () => {
       }
     };
 
-    if (user && user.token) {
-      fetchIssues();
-    } else {
-      setLoading(false);
-    }
-  }, [user]);
+    fetchDashboardData();
+  }, []);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div style={{ color: "red" }}>{error}</div>;
+  /* filter issues based on input */
+  const filteredIssues = issues.filter((issue) =>
+    issue.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    issue.studentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    issue.courseCode.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+   
 
-  // Safeguard for resolved and pending issues if not available
-  const resolvedIssues = issues?.status?.resolved || []; 
-  const pendingIssues = issues?.status?.pending || [];
 
   return (
     <DashboardLayout role="Lecturer">
