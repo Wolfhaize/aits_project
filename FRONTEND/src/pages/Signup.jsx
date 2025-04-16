@@ -6,7 +6,7 @@ import { useAuth } from "../contexts/AuthContext"; // Import useAuth
 import { useRole } from "../contexts/RoleContext";
 import TopNavbar from "../components/Navbar";
 import FormInput from "../components/FormInput";
-import { Form, Button } from "react-bootstrap";
+import { Form, Button, FormLabel } from "react-bootstrap";
 import "../css/pagecss/Signup.css";
 
 function Signup() {
@@ -20,6 +20,13 @@ function Signup() {
   const [lastName, setLastName] = useState("");
   const [role, setRole] = useState("");
   const [roleSpecificId, setRoleSpecificId] = useState("");
+  const [department,setDepartment] = useState("");
+  const departments = [
+    "Department of Computer Science",
+    "Department of Information Systems",
+    "Department of Information Technology",
+    "Department of Networks",
+  ];
   const [errors, setErrors] = useState({});
 
   const validateForm = () => {
@@ -38,6 +45,9 @@ function Signup() {
           : role === "LECTURER"
           ? "Lecturer number is required"
           : "Registrar number is required";
+    }
+    if (role === "LECTURER"&&!department){
+      newErrors.department="Department is required";
     }
     return newErrors;
   };
@@ -60,9 +70,13 @@ function Signup() {
       last_name: lastName,
       role,
       ...(role === "STUDENT" && { student_number: roleSpecificId }),
-      ...(role === "LECTURER" && { lecturer_number: roleSpecificId }),
+      ...(role === "LECTURER" && {
+        lecturer_number: roleSpecificId,
+        department,
+      }),
       ...(role === "REGISTRAR" && { registrar_number: roleSpecificId }),
     };
+    
 
     try {
       const response = await axios.post(
@@ -194,6 +208,32 @@ function Signup() {
                 <option value="REGISTRAR">Registrar</option>
               </Form.Control>
             </Form.Group>
+
+            {role === "LECTURER"&&(
+              <Form.Group controlId="formDepartment">
+                <Form.Label>Select Department</Form.Label>
+                <Form.Control
+                  as="select"
+                  value={department}
+                  onChange={(e)=>setDepartment(e.target.value)}
+                  isInvalid={!!errors.department}
+                >
+                  <option value="">Select Department</option>
+                  {departments.map((dept,index)=>(
+                    <option key={index} value={dept}>
+                      {dept}
+                    </option>
+                  ))}
+                </Form.Control>
+                <Form.Control.Feedback type="invalid">
+                  {errors.department}
+
+                </Form.Control.Feedback>
+
+              </Form.Group>
+            )
+
+            }
 
             <FormInput
               controlId="formRoleSpecificId"
