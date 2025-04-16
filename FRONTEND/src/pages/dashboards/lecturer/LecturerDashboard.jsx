@@ -49,15 +49,7 @@ const LecturerDashboard = () => {
       }
     };
 
-    fetchDashboardData();
-  }, []);
-
-  /* filter issues based on input */
-  const filteredIssues = issues.filter((issue) =>
-    issue.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    issue.studentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    issue.courseCode.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  });
    
 
 
@@ -79,13 +71,13 @@ const LecturerDashboard = () => {
         {/* Resolved Issues */}
         <div className="stat-box">
           <h3>Resolved Issues</h3>
-          <p>{resolvedIssues.length}</p>
+          <p>{}</p>
         </div>
 
         {/* Pending Issues */}
         <div className="stat-box">
           <h3>Pending Issues</h3>
-          <p>{pendingIssues.length}</p>
+          <p>{}</p>
         </div>
       </div>
         
