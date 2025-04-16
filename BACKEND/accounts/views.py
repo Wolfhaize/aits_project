@@ -1,20 +1,19 @@
 from django.contrib.auth.models import Group
 from rest_framework import generics, viewsets, status
-from rest_framework.permissions import AllowAny, IsAuthenticated, BasePermission
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.authtoken.models import Token as AuthToken
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate, logout
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth.hashers import make_password
-from .models import CustomUser
-from rest_framework.authtoken.models import Token
+from .models import CustomUser, Token
 from .serializers import (
     RegisterSerializer, LoginSerializer, LogoutSerializer, 
     ProfileSerializer, CustomUserSerializer, TokenSerializer
 )
-from datetime import timezone, timedelta
+from django.utils import timezone  # Correct import
+from datetime import timedelta  # Keep timedelta
 import hashlib
 import uuid
 
@@ -41,7 +40,6 @@ def mail_template(content, button_url, button_text):
             </body>
             </html>"""
 
-# Registration View
 class RegisterView(generics.CreateAPIView):
     permission_classes = [AllowAny]
     serializer_class = RegisterSerializer
@@ -51,33 +49,47 @@ class RegisterView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
         
         user = serializer.save()
-        try:
-            group = Group.objects.get(name='Students')
-            user.groups.add(group)
-        except Group.DoesNotExist:
-            pass
         
-        token, _ = AuthToken.objects.get_or_create(user=user)
+        # Add to group if student
+        if user.role == 'STUDENT':
+            try:
+                group = Group.objects.get(name='Students')
+                user.groups.add(group)
+            except Group.DoesNotExist:
+                pass
+        
+        # Create token
+        created_at = timezone.now()
+        expires_at = created_at + timedelta(days=30)
+        token_str = hashlib.sha512(
+            (str(user.id) + user.email + created_at.isoformat() + uuid.uuid4().hex).encode("utf-8")
+        ).hexdigest()
+        
+        token = Token.objects.create(
+            user=user,
+            token=token_str,
+            created_at=created_at,
+            expires_at=expires_at,
+            is_used=False
+        )
         
         return Response({
             "success": True,
-            "message": "You are now registered!",
-            "user_id": user.id,
-            "email": user.email,
-            "first_name": user.first_name,
-            "last_name": user.last_name,
-            "role": user.role,
-            "student_number": user.student_number if user.role == 'STUDENT' else None,
-            "token": token.key
+            "message": "Registration successful",
+            "user": {
+                "id": user.id,
+                    "email": user.email,
+                    "role": user.role,
+                    "first_name": user.first_name,
+                    "last_name": user.last_name,
+                    "student_number": user.student_number,
+            },
+            "token": token.token  # Important - return the token
         }, status=status.HTTP_201_CREATED)
-
-# Login View
+    
 class LoginView(generics.GenericAPIView):
     permission_classes = [AllowAny]
     serializer_class = LoginSerializer
-
-    def get(self, request):
-        return Response({"detail": "Please log in via POST or use /admin/login/ for admin"})
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -90,39 +102,57 @@ class LoginView(generics.GenericAPIView):
         )
         
         if user:
-            token, _ = AuthToken.objects.get_or_create(user=user)
+            # Delete existing tokens
+            Token.objects.filter(user=user).delete()
+            
+            created_at = timezone.now()
+            expires_at = created_at + timedelta(days=30)
+            token_str = hashlib.sha512(
+                (str(user.id) + user.email + created_at.isoformat() + uuid.uuid4().hex).encode("utf-8")
+            ).hexdigest()
+            
+            token = Token.objects.create(
+                user=user,
+                token=token_str,
+                created_at=created_at,
+                expires_at=expires_at,
+                is_used=False
+            )
+            
             return Response({
                 "success": True,
                 "message": "Logged in successfully",
-                "email": user.email,
-                "role": user.role,
-                "first_name": user.first_name,
-                "last_name": user.last_name,
-                "student_number": user.student_number if user.role == 'STUDENT' else None,
-                "token": token.key
+                "user": {
+                    "id": user.id,
+                    "email": user.email,
+                    "role": user.role,
+                    "first_name": user.first_name,
+                    "last_name": user.last_name,
+                    "student_number": user.student_number,
+                     # Make sure this is included
+                },
+                "token": token.token 
             }, status=status.HTTP_200_OK)
+        
         return Response(
             {"success": False, "message": "Invalid credentials"},
             status=status.HTTP_401_UNAUTHORIZED
         )
-
-# Logout View (Using Custom Permission Class)
+    
 class LogoutView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = LogoutSerializer
 
     def post(self, request):
-        request.user.auth_token.delete()
+        Token.objects.filter(user=request.user).delete()           
         logout(request)
         return Response({"message": "Logged out successfully"}, status=status.HTTP_200_OK)
-    
 
 class HomeView(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request):
-        return Response({"detail": "Welcome to your home page", "email": request.user.email})    
+        return Response({"detail": "Welcome to your home page", "email": request.user.email})
 
-# Forgot Password View
 class ForgotPasswordView(APIView):
     permission_classes = [AllowAny]
 
@@ -174,7 +204,6 @@ class ForgotPasswordView(APIView):
             status=status.HTTP_400_BAD_REQUEST,
         )
 
-# Reset Password View
 class ResetPasswordView(APIView):
     permission_classes = [AllowAny]
 
@@ -209,7 +238,6 @@ class ResetPasswordView(APIView):
             status=status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
 
-# Profile View
 class ProfileView(generics.RetrieveUpdateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = ProfileSerializer
@@ -228,10 +256,11 @@ class ProfileView(generics.RetrieveUpdateAPIView):
             "email": instance.email,
             "role": instance.role,
             "student_number": instance.student_number if instance.role == 'STUDENT' else None,
+            "lecturer_number": instance.lecturer_number if instance.role == 'LECTURER' else None,
+            "registrar_number": instance.registrar_number if instance.role == 'REGISTRAR' else None,
             "message": "Profile updated successfully"
         }, status=status.HTTP_200_OK)
 
-# CustomUser ViewSet
 class CustomUserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer

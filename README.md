@@ -15,6 +15,7 @@ frontendurl = "https://aits-group-c.netlify.app/"
 backendurl = "https://rita004.pythonanywhere.com/admin"
 
 
+ # AITS Project
 
 This project is a web application for managing academic issues. It currently supports:
 
