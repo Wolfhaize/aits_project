@@ -135,8 +135,8 @@ function LecturerIssues() {
                 <th>Category</th>
                 <th>Status</th>
                 <th>Created At</th>
-                <th>Allocate</th>
-                <th>Delete</th>
+                
+                
               </tr>
             </thead>
             <tbody>
