@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import Issue, Department
 from accounts.models import CustomUser
 
+
 class DepartmentSerializer(serializers.ModelSerializer):
     head = serializers.StringRelatedField()
 
@@ -94,3 +95,4 @@ class IssueAssignSerializer(serializers.ModelSerializer):
         if 'assigned_to' in data and data['assigned_to'] and data.get('status') != 'assigned':
             data['status'] = 'assigned'
         return data
+    

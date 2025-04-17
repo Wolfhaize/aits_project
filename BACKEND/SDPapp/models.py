@@ -8,7 +8,8 @@ class Department(models.Model):
         null=True,
         blank=True,
         limit_choices_to={'role': 'LECTURER'},
-        help_text="The lecturer designated as head of this department."
+        help_text="The lecturer designated as head of this department.",
+        related_name='headed_departments'  # This avoids conflict
     )
 
     def __str__(self):

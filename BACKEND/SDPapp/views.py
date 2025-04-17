@@ -7,6 +7,10 @@ from accounts.models import CustomUser
 from .models import Department, Issue, AuditLog
 from .serializers import DepartmentSerializer, IssueSerializer
 from notifications.models import Notification
+from rest_framework.permissions import AllowAny #added the last three lines
+from SDPapp.models import Department
+
+from SDPapp.serializers import UserSerializer 
 
 # Department ViewSet
 class DepartmentViewSet(viewsets.ModelViewSet):
@@ -130,3 +134,17 @@ class LecturerResolveIssueView(APIView):
             message=f"Your issue '{issue.title}' has been resolved by {request.user.email}"
         )
         return Response({"detail": "Issue resolved successfully."}, status=200)
+
+#added this view    
+class LecturersByDepartmentView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, pk):
+        try:
+            department = Department.objects.get(pk=pk)
+        except Department.DoesNotExist:
+            return Response({"error": "Department not found."}, status=404)
+
+        lecturers = CustomUser.objects.filter(role='LECTURER', department=department)
+        serializer = UserSerializer(lecturers, many=True)
+        return Response(serializer.data)

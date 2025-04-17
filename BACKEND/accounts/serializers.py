@@ -3,14 +3,15 @@ from .models import CustomUser, Token
 from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password
 from datetime import datetime
+from SDPapp.models import Department
 
 class RegisterSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(required=True)
     last_name = serializers.CharField(required=True)
-
+    department = serializers.IntegerField(required=False, allow_null=True)
     class Meta:
         model = CustomUser
-        fields = ['email', 'password', 'role', 'first_name', 'last_name', 'student_number', 'lecturer_number', 'registrar_number']
+        fields = ['email', 'password', 'role', 'first_name', 'last_name', 'student_number', 'lecturer_number', 'registrar_number','department']
         extra_kwargs = {'password': {'write_only': True}}
 
     def validate_email(self, value):
@@ -25,6 +26,17 @@ class RegisterSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, validated_data):
+        department_id = validated_data.get('department')
+        department = None
+
+        # If department ID is provided, validate it
+        if department_id:
+            try:
+                department = Department.objects.get(id=department_id)
+            except Department.DoesNotExist:
+                raise serializers.ValidationError(f"Department with ID {department_id} not found.")
+
+
         user = CustomUser.objects.create_user(
             email=validated_data['email'],
             password=validated_data['password'],
@@ -34,6 +46,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             student_number=validated_data.get('student_number'),
             lecturer_number=validated_data.get('lecturer_number'),
             registrar_number=validated_data.get('registrar_number'),
+            department=department,
         )
         return user
 

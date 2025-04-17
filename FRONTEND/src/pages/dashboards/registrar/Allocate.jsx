@@ -10,19 +10,30 @@ const AllocateIssue = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  const [departments] = useState([
-    { id: 'cs', name: "Department of Computer Science" },
-    { id: 'is', name: "Department of Information Systems" },
-    { id: 'it', name: "Department of Information Technology" },
-    { id: 'networks', name: "Department of Networks" },
-  ]);
-
+  const [departments, setDepartments] = useState([]);
   const [lecturers, setLecturers] = useState([]);
   const [selectedDepartment, setSelectedDepartment] = useState('');
   const [selectedLecturer, setSelectedLecturer] = useState('');
   const [issue, setIssue] = useState(null);
 
-  // Fetch issue details
+  // ✅ Fetch departments from API
+  useEffect(() => {
+    const fetchDepartments = async () => {
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/api/departments/", {
+          headers: {
+            Authorization: `Token ${user.token}`,
+          },
+        });
+        setDepartments(response.data);
+      } catch (err) {
+        console.error("Failed to fetch departments:", err);
+      }
+    };
+    fetchDepartments();
+  }, [user.token]);
+
+  // ✅ Fetch issue details
   useEffect(() => {
     const fetchIssue = async () => {
       try {
@@ -39,11 +50,18 @@ const AllocateIssue = () => {
     fetchIssue();
   }, [id, user.token]);
 
-  // Fetch lecturers for selected department
+  // ✅ Fetch lecturers for selected department
   useEffect(() => {
     const getLecturers = async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/departments/${selectedDepartment}/lecturers/`);
+        const response = await axios.get(
+          `http://127.0.0.1:8000/api/departments/${selectedDepartment}/lecturers/`,
+          {
+            headers: {
+              Authorization: `Token ${user.token}`, // ✅ FIXED spacing here
+            },
+          }
+        );
         setLecturers(response.data);
       } catch (error) {
         console.log('Error getting lecturers:', error);
@@ -53,15 +71,15 @@ const AllocateIssue = () => {
     if (selectedDepartment) {
       getLecturers();
     }
-  }, [selectedDepartment]);
+  }, [selectedDepartment, user.token]);
 
-  // Handle allocation
+  // ✅ Handle allocation
   const handleAllocate = async () => {
     try {
       await axios.post(
-        `http://127.0.0.1:8000/api/issues/${id}/allocate/`,
+        `http://127.0.0.1:8000/api/issues/${id}/assign/`,
         {
-          lecturer_id: selectedLecturer,
+          assigned_to: selectedLecturer,
         },
         {
           headers: {
@@ -103,8 +121,10 @@ const AllocateIssue = () => {
             <label><strong>Choose Department:</strong></label><br />
             <select onChange={e => setSelectedDepartment(e.target.value)} value={selectedDepartment}>
               <option value="">Select Department</option>
-              {departments.map(department => (
-                <option key={department.id} value={department.id}>{department.name}</option>
+              {departments.map((department) => (
+                <option key={department.id} value={department.id}>
+                  {department.name}
+                </option>
               ))}
             </select>
           </div>
@@ -114,8 +134,10 @@ const AllocateIssue = () => {
               <label><strong>Choose Lecturer:</strong></label><br />
               <select onChange={e => setSelectedLecturer(e.target.value)} value={selectedLecturer}>
                 <option value="">Select Lecturer</option>
-                {lecturers.map(lec => (
-                  <option key={lec.id} value={lec.id}>{lec.name}</option>
+                {lecturers.map((lec) => (
+                  <option key={lec.id} value={lec.id}>
+                    {lec.first_name} {lec.last_name}
+                  </option>
                 ))}
               </select>
             </div>

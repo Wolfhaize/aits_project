@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -20,13 +20,8 @@ function Signup() {
   const [lastName, setLastName] = useState("");
   const [role, setRole] = useState("");
   const [roleSpecificId, setRoleSpecificId] = useState("");
+  const [departments,setDepartments] = useState("");
   const [department,setDepartment] = useState("");
-  const departments = [
-    "Department of Computer Science",
-    "Department of Information Systems",
-    "Department of Information Technology",
-    "Department of Networks",
-  ];
   const [errors, setErrors] = useState({});
 
   const validateForm = () => {
@@ -144,7 +139,24 @@ function Signup() {
       toast.error(errorMessage);
     }
   };
-
+  useEffect(() => {
+    const fetchDepartments = async () => {
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/api/departments/", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        setDepartments(response.data);
+      } catch (error) {
+        console.error("Failed to fetch departments:", error);
+        toast.error("Failed to load departments");
+      }
+    };
+  
+    fetchDepartments();
+  }, []);
+  
   return (
     <>
       <TopNavbar />
@@ -219,11 +231,11 @@ function Signup() {
                   isInvalid={!!errors.department}
                 >
                   <option value="">Select Department</option>
-                  {departments.map((dept,index)=>(
-                    <option key={index} value={dept}>
-                      {dept}
-                    </option>
-                  ))}
+                  <option value="3">Department of Computer Science</option>
+                  <option value="6">Department of Information Systems</option>
+                  <option value="7">Department of Networks</option>
+                  <option value="8">Department of Information Technology</option>
+                  <option value="9">Department of Library and Information Sciences</option>
                 </Form.Control>
                 <Form.Control.Feedback type="invalid">
                   {errors.department}

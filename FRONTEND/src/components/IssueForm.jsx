@@ -1,15 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../css/componentcss/IssueForm.css";
-
-const departmentOptions = [
-  { id: 1, name: "Computer Science" },
-  { id: 2, name: "Business Administration" },
-];
 
 const courseOptions = {
   1: ["CS101", "CS102", "CS103", "CS104"],
   2: ["BA201", "BA202", "BA203", "BA204"],
+  3: ["IT301", "IT302", "IT303", "IT304"],
+  4: ["NW401", "NW402", "NW403", "NW404"],
 };
 
 const IssueForm = () => {
@@ -17,12 +14,31 @@ const IssueForm = () => {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [department, setDepartment] = useState("");
+  const [departments, setDepartments] = useState([]);
   const [courseCode, setCourseCode] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
   // ✅ Get user data from localStorage
   const user = JSON.parse(localStorage.getItem("userData"));
+
+  // ✅ Fetch departments from API
+  useEffect(() => {
+    const fetchDepartments = async () => {
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/api/departments/", {
+          headers: {
+            Authorization: `Token ${user?.token}`,
+          },
+        });
+        setDepartments(response.data);
+      } catch (error) {
+        console.error("Failed to fetch departments:", error);
+      }
+    };
+
+    fetchDepartments();
+  }, [user?.token]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,10 +61,6 @@ const IssueForm = () => {
         assigned_to: null,
         status: "open",
       };
-
-      console.log("Request Payload:", payload);
-      console.log("Token being sent:", user.token);
-console.log("User ID:", user.id);
 
       const response = await axios.post(
         "http://127.0.0.1:8000/api/issues/",
@@ -73,7 +85,6 @@ console.log("User ID:", user.id);
     } catch (error) {
       console.error("Issue submission failed:", error);
       if (error.response) {
-        console.error("Server Error Response:", error.response.data);
         setError(
           error.response.data.detail ||
             "Failed to submit issue. Please check the data and try again."
@@ -113,6 +124,8 @@ console.log("User ID:", user.id);
           <option value="appeal">Appeal</option>
           <option value="other">Other</option>
         </select>
+
+        {/* ✅ Department Dropdown - fetched from API */}
         <select
           value={department}
           onChange={(e) => {
@@ -122,12 +135,14 @@ console.log("User ID:", user.id);
           required
         >
           <option value="" disabled>Select Programme</option>
-          {departmentOptions.map((dept) => (
+          {departments.map((dept) => (
             <option key={dept.id} value={dept.id}>
               {dept.name}
             </option>
           ))}
         </select>
+
+        {/* ✅ Course dropdown based on department */}
         <select
           value={courseCode}
           onChange={(e) => setCourseCode(e.target.value)}
@@ -136,12 +151,13 @@ console.log("User ID:", user.id);
         >
           <option value="" disabled>Select Course</option>
           {department &&
-            courseOptions[department].map((course) => (
+            courseOptions[department]?.map((course) => (
               <option key={course} value={course}>
                 {course}
               </option>
             ))}
         </select>
+
         <button type="submit">Submit Issue</button>
       </form>
     </div>
