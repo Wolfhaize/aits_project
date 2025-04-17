@@ -12,6 +12,8 @@ function LecturerIssues() {
   const [issues, setIssues] = useState([]); // Store all issues
   const [loading, setLoading] = useState(true); // Loading state
   const [error, setError] = useState(""); // Error handling state
+  const [searchQuery, setSearchQuery] = useState("");
+  const [toastMsg, setToastMsg] = useState("");
   const { user } = useAuth(); // Get logged-in user
   // const navigate = useNavigate();
   // const handleAllocateClick = (id)=>{
@@ -29,7 +31,6 @@ function LecturerIssues() {
           return;
         }
 
-        console.log("User Token:", user.token);
 
         const response = await axios.get("http://127.0.0.1:8000/api/issues/", {
           headers: {
@@ -37,15 +38,13 @@ function LecturerIssues() {
           },
         });
 
-        console.log("Full API Response:", response.data);
 
         if (!Array.isArray(response.data)) {
-          console.error("Error: API response is not an array", response.data);
           setError("Unexpected response format from server.");
           setLoading(false);
           return;
         }
-
+/* ##*/
         setIssues(response.data);
         setLoading(false);
       } catch (error) {
@@ -66,6 +65,41 @@ function LecturerIssues() {
     }
   }, [user]);
 
+  const handleResolve = async (id) => {
+    try {
+      await axios.patch(
+        `http://127.0.0.1:8000/api/issues/${id}/`,
+        { status: "Resolved" },
+        {
+          headers: {
+            Authorization: `Token ${user.token}`,
+          },
+        }
+      );
+
+      const updatedIssues = issues.map((issue) =>
+        issue.id === id ? { ...issue, status: "Resolved" } : issue
+      );
+      setIssues(updatedIssues);
+      setToastMsg("Issue marked as resolved.");
+    } catch (error) {
+      console.error("Error resolving issue:", error);
+      setToastMsg("Failed to resolve issue.");
+    }
+  };
+
+  const filteredIssues = issues.filter((issue) =>
+    issue.user?.first_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    issue.user?.last_name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  useEffect(() => {
+    if (toastMsg) {
+      const timeout = setTimeout(() => setToastMsg(""), 3000);
+      return () => clearTimeout(timeout);
+    }
+  }, [toastMsg]);
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div style={{ color: "red" }}>{error}</div>;
 
@@ -77,9 +111,20 @@ function LecturerIssues() {
         <p>View and manage all assigned academic issues.</p>
         </div>
         
+        <input 
+        type="text"
+        placeholder = 'Search student by name...'
+        className = 'search-input'
+        value = {searchQuery} 
+        onChange = {(e) => setSearchQuery(e.target.value)}
+        />
+
+        {toastMsg && <div className = 'toast-message'>{toastMsg}</div>}
+
+
 
         
-        {issues.length > 0 ? (
+        
           <table>
             <thead>
               <tr>
@@ -95,31 +140,64 @@ function LecturerIssues() {
               </tr>
             </thead>
             <tbody>
-              {issues.map((issue) => (
+            {filteredIssues.length > 0 ? (
+              filteredIssues.map((issue, index) => (
                 <tr key={issue.id}>
-                  <td>{issue.id}</td>
+                  <td>{index + 1}</td>
                   <td>{issue.user?.first_name} {issue.user?.last_name}</td>
                   <td>{issue.user?.student_number}</td>
                   <td>{issue.title}</td>
                   <td>{issue.category}</td>
-                  <td>{issue.status}</td>
+                  <td>
+                    <span className = {
+                      issue.status === 'Resolved'
+                      ? 'status-resolved'
+                      : 'status-pending'
+                    }
+                    >
+                      {issue.status}
+                    </span>
+                  </td>
                   <td>{new Date(issue.created_at).toLocaleDateString()}</td>
+                  <td>
+                    {issue.status !== 'Resolved' ? (
+                      <button
+                      className = 'resolve-button'
+                      onClick = {() => handleResolve(issue.id)}
+                      >
+                        Mark as Resolved
+                      </button>
+                    ) : (
+                      <span className = 'resolved-check'>yes</span>
+                    )}
+                    </td>
                   {/* <td>
                     <button onClick={()=>handleAllocateClick(issue.id)}>Allocate</button>
                   </td>
                   <td>
                     <button onClick={()=>handleDeleteClick(issue.id)}>Delete</button>
                   </td> */}
+                
+                <td>
+                  <button disabled>Delete</button>
+                </td>
                 </tr>
-              ))}
+              ))
+            ) : (
+              <tr>
+                <td colSpan = '9' style={{  textAlign: 'center'}}>
+                  No issues found.
+                </td>
+              </tr>
+            )}
             </tbody>
-          </table>
-        ) : (
-          <p>No issues found.</p>
-        )}
-      </div>
-    </DashboardLayout>
+            </table>
+          </div>
+        </DashboardLayout>
   );
 }
 
 export default LecturerIssues;
+
+               
+
