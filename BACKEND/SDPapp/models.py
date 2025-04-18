@@ -1,4 +1,5 @@
 from django.db import models
+from model_utils import FieldTracker
 
 class Department(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -57,6 +58,8 @@ class Issue(models.Model):
     resolution_details = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
+    tracker = FieldTracker(fields=['assigned_to', 'status'])
 
     def __str__(self):
         return f"{self.title} ({self.course_code})"
