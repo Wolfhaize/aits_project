@@ -194,7 +194,22 @@ function RegistrarIssues() {
                   <td>{issue.user?.student_number}</td>
                   <td>{issue.title}</td>
                   <td>{issue.category}</td>
-                  <td>{issue.status}</td>
+                  <td
+                    style={{
+                      color:
+                        issue.status === "pending"
+                          ? "red"
+                          : issue.status === "assigned"
+                          ? "green"
+                          : issue.status === "resolved"
+                          ? "purple"
+                          : "black",
+                    }}
+                  >
+                    {issue.status}
+                  </td>
+
+                  
                   <td>{new Date(issue.created_at).toLocaleDateString()}</td>
                   <td>
                     <button onClick={()=>handleAllocateClick(issue.id)}>Assign Issue</button>
