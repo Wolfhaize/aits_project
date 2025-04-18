@@ -14,11 +14,46 @@ function RegistrarIssues() {
   const [error, setError] = useState(""); // Error handling state
   const { user } = useAuth(); // Get logged-in user
   const navigate = useNavigate();
+  const [message, setMessage] = useState("");
+  const [isError, setIsError] = useState(false);
+  const [issueToDelete, setIssueToDelete] = useState(null);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const handleAllocateClick = (id)=>{
     navigate(`/Registrar/Issues/${id}`);
   };
   
-
+  const handleDeleteClick = (id) => {
+    setIssueToDelete(id);
+    setConfirmDelete(true);
+  };
+  
+  const confirmDeletion = async () => {
+    try {
+      await axios.delete(`http://127.0.0.1:8000/api/issues/${issueToDelete}/`, {
+        headers: {
+          Authorization: `Token ${user.token}`,
+        },
+      });
+  
+      setIssues(prev => prev.filter(issue => issue.id !== issueToDelete));
+      setMessage("Issue deleted successfully!");
+      setIsError(false);
+      setTimeout(()=>setMessage(""),5000);
+    } catch (err) {
+      console.error("Delete error:", err);
+      setMessage("Failed to delete issue.");
+      setIsError(true);
+      setTimeout(()=>setMessage(""),5000);
+    }
+    setConfirmDelete(false);
+    setIssueToDelete(null);
+  };
+  
+  const cancelDeletion = () => {
+    setConfirmDelete(false);
+    setIssueToDelete(null);
+  };
+  
   // Fetching all issues 
   useEffect(() => {
     const fetchIssues = async () => {
@@ -72,7 +107,64 @@ function RegistrarIssues() {
   return (
     <DashboardLayout role="registrar">
       <div className="reg-issues-container">
+      {message && (
+          <div
+            style={{
+              backgroundColor: isError ? "#ffe6e6" : "#e6ffea",
+              color: isError ? "#cc0000" : "#006600",
+              padding: "10px",
+              border: `1px solid ${isError ? "#cc0000" : "#006600"}`,
+              borderRadius: "5px",
+              marginBottom: "15px",
+              textAlign: "center",
+            }}
+          >
+            {message}
+          </div>
+        )}
+        {confirmDelete && (
+          <div
+            style={{
+              backgroundColor: "#fff3cd",
+              border: "1px solid #ffcc00",
+              padding: "15px",
+              marginBottom: "20px",
+              borderRadius: "8px",
+              fontWeight: "bold",
+            }}
+          >
+            <p>Are you sure you want to delete this issue?</p>
+            <button
+              onClick={confirmDeletion}
+              style={{
+                backgroundColor: "#cc0000",
+                color: "white",
+                padding: "5px 10px",
+                marginRight: "10px",
+                borderRadius: "5px",
+                border: "none",
+                cursor: "pointer",
+              }}
+            >
+              Yes, Delete
+            </button>
+            <button
+              onClick={cancelDeletion}
+              style={{
+                backgroundColor: "#ddd",
+                color: "black",
+                padding: "5px 10px",
+                borderRadius: "5px",
+                border: "none",
+                cursor: "pointer",
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        )}
         <div className="reg-issues-heading">
+        
         <h1>Registrar Issues</h1>
         <p>View and manage all academic issues.</p>
         </div>
@@ -90,7 +182,7 @@ function RegistrarIssues() {
                 <th>Category</th>
                 <th>Status</th>
                 <th>Created At</th>
-                <th>Allocate</th>
+                <th>Assign Issue</th>
                 <th>Delete</th>
               </tr>
             </thead>
@@ -105,7 +197,7 @@ function RegistrarIssues() {
                   <td>{issue.status}</td>
                   <td>{new Date(issue.created_at).toLocaleDateString()}</td>
                   <td>
-                    <button onClick={()=>handleAllocateClick(issue.id)}>Allocate</button>
+                    <button onClick={()=>handleAllocateClick(issue.id)}>Assign Issue</button>
                   </td>
                   <td>
                     <button onClick={()=>handleDeleteClick(issue.id)}>Delete</button>
