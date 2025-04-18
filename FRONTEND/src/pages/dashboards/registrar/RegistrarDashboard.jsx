@@ -63,8 +63,9 @@ const RegistrarDashboard = () => {
   if (error) return <div style={{ color: "red" }}>{error}</div>;
 
   // Safeguard for resolved and pending issues if not available
-  const resolvedIssues = issues?.status?.resolved || []; 
-  const pendingIssues = issues?.status?.pending || [];
+  const resolvedIssues = issues.filter(issue => issue.status === 'resolved');
+  const pendingIssues = issues.filter(issue=>issue.status === 'pending');
+  const assignedIssues = issues.filter(issue=>issue.status === 'assigned')
 
   return (
     <DashboardLayout role="registrar">
@@ -81,16 +82,22 @@ const RegistrarDashboard = () => {
           <p>{issues.length}</p>
         </div>
 
-        {/* Resolved Issues */}
-        <div className="stat-box">
-          <h3>Resolved Issues</h3>
-          <p>{resolvedIssues.length}</p>
-        </div>
-
-        {/* Pending Issues */}
+        
         <div className="stat-box">
           <h3>Pending Issues</h3>
           <p>{pendingIssues.length}</p>
+        </div>
+
+        
+        <div className="stat-box">
+          <h3>Assigned Issues</h3>
+          <p>{assignedIssues.length}</p>
+        </div>
+
+        <div className="stat-box">
+          <h3>Resolved Issues</h3>
+          <p>{resolvedIssues.length}</p>
+
         </div>
       </div>
         

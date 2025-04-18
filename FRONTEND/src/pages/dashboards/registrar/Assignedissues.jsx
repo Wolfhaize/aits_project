@@ -7,8 +7,16 @@ const AssignedIssues = () => {
   useEffect(() => {
     const fetchassignedissues = async () => {
       try {
-        const response = await fetch('http://localhost:8000/api/issues/?status=allocated');
-        // If you're using auth, add headers back here
+        const token = localStorage.getItem('token',response.token);
+        const response = await fetch('http://localhost:8000/api/issues/?status=assigned',{
+          headers:{
+            'Authorization':`Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+
+        );
+        
 
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -18,7 +26,7 @@ const AssignedIssues = () => {
         console.log("API response:", data);
         setIssues(data);
       } catch (error) {
-        console.error('Error fetching allocated issues:', error);
+        console.error('Error fetching assigned issues:', error);
       } finally {
         setLoading(false);
       }
