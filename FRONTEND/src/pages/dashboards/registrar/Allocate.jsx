@@ -15,8 +15,10 @@ const AllocateIssue = () => {
   const [selectedDepartment, setSelectedDepartment] = useState('');
   const [selectedLecturer, setSelectedLecturer] = useState('');
   const [issue, setIssue] = useState(null);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState(false);
 
-  // ✅ Fetch departments from API
+  // Fetch departments from API
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
@@ -33,7 +35,7 @@ const AllocateIssue = () => {
     fetchDepartments();
   }, [user.token]);
 
-  // ✅ Fetch issue details
+  // Fetch issue details
   useEffect(() => {
     const fetchIssue = async () => {
       try {
@@ -50,7 +52,7 @@ const AllocateIssue = () => {
     fetchIssue();
   }, [id, user.token]);
 
-  // ✅ Fetch lecturers for selected department
+  //Fetch lecturers for selected department
   useEffect(() => {
     const getLecturers = async () => {
       try {
@@ -73,7 +75,7 @@ const AllocateIssue = () => {
     }
   }, [selectedDepartment, user.token]);
 
-  // ✅ Handle allocation
+  //Handle allocation
   const handleAllocate = async () => {
     try {
       await axios.post(
@@ -88,11 +90,13 @@ const AllocateIssue = () => {
         }
       );
 
-      alert("Issue allocated successfully!");
-      navigate("/Registrar/Issues");
+      setMessage("Issue assigned to lecturer successfully!");
+      setError(false);
+      setTimeout(()=>setMessage(""),5000);
     } catch (err) {
       console.error("Allocation error:", err);
-      alert("Failed to allocate.");
+      setMessage("Failed to assign issue to lecturer");
+      setError(true);
     }
   };
 
@@ -100,6 +104,17 @@ const AllocateIssue = () => {
     <DashboardLayout role="registrar">
       <div className="allocate-issue-wrapper">
         <div className="allocate-issue-content">
+        {message && (
+          <p style={{ 
+          color: error ? "red" : "green", 
+          background: "#f9f9f9", 
+          padding: "10px", 
+          borderRadius: "5px", 
+          border: `1px solid ${error ? "red" : "green"}` 
+          }}>
+            {message}
+          </p>
+        )}
           <h2>Allocate Issue</h2>
 
           {issue ? (
@@ -144,7 +159,7 @@ const AllocateIssue = () => {
           )}
 
           <button onClick={handleAllocate} disabled={!selectedLecturer}>
-            Allocate
+            Assign Issue
           </button>
 
           <br /><br />
