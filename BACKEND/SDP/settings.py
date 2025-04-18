@@ -20,6 +20,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "notifications",
     "django_filters",
+    'model_utils',
 
 ]
 
@@ -119,9 +120,30 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TILS = True
-EMAIL_HOST_USER = 'your_email@gmail.com'
-EMAIL_PASSWORD = 'your_password'
+EMAIL_HOST_USER = 'your-email@gmail.com'
+EMAIL_PASSWORD = 'your-password'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': 'debug.log',
+        },
+    },
+    'loggers': {
+        'notifications': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
 
 LOGIN_REDIRECT_URL = 'accounts:home'
 LOGOUT_REDIRECT_URL = 'accounts:login'
