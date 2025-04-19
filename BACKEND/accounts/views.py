@@ -8,10 +8,12 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth.hashers import make_password
 from .models import CustomUser, Token
+from SDPapp.models import Department
 from .serializers import (
     RegisterSerializer, LoginSerializer, LogoutSerializer, 
     ProfileSerializer, CustomUserSerializer, TokenSerializer
 )
+from rest_framework.decorators import api_view
 from django.utils import timezone  # Correct import
 from datetime import timedelta  # Keep timedelta
 import hashlib
@@ -40,6 +42,7 @@ def mail_template(content, button_url, button_text):
             </body>
             </html>"""
 
+
 class RegisterView(generics.CreateAPIView):
     permission_classes = [AllowAny]
     serializer_class = RegisterSerializer
@@ -47,24 +50,23 @@ class RegisterView(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        
+
         user = serializer.save()
-        
-        # Add to group if student
-        if user.role == 'STUDENT':
-            try:
-                group = Group.objects.get(name='Students')
-                user.groups.add(group)
-            except Group.DoesNotExist:
-                pass
-        
+
+        # Add user to group based on role
+        try:
+            group = Group.objects.get(name=f"{user.role.capitalize()}s")
+            user.groups.add(group)
+        except Group.DoesNotExist:
+            pass
+
         # Create token
         created_at = timezone.now()
         expires_at = created_at + timedelta(days=30)
         token_str = hashlib.sha512(
             (str(user.id) + user.email + created_at.isoformat() + uuid.uuid4().hex).encode("utf-8")
         ).hexdigest()
-        
+
         token = Token.objects.create(
             user=user,
             token=token_str,
@@ -72,19 +74,25 @@ class RegisterView(generics.CreateAPIView):
             expires_at=expires_at,
             is_used=False
         )
-        
+
+        # Prepare response user data
+        user_data = {
+            "id": user.id,
+            "email": user.email,
+            "role": user.role,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "student_number": user.student_number,
+            "lecturer_number": user.lecturer_number,
+            "registrar_number": user.registrar_number,
+            "department": user.department.code if user.department else None
+        }
+
         return Response({
             "success": True,
             "message": "Registration successful",
-            "user": {
-                "id": user.id,
-                    "email": user.email,
-                    "role": user.role,
-                    "first_name": user.first_name,
-                    "last_name": user.last_name,
-                    "student_number": user.student_number,
-            },
-            "token": token.token  # Important - return the token
+            "user": user_data,
+            "token": token.token
         }, status=status.HTTP_201_CREATED)
     
 class LoginView(generics.GenericAPIView):
@@ -265,3 +273,14 @@ class CustomUserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
     permission_classes = [IsAuthenticated]
+
+class LecturersByDepartmentView(APIView):
+    def get(self, request, code):
+        try:
+            department = Department.objects.get(code=code)
+        except Department.DoesNotExist:
+            return Response({"error": "Department not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        lecturers = CustomUser.objects.filter(role='LECTURER', department=department)
+        serializer = CustomUserSerializer(lecturers, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

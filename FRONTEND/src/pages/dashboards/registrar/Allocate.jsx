@@ -11,10 +11,9 @@ const AllocateIssue = () => {
   const { user } = useAuth();
 
   const [departments] = useState([
-    { id: 'cs', name: "Department of Computer Science" },
-    { id: 'is', name: "Department of Information Systems" },
-    { id: 'it', name: "Department of Information Technology" },
-    { id: 'networks', name: "Department of Networks" },
+    { id: 'cs', name: "Computer Science" },
+    { id: 'is', name: "Information Systems" },
+    { id: 'it', name: "Information Technology" },
   ]);
 
   const [lecturers, setLecturers] = useState([]);
@@ -43,25 +42,42 @@ const AllocateIssue = () => {
   useEffect(() => {
     const getLecturers = async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/departments/${selectedDepartment}/lecturers/`);
-        setLecturers(response.data);
+        const url = `http://127.0.0.1:8000/api/accounts/departments/${selectedDepartment}/lecturers/`;
+        console.log("Fetching from:", url); // Log the URL being called
+        
+        const response = await axios.get(url, {
+          headers: {
+            Authorization: `Token ${user.token}`,
+          },
+        });
+        
+        console.log("Full API response:", response); // Log the entire response
+        console.log("Response data:", response.data); // Log the data
+        
+        if (Array.isArray(response.data)) {
+          setLecturers(response.data);
+        } else {
+          console.error("Unexpected data format:", response.data);
+          setLecturers([]);
+        }
       } catch (error) {
-        console.log('Error getting lecturers:', error);
+        console.error("Error fetching lecturers:", error.response || error);
+        setLecturers([]);
       }
     };
-
-    if (selectedDepartment) {
+  
+    if (selectedDepartment && user?.token) {
       getLecturers();
     }
-  }, [selectedDepartment]);
-
+  }, [selectedDepartment, user.token]);
+  
   // Handle allocation
   const handleAllocate = async () => {
     try {
       await axios.post(
-        `http://127.0.0.1:8000/api/issues/${id}/allocate/`,
+        `http://127.0.0.1:8000/api/issues/${id}/assign/`,
         {
-          lecturer_id: selectedLecturer,
+          assigned_to: selectedLecturer,
         },
         {
           headers: {
@@ -71,7 +87,7 @@ const AllocateIssue = () => {
       );
 
       alert("Issue allocated successfully!");
-      navigate("/Registrar/Issues");
+      navigate("/dashboards/REGISTRAR/Issues");
     } catch (err) {
       console.error("Allocation error:", err);
       alert("Failed to allocate.");
@@ -115,7 +131,10 @@ const AllocateIssue = () => {
               <select onChange={e => setSelectedLecturer(e.target.value)} value={selectedLecturer}>
                 <option value="">Select Lecturer</option>
                 {lecturers.map(lec => (
-                  <option key={lec.id} value={lec.id}>{lec.name}</option>
+                  <option key={lec.id} value={lec.id}>
+                  {lec.first_name} {lec.last_name}
+                </option>
+                
                 ))}
               </select>
             </div>

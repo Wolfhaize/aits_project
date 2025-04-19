@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser , BaseUserManager
+from SDPapp.models import Department
 
 class CustomUserManager(BaseUserManager):
     """Custom manager for email-based user creation."""
@@ -39,6 +40,13 @@ class CustomUser (AbstractUser ):
     student_number = models.CharField(max_length=15, blank=True, null=True, unique=True)
     lecturer_number = models.CharField(max_length=15, blank=True, null=True, unique=True)
     registrar_number = models.CharField(max_length=15, blank=True, null=True, unique=True)
+    department = models.ForeignKey( 
+        Department,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='lecturers'
+    )
     objects = CustomUserManager()
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []

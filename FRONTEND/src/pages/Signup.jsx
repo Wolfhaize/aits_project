@@ -22,11 +22,12 @@ function Signup() {
   const [roleSpecificId, setRoleSpecificId] = useState("");
   const [department,setDepartment] = useState("");
   const departments = [
-    "Department of Computer Science",
-    "Department of Information Systems",
-    "Department of Information Technology",
-    "Department of Networks",
+    { code: "cs", name: "Department of Computer Science" },
+    { code: "is", name: "Department of Information Systems" },
+    { code: "it", name: "Department of Information Technology" },
   ];
+  
+  
   const [errors, setErrors] = useState({});
 
   const validateForm = () => {
@@ -76,11 +77,12 @@ function Signup() {
       }),
       ...(role === "REGISTRAR" && { registrar_number: roleSpecificId }),
     };
+    console.log(requestData);
     
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/accounts/register/", // Corrected endpoint
+        "http://127.0.0.1:8000/api/accounts/register/", // Corrected endpoint
         requestData,
         {
           headers: {
@@ -103,12 +105,14 @@ function Signup() {
             student_number: response.data.user.student_number || null,
             lecturer_number: response.data.user.lecturer_number || null,
             registrar_number: response.data.user.registrar_number || null,
+            department: response.data.user.department || null,
           },
         };
 
         // Call login with properly formatted data
         login(authData);
         changeRole(authData.user.role);
+        console.log(authData);
 
         // Navigate based on role
         navigate(`/dashboards/${role.toLowerCase()}/${role.toLowerCase()}-dashboard`);
@@ -215,13 +219,16 @@ function Signup() {
                 <Form.Control
                   as="select"
                   value={department}
-                  onChange={(e)=>setDepartment(e.target.value)}
+                  onChange={(e) => {
+                    setDepartment(e.target.value);
+                    console.log("Selected department:", e.target.value);
+                  }}
                   isInvalid={!!errors.department}
                 >
                   <option value="">Select Department</option>
                   {departments.map((dept,index)=>(
-                    <option key={index} value={dept}>
-                      {dept}
+                    <option key={index} value={dept.code}>
+                      {dept.name}
                     </option>
                   ))}
                 </Form.Control>

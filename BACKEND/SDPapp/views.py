@@ -130,3 +130,5 @@ class LecturerResolveIssueView(APIView):
             message=f"Your issue '{issue.title}' has been resolved by {request.user.email}"
         )
         return Response({"detail": "Issue resolved successfully."}, status=200)
+    
+

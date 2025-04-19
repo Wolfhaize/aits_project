@@ -3,14 +3,31 @@ from .models import CustomUser, Token
 from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password
 from datetime import datetime
+from SDPapp.models import Department
 
 class RegisterSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(required=True)
     last_name = serializers.CharField(required=True)
+    department = serializers.SlugRelatedField(
+        slug_field='code',
+        queryset=Department.objects.all(),
+        required=False,
+        allow_null=True
+    )
 
     class Meta:
         model = CustomUser
-        fields = ['email', 'password', 'role', 'first_name', 'last_name', 'student_number', 'lecturer_number', 'registrar_number']
+        fields = [
+            'email',
+            'password',
+            'role',
+            'first_name',
+            'last_name',
+            'student_number',
+            'lecturer_number',
+            'registrar_number',
+            'department'
+        ]
         extra_kwargs = {'password': {'write_only': True}}
 
     def validate_email(self, value):
@@ -21,8 +38,25 @@ class RegisterSerializer(serializers.ModelSerializer):
     def validate_role(self, value):
         allowed_roles = ['STUDENT', 'LECTURER', 'REGISTRAR']
         if value not in allowed_roles:
-            raise serializers.ValidationError(f"Invalid role. Allowed roles are: {', '.join(allowed_roles)}")
+            raise serializers.ValidationError(
+                f"Invalid role. Allowed roles are: {', '.join(allowed_roles)}"
+            )
         return value
+
+    def validate(self, data):
+        role = data.get('role')
+
+        if role == 'STUDENT' and not data.get('student_number'):
+            raise serializers.ValidationError({"student_number": "Student number is required for students."})
+        if role == 'LECTURER':
+            if not data.get('lecturer_number'):
+                raise serializers.ValidationError({"lecturer_number": "Lecturer number is required for lecturers."})
+            if not data.get('department'):
+                raise serializers.ValidationError({"department": "Department is required for lecturers."})
+        if role == 'REGISTRAR' and not data.get('registrar_number'):
+            raise serializers.ValidationError({"registrar_number": "Registrar number is required for registrars."})
+
+        return data
 
     def create(self, validated_data):
         user = CustomUser.objects.create_user(
@@ -34,6 +68,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             student_number=validated_data.get('student_number'),
             lecturer_number=validated_data.get('lecturer_number'),
             registrar_number=validated_data.get('registrar_number'),
+            department=validated_data.get('department')  # Will be None unless lecturer
         )
         return user
 

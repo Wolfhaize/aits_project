@@ -4,7 +4,7 @@ from .models import Issue, Department, AuditLog
 # Register the Department model
 @admin.register(Department)
 class DepartmentAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'head')  # Display these fields in the admin list view
+    list_display = ('id', 'code', 'name')  # Display these fields in the admin list view
     search_fields = ('name', 'head__username')  # Add search functionality for these fields
 
 # Register the Issue model

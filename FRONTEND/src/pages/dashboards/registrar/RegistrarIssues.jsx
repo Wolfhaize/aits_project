@@ -6,20 +6,17 @@ import "../../../css/dashboard.css";
 import "../../../css/dashboardcss/registrar/RegistrarIssues.css";
 import { useNavigate } from "react-router-dom";
 
-
-
 function RegistrarIssues() {
   const [issues, setIssues] = useState([]); // Store all issues
   const [loading, setLoading] = useState(true); // Loading state
   const [error, setError] = useState(""); // Error handling state
   const { user } = useAuth(); // Get logged-in user
   const navigate = useNavigate();
-  const handleAllocateClick = (id)=>{
+  const handleAllocateClick = (id) => {
     navigate(`/Registrar/Issues/${id}`);
   };
-  
 
-  // Fetching all issues 
+  // Fetching all issues
   useEffect(() => {
     const fetchIssues = async () => {
       try {
@@ -73,12 +70,10 @@ function RegistrarIssues() {
     <DashboardLayout role="registrar">
       <div className="reg-issues-container">
         <div className="reg-issues-heading">
-        <h1>Registrar Issues</h1>
-        <p>View and manage all academic issues.</p>
+          <h1>Registrar Issues</h1>
+          <p>View and manage all academic issues.</p>
         </div>
-        
 
-        
         {issues.length > 0 ? (
           <table>
             <thead>
@@ -91,25 +86,32 @@ function RegistrarIssues() {
                 <th>Status</th>
                 <th>Created At</th>
                 <th>Allocate</th>
-                <th>Delete</th>
+                {/* <th>Delete</th> */}
               </tr>
             </thead>
             <tbody>
               {issues.map((issue) => (
                 <tr key={issue.id}>
                   <td>{issue.id}</td>
-                  <td>{issue.user?.first_name} {issue.user?.last_name}</td>
+                  <td>
+                    {issue.user?.first_name} {issue.user?.last_name}
+                  </td>
                   <td>{issue.user?.student_number}</td>
                   <td>{issue.title}</td>
                   <td>{issue.category}</td>
                   <td>{issue.status}</td>
                   <td>{new Date(issue.created_at).toLocaleDateString()}</td>
                   <td>
-                    <button onClick={()=>handleAllocateClick(issue.id)}>Allocate</button>
+                    {issue.status == "pending" && (
+                      <button onClick={() => handleAllocateClick(issue.id)}>
+                        Allocate
+                      </button>
+                    )}
                   </td>
-                  <td>
+
+                  {/* <td>
                     <button onClick={()=>handleDeleteClick(issue.id)}>Delete</button>
-                  </td>
+                  </td> */}
                 </tr>
               ))}
             </tbody>

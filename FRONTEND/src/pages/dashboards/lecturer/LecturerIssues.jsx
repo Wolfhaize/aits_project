@@ -4,94 +4,99 @@ import { useAuth } from "../../../contexts/AuthContext";
 import DashboardLayout from "../../../layouts/DashboardLayout";
 import "../../../css/dashboard.css";
 import "../../../css/dashboardcss/Lecturer/LecturerIssues.css";
-// import { useNavigate } from "react-router-dom";
-
-
 
 function LecturerIssues() {
-  const [issues, setIssues] = useState([]); // Store all issues
-  const [loading, setLoading] = useState(true); // Loading state
-  const [error, setError] = useState(""); // Error handling state
-  const { user } = useAuth(); // Get logged-in user
-  // const navigate = useNavigate();
-  // const handleAllocateClick = (id)=>{
-  //   navigate(`/Lecturer/Issues/${id}`);
-  // };
-  
+  const [issues, setIssues] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const { user } = useAuth();
+  const [resolving, setResolving] = useState({}); // Track resolving state per issue
 
-  // Fetching all issues 
+  // Fetch only assigned issues for this lecturer
   useEffect(() => {
-    const fetchIssues = async () => {
+    const fetchAssignedIssues = async () => {
       try {
-        if (!user || !user.token) {
-          setError("User not authenticated. Please log in again.");
+        if (!user?.token) {
+          setError("Please log in again.");
           setLoading(false);
           return;
         }
-
-        console.log("User Token:", user.token);
 
         const response = await axios.get("http://127.0.0.1:8000/api/issues/", {
-          headers: {
-            Authorization: `Token ${user.token}`,
-          },
+          headers: { Authorization: `Token ${user.token}` },
         });
 
-        console.log("Full API Response:", response.data);
+        // Filter issues assigned to this lecturer
+        const assignedIssues = response.data.filter(issue => {
+          // Check both possible assignment fields
+          return (
+            issue.assigned_to === user.id ||
+            (issue.assigned_to?.id === user.id) ||
+            issue.status === "assigned"
+          );
+        });
 
-        if (!Array.isArray(response.data)) {
-          console.error("Error: API response is not an array", response.data);
-          setError("Unexpected response format from server.");
-          setLoading(false);
-          return;
-        }
-
-        setIssues(response.data);
+        setIssues(assignedIssues);
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching issues:", error);
-        if (error.response?.status === 401) {
-          setError("You are not authorized. Please log in again.");
-        } else {
-          setError("Failed to fetch issues. Please try again.");
-        }
+        console.error("Error:", error);
+        setError(error.response?.status === 401 
+          ? "You are not authorized. Please log in again."
+          : "Failed to fetch issues. Please try again."
+        );
         setLoading(false);
       }
     };
 
-    if (user && user.token) {
-      fetchIssues();
-    } else {
-      setLoading(false);
-    }
+    fetchAssignedIssues();
   }, [user]);
 
+  // Mark issue as resolved
+  const handleResolve = async (issueId) => {
+    try {
+      setResolving(prev => ({ ...prev, [issueId]: true }));
+      
+      await axios.post(
+        `http://127.0.0.1:8000/api/issues/${issueId}/resolve/`,
+        {},
+        { headers: { Authorization: `Token ${user.token}` } }
+      );
+
+      // Update local state to reflect resolution
+      setIssues(prev => prev.map(issue => 
+        issue.id === issueId ? { ...issue, status: "resolved" } : issue
+      ));
+    } catch (error) {
+      console.error("Failed to resolve issue:", error);
+      alert("Failed to mark as resolved. Please try again.");
+    } finally {
+      setResolving(prev => ({ ...prev, [issueId]: false }));
+    }
+  };
+
   if (loading) return <div>Loading...</div>;
-  if (error) return <div style={{ color: "red" }}>{error}</div>;
+  if (error) return <div className="error-message">{error}</div>;
 
   return (
     <DashboardLayout role="Lecturer">
       <div className="lec-issues-container">
         <div className="lec-issues-heading">
-        <h1>Lecturer Issues</h1>
-        <p>View and manage all assigned academic issues.</p>
+          <h1>Lecturer Issues</h1>
+          <p>View and manage your assigned academic issues.</p>
         </div>
-        
 
-        
         {issues.length > 0 ? (
           <table>
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Student Name</th>
-                <th>Student Number</th>
+                <th>Student</th>
+                <th>Student #</th>
                 <th>Title</th>
                 <th>Category</th>
                 <th>Status</th>
-                <th>Created At</th>
-                <th>Allocate</th>
-                <th>Delete</th>
+                <th>Created</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -102,20 +107,27 @@ function LecturerIssues() {
                   <td>{issue.user?.student_number}</td>
                   <td>{issue.title}</td>
                   <td>{issue.category}</td>
-                  <td>{issue.status}</td>
-                  <td>{new Date(issue.created_at).toLocaleDateString()}</td>
-                  {/* <td>
-                    <button onClick={()=>handleAllocateClick(issue.id)}>Allocate</button>
+                  <td className={`status-${issue.status}`}>
+                    {issue.status}
                   </td>
+                  <td>{new Date(issue.created_at).toLocaleDateString()}</td>
                   <td>
-                    <button onClick={()=>handleDeleteClick(issue.id)}>Delete</button>
-                  </td> */}
+                    {issue.status !== "resolved" && (
+                      <button
+                        onClick={() => handleResolve(issue.id)}
+                        disabled={resolving[issue.id]}
+                        className="resolve-btn"
+                      >
+                        {resolving[issue.id] ? "Processing..." : "Resolve"}
+                      </button>
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         ) : (
-          <p>No issues found.</p>
+          <p>No assigned issues found.</p>
         )}
       </div>
     </DashboardLayout>

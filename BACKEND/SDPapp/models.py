@@ -1,18 +1,32 @@
 from django.db import models
 
+from django.db import models
+
 class Department(models.Model):
-    name = models.CharField(max_length=100, unique=True)
-    head = models.ForeignKey(
-        'accounts.CustomUser',
-        on_delete=models.SET_NULL,
+    code = models.SlugField(
+        max_length=10,
+        unique=True,
         null=True,
         blank=True,
-        limit_choices_to={'role': 'LECTURER'},
-        help_text="The lecturer designated as head of this department."
+        help_text="Short identifier for the department, e.g., 'cs' for Computer Science."
     )
+    name = models.CharField(
+        max_length=100,
+        unique=True,
+        help_text="Full name of the department."
+    )
+    # head = models.ForeignKey(
+    #     'accounts.CustomUser',
+    #     on_delete=models.SET_NULL,
+    #     null=True,
+    #     blank=True,
+    #     limit_choices_to={'role': 'LECTURER'},
+    #     help_text="The lecturer designated as head of this department."
+    # )
 
     def __str__(self):
-        return self.name
+        return f"{self.code.upper()} - {self.name}"
+
 
 class Issue(models.Model):
     STATUS_CHOICES = [
