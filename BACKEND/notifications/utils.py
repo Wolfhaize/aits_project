@@ -47,7 +47,7 @@ def notify_issue_submission(issue_id):
             notification_type='other',
             priority='high',
             title=f"New Issue Submitted: {issue.title}",
-            message=f"A new issue '{issue.title}' has been submitted by {issue.user.username}.",
+            message=f"A new issue '{issue.title}' has been submitted by {issue.user.email}.",
             content_type=content_type,
             object_id=issue.id,
         )
