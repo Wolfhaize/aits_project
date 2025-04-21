@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -20,8 +20,14 @@ function Signup() {
   const [lastName, setLastName] = useState("");
   const [role, setRole] = useState("");
   const [roleSpecificId, setRoleSpecificId] = useState("");
-  const [departments,setDepartments] = useState("");
   const [department,setDepartment] = useState("");
+  const departments = [
+    { code: "cs", name: "Department of Computer Science" },
+    { code: "is", name: "Department of Information Systems" },
+    { code: "it", name: "Department of Information Technology" },
+  ];
+  
+  
   const [errors, setErrors] = useState({});
 
   const validateForm = () => {
@@ -71,11 +77,12 @@ function Signup() {
       }),
       ...(role === "REGISTRAR" && { registrar_number: roleSpecificId }),
     };
+    console.log(requestData);
     
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/accounts/register/", // Corrected endpoint
+        "http://127.0.0.1:8000/api/accounts/register/", // Corrected endpoint
         requestData,
         {
           headers: {
@@ -98,12 +105,14 @@ function Signup() {
             student_number: response.data.user.student_number || null,
             lecturer_number: response.data.user.lecturer_number || null,
             registrar_number: response.data.user.registrar_number || null,
+            department: response.data.user.department || null,
           },
         };
 
         // Call login with properly formatted data
         login(authData);
         changeRole(authData.user.role);
+        console.log(authData);
 
         // Navigate based on role
         navigate(`/dashboards/${role.toLowerCase()}/${role.toLowerCase()}-dashboard`);
@@ -139,24 +148,7 @@ function Signup() {
       toast.error(errorMessage);
     }
   };
-  useEffect(() => {
-    const fetchDepartments = async () => {
-      try {
-        const response = await axios.get("http://127.0.0.1:8000/api/departments/", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-        setDepartments(response.data);
-      } catch (error) {
-        console.error("Failed to fetch departments:", error);
-        toast.error("Failed to load departments");
-      }
-    };
-  
-    fetchDepartments();
-  }, []);
-  
+
   return (
     <>
       <TopNavbar />
@@ -227,15 +219,18 @@ function Signup() {
                 <Form.Control
                   as="select"
                   value={department}
-                  onChange={(e)=>setDepartment(e.target.value)}
+                  onChange={(e) => {
+                    setDepartment(e.target.value);
+                    console.log("Selected department:", e.target.value);
+                  }}
                   isInvalid={!!errors.department}
                 >
                   <option value="">Select Department</option>
-                  <option value="3">Department of Computer Science</option>
-                  <option value="6">Department of Information Systems</option>
-                  <option value="7">Department of Networks</option>
-                  <option value="8">Department of Information Technology</option>
-                  <option value="9">Department of Library and Information Sciences</option>
+                  {departments.map((dept,index)=>(
+                    <option key={index} value={dept.code}>
+                      {dept.name}
+                    </option>
+                  ))}
                 </Form.Control>
                 <Form.Control.Feedback type="invalid">
                   {errors.department}

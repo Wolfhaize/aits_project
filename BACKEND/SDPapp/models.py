@@ -3,6 +3,13 @@ from model_utils import FieldTracker
 
 class Department(models.Model):
     name = models.CharField(max_length=100, unique=True)
+    code = models.SlugField(
+        max_length=10,
+        unique=True,
+        null=True,
+        blank=True,
+        help_text="Short identifier for the department, e.g., 'cs' for Computer Science."
+    )
     head = models.ForeignKey(
         'accounts.CustomUser',
         on_delete=models.SET_NULL,
@@ -14,7 +21,7 @@ class Department(models.Model):
     )
     
     def __str__(self):
-        return self.name
+        return f"{self.code.upper()} - {self.name}"
 
 class Issue(models.Model):
     STATUS_CHOICES = [

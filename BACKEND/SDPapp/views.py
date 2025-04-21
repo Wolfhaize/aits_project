@@ -7,10 +7,6 @@ from accounts.models import CustomUser
 from .models import Department, Issue, AuditLog
 from .serializers import DepartmentSerializer, IssueSerializer
 from notifications.models import Notification
-from rest_framework.permissions import AllowAny
-from SDPapp.models import Department
-from SDPapp.serializers import UserSerializer
-from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 
 # Department ViewSet
 class DepartmentViewSet(viewsets.ModelViewSet):
@@ -18,30 +14,25 @@ class DepartmentViewSet(viewsets.ModelViewSet):
     serializer_class = DepartmentSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-# Issue ViewSet - Updated to handle file uploads
+# Issue ViewSet
 class IssueViewSet(viewsets.ModelViewSet):
     queryset = Issue.objects.all()
     serializer_class = IssueSerializer
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['status', 'department', 'category']
-    parser_classes = (MultiPartParser, FormParser, JSONParser)  # Add parsers for file uploads
 
     def get_queryset(self):
         if self.request.user.role == 'STUDENT':
             return Issue.objects.filter(user=self.request.user)
         elif self.request.user.role == 'LECTURER':
-            return Issue.objects.filter(assigned_to=self.request.user)  # Lecturer sees assigned issues
+            return Issue.objects.filter(assigned_to=self.request.user)  #Lecturer sees assigned issues
         return Issue.objects.all()  # Registrar sees all
 
     def perform_create(self, serializer):
         if self.request.user.role != 'STUDENT':
             return Response({"detail": "Only students can create issues."}, status=status.HTTP_403_FORBIDDEN)
-        
-        # Handle file upload if present
-        attachment = self.request.FILES.get('attachment', None)
-        issue = serializer.save(user=self.request.user, attachment=attachment)
-        
+        issue = serializer.save(user=self.request.user)
         AuditLog.objects.create(
             issue=issue,
             user=self.request.user,
@@ -58,14 +49,7 @@ class IssueViewSet(viewsets.ModelViewSet):
         issue = self.get_object()
         old_status = issue.status
         resolution_details = self.request.data.get('resolution_details', issue.resolution_details)
-        
-        # Handle file upload if present in update
-        attachment = self.request.FILES.get('attachment', None)
-        if attachment:
-            serializer.save(resolution_details=resolution_details, attachment=attachment)
-        else:
-            serializer.save(resolution_details=resolution_details)
-            
+        serializer.save(resolution_details=resolution_details)
         if issue.status != old_status:
             AuditLog.objects.create(
                 issue=issue,
@@ -102,7 +86,6 @@ class AssignIssueView(APIView):
 # Resolve Issue View 
 class ResolveIssueView(APIView):
     permission_classes = [permissions.IsAuthenticated]
-    parser_classes = (MultiPartParser, FormParser, JSONParser)  # Add parsers for file uploads
 
     def post(self, request, issue_id):
         if request.user.role not in ['REGISTRAR', 'LECTURER']:
@@ -111,12 +94,6 @@ class ResolveIssueView(APIView):
         resolution_details = request.data.get('resolution_details', '')
         issue.status = 'resolved'
         issue.resolution_details = resolution_details
-        
-        # Handle file upload if present
-        attachment = request.FILES.get('attachment', None)
-        if attachment:
-            issue.attachment = attachment
-            
         issue.save()
         AuditLog.objects.create(
             issue=issue,
@@ -133,21 +110,14 @@ class ResolveIssueView(APIView):
 # Lecturer Resolve Issue View
 class LecturerResolveIssueView(APIView):
     permission_classes = [permissions.IsAuthenticated]
-    parser_classes = (MultiPartParser, FormParser, JSONParser)  # Add parsers for file uploads
 
     def post(self, request, issue_id):
         if request.user.role != 'LECTURER':
             return Response({"detail": "Only lecturers can resolve assigned issues."}, status=403)
-        issue = get_object_or_404(Issue, id=issue_id, assigned_to=request.user)  # Ensure it's assigned to them
+        issue = get_object_or_404(Issue, id=issue_id, assigned_to=request.user)  # Ensure it’s assigned to them
         resolution_details = request.data.get('resolution_details', '')
         issue.status = 'resolved'
         issue.resolution_details = resolution_details
-        
-        # Handle file upload if present
-        attachment = request.FILES.get('attachment', None)
-        if attachment:
-            issue.attachment = attachment
-            
         issue.save()
         AuditLog.objects.create(
             issue=issue,
@@ -160,17 +130,4 @@ class LecturerResolveIssueView(APIView):
             message=f"Your issue '{issue.title}' has been resolved by {request.user.email}"
         )
         return Response({"detail": "Issue resolved successfully."}, status=200)
-
-# Added this view    
-class LecturersByDepartmentView(APIView):
-    permission_classes = [AllowAny]
-
-    def get(self, request, pk):
-        try:
-            department = Department.objects.get(pk=pk)
-        except Department.DoesNotExist:
-            return Response({"error": "Department not found."}, status=404)
-
-        lecturers = CustomUser.objects.filter(role='LECTURER', department=department)
-        serializer = UserSerializer(lecturers, many=True)
-        return Response(serializer.data)
+    
