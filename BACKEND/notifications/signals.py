@@ -20,7 +20,7 @@ def notify_user_on_issue_update(sender, instance, created, **kwargs):
             if hasattr(instance, 'tracker'):
                 # Check if assigned_to changed (issue assigned to a lecturer)
                 if instance.tracker.has_changed('assigned_to') and instance.assigned_to:
-                    logger.debug(f"Issue {issue_id} assigned to {instance.assigned_to.username}. Sending assignment notification.")
+                    logger.debug(f"Issue {issue_id} assigned to {instance.assigned_to.email}. Sending assignment notification.")
                     notify_issue_assignment(issue_id)
             
                 # Check if status changed to resolved
