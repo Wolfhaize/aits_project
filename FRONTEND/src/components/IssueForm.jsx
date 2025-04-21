@@ -22,6 +22,8 @@ const IssueForm = () => {
 
   // ✅ Get user data from localStorage
   const user = JSON.parse(localStorage.getItem("userData"));
+  // console.log(user);
+
 
   // ✅ Fetch departments from API
   useEffect(() => {
@@ -32,6 +34,8 @@ const IssueForm = () => {
             Authorization: `Token ${user?.token}`,
           },
         });
+        console.log("Departments API response:", response.data);
+
         setDepartments(response.data);
       } catch (error) {
         console.error("Failed to fetch departments:", error);

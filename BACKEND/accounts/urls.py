@@ -2,6 +2,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views
 
+
 router = DefaultRouter()
 router.register(r'users', views.CustomUserViewSet)
 
@@ -16,4 +17,6 @@ urlpatterns = [
     path('reset-password/', views.ResetPasswordView.as_view(), name='reset_password'),
     path('profile/', views.ProfileView.as_view(), name='profile'),
     path('home/', views.HomeView.as_view(), name='home'),
+    path('departments/<str:code>/lecturers/', views.LecturersByDepartmentView.as_view(), name='department-lecturers'),
+
 ]
