@@ -44,7 +44,26 @@ function LecturerIssues() {
           setLoading(false);
           return;
         }
-/* ##*/
+
+        /*Default any undefined or 'assigned' status to 'Pending' on load */
+        const normalizedIssues = response.data.map(issue => ({
+          ...issue,
+          status: issue.status === "Resolved" ? "Resolved" : "Pending"
+        }));
+
+        setIssues(normalizedIssues);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching issues:", error);
+        if (error.response?.status === 401) {
+          setError("You are not authorized. Please log in again.");
+        } else {
+          setError("Failed to fetch issues. Please try again.");
+        }
+        setLoading(false);
+      }
+    };
+        /*
         setIssues(response.data);
         setLoading(false);
       } catch (error) {
@@ -57,6 +76,7 @@ function LecturerIssues() {
         setLoading(false);
       }
     };
+    */
 
     if (user && user.token) {
       fetchIssues();
@@ -135,6 +155,8 @@ function LecturerIssues() {
                 <th>Category</th>
                 <th>Status</th>
                 <th>Created At</th>
+                <th>Resolve</th>
+                <th>Delete</th>
                 
                 
               </tr>
@@ -179,7 +201,7 @@ function LecturerIssues() {
                   </td> */}
                 
                 <td>
-                  <button disabled>Delete</button>
+                  <button disabled = {issue.status !== 'Resolved'}>Delete</button>
                 </td>
                 </tr>
               ))

@@ -9,6 +9,10 @@
   margin: 10px; /* Adds separation between the boxes */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adds a slight shadow around each box for effect */
   margin-left: 10%;
+  /*added
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;*/ 
 }
 
 /* Styling for the title (h3) inside the box */
