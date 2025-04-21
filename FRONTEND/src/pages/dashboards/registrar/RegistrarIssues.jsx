@@ -212,7 +212,9 @@ function RegistrarIssues() {
                   
                   <td>{new Date(issue.created_at).toLocaleDateString()}</td>
                   <td>
-                    <button onClick={()=>handleAllocateClick(issue.id)}>Assign Issue</button>
+                    <button onClick={()=>handleAllocateClick(issue.id)}>
+                      {issue.status === "assigned" ? "Reassign Issue" : "Assign Issue"}
+                    </button>
                   </td>
                   <td>
                     <button onClick={()=>handleDeleteClick(issue.id)}>Delete</button>

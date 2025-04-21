@@ -12,15 +12,15 @@ class Department(models.Model):
         help_text="The lecturer designated as head of this department.",
         related_name='headed_departments'  # This avoids conflict
     )
-
+    
     def __str__(self):
         return self.name
 
 class Issue(models.Model):
     STATUS_CHOICES = [
-        ('pending', 'Pending'),  # Student logs issue
-        ('assigned', 'Assigned'),  # Registrar assigns to lecturer
-        ('resolved', 'Resolved'),  # Lecturer or registrar resolves
+        ('pending', 'Pending'),
+        ('assigned', 'Assigned'),
+        ('resolved', 'Resolved'),
     ]
     CATEGORY_CHOICES = [
         ('missing_marks', 'Missing Marks'),
@@ -45,7 +45,7 @@ class Issue(models.Model):
         null=True,
         blank=True,
         related_name='assigned_issues',
-        limit_choices_to={'role': 'LECTURER'},  # Registrar resolves directly, doesn’t get assigned
+        limit_choices_to={'role': 'LECTURER'},  # Registrar resolves directly, doesn't get assigned
         help_text="The lecturer assigned to resolve this issue."
     )
     department = models.ForeignKey(
@@ -59,8 +59,16 @@ class Issue(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
+    # New attachment field
+    attachment = models.FileField(
+        upload_to='issue_attachments/',
+        null=True,
+        blank=True,
+        help_text="Supporting documents for this issue (e.g., transcript, exam paper)"
+    )
+    
     tracker = FieldTracker(fields=['assigned_to', 'status'])
-
+    
     def __str__(self):
         return f"{self.title} ({self.course_code})"
 
@@ -76,6 +84,6 @@ class AuditLog(models.Model):
     action = models.CharField(max_length=20, choices=ACTION_CHOICES)
     timestamp = models.DateTimeField(auto_now_add=True)
     details = models.CharField(max_length=200, blank=True)
-
+    
     def __str__(self):
         return f"{self.action} on {self.issue} by {self.user}"

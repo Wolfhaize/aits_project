@@ -16,6 +16,7 @@ const IssueForm = () => {
   const [department, setDepartment] = useState("");
   const [departments, setDepartments] = useState([]);
   const [courseCode, setCourseCode] = useState("");
+  const [attachment, setAttachment] = useState(null);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
@@ -51,23 +52,26 @@ const IssueForm = () => {
     }
 
     try {
-      const payload = {
-        title,
-        description,
-        category,
-        course_code: courseCode,
-        department: parseInt(department),
-        student_number: user.student_number,
-        assigned_to: null,
-        status: "open",
-      };
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("description", description);
+      formData.append("category", category);
+      formData.append("course_code", courseCode);
+      formData.append("department", parseInt(department));
+      formData.append("student_number", user.student_number);
+      formData.append("assigned_to", null);
+      formData.append("status", "open");
+      if (attachment) {
+        formData.append("attachment", attachment);
+      }
 
       const response = await axios.post(
         "http://127.0.0.1:8000/api/issues/",
-        payload,
+        formData,
         {
           headers: {
             Authorization: `Token ${user.token}`,
+            "Content-Type": "multipart/form-data",
           },
         }
       );
@@ -79,6 +83,7 @@ const IssueForm = () => {
         setCategory("");
         setDepartment("");
         setCourseCode("");
+        setAttachment(null);
       } else {
         setError("Failed to submit issue. Please try again.");
       }
@@ -157,6 +162,12 @@ const IssueForm = () => {
               </option>
             ))}
         </select>
+
+        <input
+          type="file"
+          onChange={(e) => setAttachment(e.target.files[0])}
+          accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+        />
 
         <button type="submit">Submit Issue</button>
       </form>
