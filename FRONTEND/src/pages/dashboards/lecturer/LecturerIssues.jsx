@@ -4,9 +4,6 @@ import { useAuth } from "../../../contexts/AuthContext";
 import DashboardLayout from "../../../layouts/DashboardLayout";
 import "../../../css/dashboard.css";
 import "../../../css/dashboardcss/Lecturer/LecturerIssues.css";
-// import { useNavigate } from "react-router-dom";
-
-
 
 function LecturerIssues() {
   const [issues, setIssues] = useState([]); // Store all issues
@@ -15,11 +12,6 @@ function LecturerIssues() {
   const [searchQuery, setSearchQuery] = useState("");
   const [toastMsg, setToastMsg] = useState("");
   const { user } = useAuth(); // Get logged-in user
-  // const navigate = useNavigate();
-  // const handleAllocateClick = (id)=>{
-  //   navigate(`/Lecturer/Issues/${id}`);
-  // };
-  
 
   // Fetching all issues 
   useEffect(() => {
@@ -31,13 +23,11 @@ function LecturerIssues() {
           return;
         }
 
-
         const response = await axios.get("http://127.0.0.1:8000/api/issues/", {
           headers: {
             Authorization: `Token ${user.token}`,
           },
         });
-
 
         if (!Array.isArray(response.data)) {
           setError("Unexpected response format from server.");
@@ -45,25 +35,6 @@ function LecturerIssues() {
           return;
         }
 
-        /*Default any undefined or 'assigned' status to 'Pending' on load */
-        const normalizedIssues = response.data.map(issue => ({
-          ...issue,
-          status: issue.status === "Resolved" ? "Resolved" : "Pending"
-        }));
-
-        setIssues(normalizedIssues);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching issues:", error);
-        if (error.response?.status === 401) {
-          setError("You are not authorized. Please log in again.");
-        } else {
-          setError("Failed to fetch issues. Please try again.");
-        }
-        setLoading(false);
-      }
-    };
-        /*
         setIssues(response.data);
         setLoading(false);
       } catch (error) {
@@ -76,7 +47,6 @@ function LecturerIssues() {
         setLoading(false);
       }
     };
-    */
 
     if (user && user.token) {
       fetchIssues();
@@ -87,9 +57,9 @@ function LecturerIssues() {
 
   const handleResolve = async (id) => {
     try {
-      await axios.patch(
-        `http://127.0.0.1:8000/api/issues/${id}/`,
-        { status: "Resolved" },
+      await axios.post(
+        `http://127.0.0.1:8000/api/issues/${id}/resolve/`,
+        {},
         {
           headers: {
             Authorization: `Token ${user.token}`,
@@ -127,24 +97,20 @@ function LecturerIssues() {
     <DashboardLayout role="Lecturer">
       <div className="lec-issues-container">
         <div className="lec-issues-heading">
-        <h1>Lecturer Issues</h1>
-        <p>View and manage all assigned academic issues.</p>
+          <h1>Lecturer Issues</h1>
+          <p>View and manage all assigned academic issues.</p>
         </div>
         
         <input 
-        type="text"
-        placeholder = 'Search student by name...'
-        className = 'search-input'
-        value = {searchQuery} 
-        onChange = {(e) => setSearchQuery(e.target.value)}
+          type="text"
+          placeholder='Search student by name...'
+          className='search-input'
+          value={searchQuery} 
+          onChange={(e) => setSearchQuery(e.target.value)}
         />
 
-        {toastMsg && <div className = 'toast-message'>{toastMsg}</div>}
+        {toastMsg && <div className='toast-message'>{toastMsg}</div>}
 
-
-
-        
-        
           <table>
             <thead>
               <tr>
@@ -154,72 +120,67 @@ function LecturerIssues() {
                 <th>Title</th>
                 <th>Category</th>
                 <th>Status</th>
+                <th>Attachments</th>
                 <th>Created At</th>
-                <th>Resolve</th>
-                <th>Delete</th>
-                
-                
               </tr>
             </thead>
             <tbody>
-            {filteredIssues.length > 0 ? (
-              filteredIssues.map((issue, index) => (
-                <tr key={issue.id}>
-                  <td>{index + 1}</td>
-                  <td>{issue.user?.first_name} {issue.user?.last_name}</td>
-                  <td>{issue.user?.student_number}</td>
-                  <td>{issue.title}</td>
-                  <td>{issue.category}</td>
-                  <td>
-                    <span className = {
-                      issue.status === 'Resolved'
-                      ? 'status-resolved'
-                      : 'status-pending'
-                    }
-                    >
-                      {issue.status}
-                    </span>
-                  </td>
-                  <td>{new Date(issue.created_at).toLocaleDateString()}</td>
-                  <td>
-                    {issue.status !== 'Resolved' ? (
-                      <button
-                      className = 'resolve-button'
-                      onClick = {() => handleResolve(issue.id)}
-                      >
-                        Mark as Resolved
-                      </button>
-                    ) : (
-                      <span className = 'resolved-check'>yes</span>
-                    )}
+              {filteredIssues.length > 0 ? (
+                filteredIssues.map((issue, index) => (
+                  <tr key={issue.id}>
+                    <td>{index + 1}</td>
+                    <td>{issue.user?.first_name} {issue.user?.last_name}</td>
+                    <td>{issue.user?.student_number}</td>
+                    <td>{issue.title}</td>
+                    <td>{issue.category}</td>
+                    <td>
+                      <span className={
+                        issue.status.toLowerCase() === 'resolved'
+                        ? 'status-resolved-highlight'
+                        : 'status-pending'
+                      }>
+                        {issue.status}
+                      </span>
                     </td>
-                  {/* <td>
-                    <button onClick={()=>handleAllocateClick(issue.id)}>Allocate</button>
+                    <td>
+                      {issue.attachment ? (
+                        <a href={issue.attachment} target="_blank" rel="noopener noreferrer">
+                          Attachment
+                        </a>
+                      ) : (
+                        <span>No attachment</span>
+                      )}
+                    </td>
+                    <td>{new Date(issue.created_at).toLocaleDateString()}</td>
+                    <td>
+                      {issue.status.toLowerCase() !== 'resolved' ? (
+                        <button
+                          className='resolve-button'
+                          onClick={() => handleResolve(issue.id)}
+                        >
+                          Mark as Resolved
+                        </button>
+                      ) : (
+                        <span className='resolved-check'>issue resolved</span>
+                      )}
+                    </td>
+                    <td>
+                      <button disabled>Delete</button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan='10' style={{ textAlign: 'center' }}>
+                    No issues found.
                   </td>
-                  <td>
-                    <button onClick={()=>handleDeleteClick(issue.id)}>Delete</button>
-                  </td> */}
-                
-                <td>
-                  <button disabled = {issue.status !== 'Resolved'}>Delete</button>
-                </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan = '9' style={{  textAlign: 'center'}}>
-                  No issues found.
-                </td>
-              </tr>
-            )}
+              )}
             </tbody>
-            </table>
-          </div>
-        </DashboardLayout>
+          </table>
+      </div>
+    </DashboardLayout>
   );
 }
 
 export default LecturerIssues;
-
-               
-
