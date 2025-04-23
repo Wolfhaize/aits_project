@@ -3,6 +3,7 @@ from .models import CustomUser, Token
 from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password
 from datetime import datetime
+from django.utils import timezone
 from SDPapp.models import Department
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -115,7 +116,7 @@ class TokenSerializer(serializers.ModelSerializer):
     def validate(self, data):
         if data['is_used']:
             raise serializers.ValidationError("This token has already been used.")
-        if data['expires_at'] < datetime.now():
+        if data['expires_at'] < timezone.now():
             raise serializers.ValidationError("This token has expired.")
         return data
 

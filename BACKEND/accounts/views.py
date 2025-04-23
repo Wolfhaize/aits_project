@@ -187,7 +187,8 @@ class ForgotPasswordView(APIView):
             "token": token,
             "created_at": created_at,
             "expires_at": expires_at,
-            "user": user,
+            "user": user.id,  # Use user ID instead of user object
+            "is_used": False,  # Explicitly set is_used
         }
         serializer = TokenSerializer(data=token_obj)
         if serializer.is_valid():
@@ -213,7 +214,6 @@ class ForgotPasswordView(APIView):
             {"success": False, "message": serializer.errors},
             status=status.HTTP_400_BAD_REQUEST,
         )
-
 class ResetPasswordView(APIView):
     permission_classes = [AllowAny]
 
