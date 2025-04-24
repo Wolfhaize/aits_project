@@ -1,24 +1,39 @@
-import { useState } from "react";
+import React from "react";
+import { useAuth } from "../../../contexts/AuthContext";
 import DashboardLayout from "../../../layouts/DashboardLayout";
-import '../../../css/dashboardcss/lecturer/LecturerProfile.css';
-
+import "../../../css/dashboardcss/Lecturer/LecturerProfile.css";
 
 function LecturerProfile() {
-    // Define state for isLoggedIn and setIsLoggedIn
-    const [isLoggedIn, setIsLoggedIn] = useState(false); 
-  
+  const { user, isLoggedIn } = useAuth(); // Use user directly from context
+
+  if (!isLoggedIn || !user) {
     return (
-      <DashboardLayout isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}>
-        <div className="lecturer-profile-container">
-          <div className="lecturer-heading">
-          <h1>Lecturer Profile Page</h1>
-          <p>View and update your profile details here.</p>
-          </div>
-          
+      <DashboardLayout>
+        <div className="Lecturer-profile-container">
+          <h2>Loading or not authenticated</h2>
+          <p>Please log in again if you're seeing this message.</p>
         </div>
       </DashboardLayout>
     );
   }
-  
-  export default LecturerProfile;
-  
+
+  return (
+    <DashboardLayout isLoggedIn={isLoggedIn}>
+      <div className="Lecturer-profile-container">
+        <div className="Lecturer-heading">
+          <h1>Lecturer Profile Page</h1>
+          <p>View and update your profile details here.</p>
+        </div>
+
+        <div className="profile-details">
+          <p><strong>Full Name:</strong> {user.first_name} {user.last_name}</p>
+          <p><strong>Email:</strong> {user.email}</p>
+          <p><strong>Lecturer Number:</strong> {user.lecturer_number}</p>
+          <p><strong>Role:</strong> {user.role}</p>
+        </div>
+      </div>
+    </DashboardLayout>
+  );
+}
+
+export default LecturerProfile;
