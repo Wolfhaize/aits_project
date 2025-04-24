@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import TopNavbar from "../components/Navbar";
+import '../css/pagecss/Home.css'
 
 function Home() {
   return (
