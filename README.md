@@ -22,7 +22,9 @@ This system allows students to log concerns such as missing marks, appeals, and 
 
 ** Features
 Student: Log issues, view status, receive notifications.
+
 Lecturer: View assigned issues, update resolutions.
+
 Academic Registrar: Manage and assign issues, resolve directly.
 
 **Core Functionality**
