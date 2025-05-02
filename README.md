@@ -16,11 +16,31 @@ backendurl = "https://rita004.pythonanywhere.com/admin"
 
 
  # AITS Project
+** Overview
+The Academic Issue Tracking System (AITS) is a comprehensive web-based platform developed to efficiently manage academic record-related issues.
+This system allows students to log concerns such as missing marks, appeals, and corrections, while providing administrators and lecturers with tools to track, assign, and resolve these issues in a transparent manner.
 
-This project is a web application for managing academic issues. It currently supports:
+** Features
+Student: Log issues, view status, receive notifications.
+Lecturer: View assigned issues, update resolutions.
+Academic Registrar: Manage and assign issues, resolve directly.
 
-- **User Authentication**: Login and Signup.
-- **Issue Management**: Students can create issues and view the issues they've created.
+**Core Functionality**
+Issue submission with categorization (missing marks, appeals, corrections)
+Role-based dashboards with personalized views
+Issue assignment and tracking workflow
+Real-time status updates and notifications
+
+**Technical Stack**
+**Backend**
+Framework: Django
+API: Django REST Framework
+Database: PostgreSQL
+
+**Frontend**
+Framework: React
+State Management: Redux
+Notifications: React Toastify
 
 ## Step 1: Pull the Latest Changes
 
@@ -30,22 +50,7 @@ This project is a web application for managing academic issues. It currently sup
    cd aits_project
    ```
 
-2. **Pull the Latest Changes**:
-
-   ```bash
-   git pull origin main  # Replace 'main' with your branch name if needed
-   ```
-
-3. **Resolve Database Conflicts (If Any)**:
-   - If you encounter database-related errors (e.g., merge conflicts), delete your `db.sqlite3` file, and delete everything inside migrations folder except(\_init-.py) and run migrations:
-     ```bash
-     python manage.py makemigrations
-     python manage.py migrate
-     ```
-
----
-
-## Step 2: Install Dependencies
+2. ## Install Dependencies
 
 1. **Backend Dependencies**:
    - Create a Virtual Environment: Create a new virtual environment in the project directory. This step ensures that all dependencies are isolated for the project:
@@ -143,18 +148,55 @@ This project is a web application for managing academic issues. It currently sup
 ## Important Notes
 
 1. **Database**:
+Create a PostgreSQL database and update settings.py with your credentials
 
-   - Do **not** push the `db.sqlite3` file to the repository. It causes merge conflicts and is specific to your local environment.
-   - If you need to recreate the database and migrations, run:
-     ```bash
-     python manage.py makemigrations
-     python manage.py migrate
-     ```
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'your_db_name',
+        'USER': 'your_db_user',
+        'PASSWORD': 'your_db_password',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
+   -
+Then apply migrations
+python manage.py migrate
+python manage.py runserver
 
-2. **Frontend**:
+
+
+3. **Frontend**:
 
    - Use `npm run dev` to start the frontend server.
    - Ensure the backend server is running (`python manage.py runserver`) for the frontend to work properly.
 
-3. **Authentication**:
-   - You must sign up or log in to access the different dashboards.
+ **User Guide**
+**Student Workflow**
+1.Log in with student credentials
+2.Navigate to "Submit Issue" from the dashboard
+3.Complete the issue form with all required details
+4.Track issue status on the dashboard
+5.Receive notifications when issue status changes
+
+**Academic Registrar Workflow**
+1.Log in with administrative credentials
+2.View all submitted issues on the dashboard
+3.Review issue details and assign to appropriate lecturers
+4.He is notified by the lecturer after resolving the issue who later notifies the student that the issue has been resolved
+5.Monitor overall system performance and issue resolution rates
+
+**Lecturer Workflow**
+1.Log in with lecturer credentials
+2.View assigned issues on the dashboard
+3.Investigate and address the academic issues
+4.Update issue status and provide resolution details
+5.Close resolved issues by notifying the registrar
+
+**Development Process**
+This project follows Agile methodology with:
+Weekly sprints
+Regular stand-up meetings
+Frequent code reviews
+
