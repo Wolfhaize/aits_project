@@ -24,7 +24,6 @@ const ForgotPassword = () => {
       setErrors(formErrors);
       return;
     }
-
     setIsSubmitting(true);
     
     try {
