@@ -31,7 +31,6 @@ const LecturerDashboard = () => {
           setLoading(false);
           return;
         }
-
         // Filter issues assigned to the current lecturer
         const lecturerIssues = response.data.filter(issue => 
           issue.assigned_to?.id === user.id 
