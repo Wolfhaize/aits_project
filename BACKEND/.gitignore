@@ -26,5 +26,8 @@ dist-ssr
 
 db.sqlite3
 **/venv/
+.env
+.env.*
 
+.pyc
 
