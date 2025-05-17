@@ -4,11 +4,15 @@ import { useParams, useNavigate } from 'react-router-dom';
 import DashboardLayout from "../../../layouts/DashboardLayout";
 import { useAuth } from "../../../contexts/AuthContext";
 import "../../../css/dashboardcss/registrar/allocate.css";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AllocateIssue = () => {
   const { id } = useParams(); // Get issue ID from URL
   const navigate = useNavigate();
   const { user } = useAuth();
+  const notifySuccess = () => toast.success("Issue allocated successfully!", {closeButton: false, autoClose: 2000});
+  const notifyError = () => toast.error("Failed to allocate issue.", {closeButton: false, autoClose: 2000});
 
   const [departments] = useState([
     { id: 'cs', name: "Computer Science" },
@@ -86,11 +90,10 @@ const AllocateIssue = () => {
         }
       );
 
-      alert("Issue allocated successfully!");
-      navigate("/dashboards/REGISTRAR/Issues");
+      setTimeout(() => navigate("/dashboards/REGISTRAR/Issues"), 2000);
     } catch (err) {
       console.error("Allocation error:", err);
-      alert("Failed to allocate.");
+      notifyError();
     }
   };
 
@@ -139,9 +142,10 @@ const AllocateIssue = () => {
               </select>
             </div>
           )}
-          <button onClick={handleAllocate} disabled={!selectedLecturer}>
+          <button onClick={() => {notifySuccess(); handleAllocate();  }} disabled={!selectedLecturer}>
             Allocate
           </button>
+          <ToastContainer />
 
           <br /><br />
         </div>

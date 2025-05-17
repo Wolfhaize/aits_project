@@ -1,9 +1,10 @@
 import DashboardLayout from "../../../layouts/DashboardLayout";
 import IssueForm from "../../../components/IssueForm";
 import "../../../css/dashboardcss/student/StudentDashboard.css";
-
-
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const StudentDashboard = () => {
+  
 
   return (
     <DashboardLayout role="student">
@@ -25,6 +26,7 @@ const StudentDashboard = () => {
               </div>
             </div>
           </section>
+          <ToastContainer />
 
          
         </div>

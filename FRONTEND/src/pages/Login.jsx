@@ -3,15 +3,18 @@ import { Form, Button } from "react-bootstrap";
 import "../css/pagecss/Login.css";
 import { Link, useNavigate } from "react-router-dom";
 import TopNavbar from "../components/Navbar";
-import { toast } from "react-toastify";
 import axios from "axios";
 import { useRole } from "../contexts/RoleContext";
 import { useAuth } from "../contexts/AuthContext";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Login() {
   const { login } = useAuth();
   let navigate = useNavigate();
   const { changeRole } = useRole(); // Use context to update the role
+   const notifySuccess = () => toast.success("Log in successful!", {closeButton: false, autoClose: 2000});
+  const notifyError = () => toast.error("Log in failed.", {closeButton: false, autoClose: 2000});
 
   // State for managing login form and role
   const [email, setEmail] = useState("");
@@ -78,11 +81,14 @@ function Login() {
       changeRole(authPayload.user.role);
   
       // Show success and navigate
-      toast.success("Login successful");
+      
       navigate(`/dashboards/${authPayload.user.role}/${authPayload.user.role}-dashboard`);
+      notifySuccess();
   
     } catch (error) {
+
       console.error("Login Error:", error);
+      notifyError();
       
       let errorMessage = "Login failed. Please try again.";
       
@@ -100,7 +106,7 @@ function Login() {
       }
   
       setErrors({ form: errorMessage });
-      toast.error(errorMessage);
+      notifyError();
     }
   };
 
@@ -162,6 +168,7 @@ function Login() {
               Forgot Password? <Link to="/ForgotPassword">Click Here</Link>
             </Form.Text>
           </Form>
+          <ToastContainer />
         </div>
       </div>
     </>

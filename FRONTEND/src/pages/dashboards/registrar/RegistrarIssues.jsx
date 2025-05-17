@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 
 
+
 function RegistrarIssues() {
   const [issues, setIssues] = useState([]); // Store all issues
   const [loading, setLoading] = useState(true); // Loading state
@@ -18,6 +19,8 @@ function RegistrarIssues() {
   const [isError, setIsError] = useState(false);
   const [issueToDelete, setIssueToDelete] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
+
+  
   const handleAllocateClick = (id)=>{
     navigate(`/Registrar/Issues/${id}`);
   };

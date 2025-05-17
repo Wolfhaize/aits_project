@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../css/componentcss/IssueForm.css";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const courseOptions = {
   1: ["CS101", "CS102", "CS103", "CS104"],
@@ -19,6 +21,8 @@ const IssueForm = () => {
   const [attachment, setAttachment] = useState(null);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const notifySuccess = () => toast.success("Issue submitted successfully!", {autoClose: 2000});
+  const notifyError = () => toast.error("Failed to submit issue.", { autoClose: 2000});
 
   // ✅ Get user data from localStorage
   const user = JSON.parse(localStorage.getItem("userData"));
@@ -81,7 +85,7 @@ const IssueForm = () => {
       );
 
       if (response.status === 201) {
-        setSuccess("Issue submitted successfully!");
+        notifySuccess();
         setTitle("");
         setDescription("");
         setCategory("");
@@ -90,9 +94,11 @@ const IssueForm = () => {
         setAttachment(null);
       } else {
         setError("Failed to submit issue. Please try again.");
+        notifyError();
       }
     } catch (error) {
       console.error("Issue submission failed:", error);
+      notifyError();
       if (error.response) {
         setError(
           error.response.data.detail ||
@@ -100,6 +106,7 @@ const IssueForm = () => {
         );
       } else {
         setError("Failed to submit issue. Please try again.");
+        notifyError();
       }
     }
   };
@@ -174,6 +181,7 @@ const IssueForm = () => {
         />
 
         <button type="submit">Submit Issue</button>
+        <ToastContainer />
       </form>
     </div>
   );
