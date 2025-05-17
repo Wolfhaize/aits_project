@@ -72,6 +72,7 @@ function Login() {
   
       // Call auth context login
       login(authPayload);
+      console.log("Login successful:", authPayload);
   
       // Update role context
       changeRole(authPayload.user.role);

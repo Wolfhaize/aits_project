@@ -22,7 +22,7 @@ function StudentProfile() {
       <div className="student-profile-container">
         <div className="student-heading">
           <h1>Student Profile Page</h1>
-          <p>View and update your profile details here.</p>
+          <p>View your profile details here.</p>
         </div>
 
         <div className="profile-details">
