@@ -139,6 +139,8 @@ class LoginView(generics.GenericAPIView):
                     "first_name": user.first_name,
                     "last_name": user.last_name,
                     "student_number": user.student_number,
+                    "lecturer_number": user.lecturer_number,
+                    "registrar_number": user.registrar_number,
                      # Make sure this is included
                 },
                 "token": token.token 

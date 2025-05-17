@@ -27,7 +27,6 @@ function Signup() {
     { code: "it", name: "Department of Information Technology" },
   ];
   
-  
   const [errors, setErrors] = useState({});
 
   const validateForm = () => {

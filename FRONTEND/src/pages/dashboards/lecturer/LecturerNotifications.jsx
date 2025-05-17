@@ -5,7 +5,6 @@ import "../../../css/dashboardcss/Lecturer/LecturerNotifications.css";
 
 
 
-
 function LecturerNotifications() {
   // const [notifications, setNotifications] = useState([]);  
   // const [status, setStatus] = useState("Connecting...");

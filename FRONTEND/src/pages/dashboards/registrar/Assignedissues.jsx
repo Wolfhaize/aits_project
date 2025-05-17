@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
+
 // Modal component for viewing attachments
 const AttachmentModal = ({ isOpen, onClose, attachmentUrl }) => {
   if (!isOpen) return null;

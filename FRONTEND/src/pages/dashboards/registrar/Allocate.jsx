@@ -139,7 +139,6 @@ const AllocateIssue = () => {
               </select>
             </div>
           )}
-
           <button onClick={handleAllocate} disabled={!selectedLecturer}>
             Allocate
           </button>

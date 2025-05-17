@@ -66,12 +66,13 @@ function Login() {
           student_number: user.student_number || null,
           lecturer_number: user.lecturer_number || null,
           registrar_number: user.registrar_number || null,
-          token // Include in user object if needed by your system
+          token 
         }
       };
   
       // Call auth context login
       login(authPayload);
+      console.log("Login successful:", authPayload);
   
       // Update role context
       changeRole(authPayload.user.role);

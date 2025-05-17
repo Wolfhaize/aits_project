@@ -48,6 +48,8 @@ export function AuthProvider({ children }) {
       last_name: responseData.user.last_name || "",
       role: responseData.user.role || "STUDENT", // Default role
       student_number: responseData.user.student_number,
+      lecturer_number: responseData.user.lecturer_number,
+      registrar_number: responseData.user.registrar_number,
       token: responseData.token,
     };
 

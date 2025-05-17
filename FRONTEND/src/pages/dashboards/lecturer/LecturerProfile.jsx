@@ -22,7 +22,7 @@ function LecturerProfile() {
       <div className="Lecturer-profile-container">
         <div className="Lecturer-heading">
           <h1>Lecturer Profile Page</h1>
-          <p>View and update your profile details here.</p>
+          <p>View your profile details here.</p>
         </div>
 
         <div className="profile-details">

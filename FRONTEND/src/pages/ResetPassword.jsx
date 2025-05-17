@@ -47,7 +47,6 @@ const ResetPassword = () => {
       setErrors(formErrors);
       return;
     }
-
     setIsSubmitting(true);
 
     try {
